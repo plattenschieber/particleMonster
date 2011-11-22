@@ -4,7 +4,7 @@ Build the skeleton using
 
 Execute the program using
 
-   ./blatt1
+	   ./particleMonster
 
 Generate the documentation using Doxygen
 
