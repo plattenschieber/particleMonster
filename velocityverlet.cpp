@@ -39,14 +39,17 @@ void VelocityVerlet::timestep(real delta_t)
 
 void VelocityVerlet::comp_F()
 {
+	bool comp = true;
     // there is no e_pot in the beginning
 	W.e_pot = 0.0;
     // we compute the e_pot for each pair of particles and add it to the worlds' e_pot...
 	for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
         // ...except of the computation with itself (i!=j)
 		for (std::vector<Particle>::iterator j = W.particles.begin(); j < i; j++) // changed from W.particles.size() && i!=j and removed the *.5 in the inner for-loop // unsigned int j=0; j<i; j++
-            // just take half of the force, because we are adding it two times. 
-			W.e_pot += Pot.force(*i, *j);
+		{
+	    		for (int i=0; i<DIM; i++)
+			if(i->)	W.e_pot += Pot.force(*i, *j);
+		}
 }
 
 void VelocityVerlet::update_V()
