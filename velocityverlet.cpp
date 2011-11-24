@@ -39,7 +39,8 @@ void VelocityVerlet::timestep(real delta_t)
 
 void VelocityVerlet::comp_F()
 {
-	bool comp = true;
+	// check the distance and throw out all that's more far away than rcut
+	real tmp = 0.0, rcut = 1000;
     // there is no e_pot in the beginning
 	W.e_pot = 0.0;
     // we compute the e_pot for each pair of particles and add it to the worlds' e_pot...
@@ -47,8 +48,13 @@ void VelocityVerlet::comp_F()
         // ...except of the computation with itself (i!=j)
 		for (std::vector<Particle>::iterator j = W.particles.begin(); j < i; j++) // changed from W.particles.size() && i!=j and removed the *.5 in the inner for-loop // unsigned int j=0; j<i; j++
 		{
-	    		for (int i=0; i<DIM; i++)
-			if(i->)	W.e_pot += Pot.force(*i, *j);
+			// check the distance
+	    		for (int d=0; d<DIM; d++)
+				tmp += sqr(j->x[d]-i->x[d]);	
+			// only particles which are closer than rcut
+			if(tmp<=rcut) 
+				// computes the force between particle i and j and add it to our potential
+				 W.e_pot += Pot.force(*i, *j);
 		}
 }
 
