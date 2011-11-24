@@ -4,7 +4,7 @@ Observer::Observer(World &_W) : W(_W)
 {
 
     // open xyz file
-    std::string xyz_filename = W.name + ".xyz";
+    std::string xyz_filename = "/xyz/" + W.name + ".xyz";
     // open file, overwrite existing files, take no prisioners
     xyz.open(xyz_filename.c_str());
     if ( xyz.is_open() )
@@ -12,7 +12,7 @@ Observer::Observer(World &_W) : W(_W)
         std::cout << "Opened " << xyz_filename << " for writing." << std::endl;
     
     // open statistics file
-    std::string statistics_filename = W.name + ".statistics";
+    std::string statistics_filename = "/statistics/" + W.name + ".statistics";
     // open file, overwrite existing files, take no prisioners
     statistics.open(statistics_filename.c_str());
     if ( statistics.is_open() )
@@ -20,7 +20,7 @@ Observer::Observer(World &_W) : W(_W)
         std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
     
     // open coordinates file
-    std::string coordinates_filename = W.name + ".coordinates";
+    std::string coordinates_filename = "/coordinates/" + W.name + ".coordinates";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordinates_filename.c_str());
     if ( coordinates.is_open() )
