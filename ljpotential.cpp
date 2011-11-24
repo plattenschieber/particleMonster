@@ -11,7 +11,7 @@ real LJPotential::force(Particle &p, Particle &q) /*, real eps, real sigma*/
     
     
     // DEBUG std::cout << "rijsq: " << rijsq << "###### pow: " << pow(sigma*sigma/rijsq,3) << std::endl;
-    real Urij = 4*eps*pow(sigma*sigma/rijsq,3)*(pow(sigma*sigma/rijsq,3) - 1);
+    real Urij = 4*eps*pow(sqr(sigma)/rijsq,3)*(pow(sqr(sigma)/rijsq,3) - 1);
     
 	for (int d=0; d<DIM; d++) {
 		double force = 24*eps*(1/rijsq)*pow(sigma*sigma/rijsq,3)*(1-2*pow(sigma*sigma/rijsq,3))*(q.x[d]-p.x[d]);
