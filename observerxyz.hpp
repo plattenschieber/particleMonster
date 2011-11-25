@@ -6,7 +6,7 @@
 #include <fstream>
 
 /**
- * @brief an observer for the timediscretization
+ * @brief This Observer will look for our XYZ Data
  */
 class ObserverXYZ {
 public:
