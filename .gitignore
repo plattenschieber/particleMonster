@@ -1,0 +1,12 @@
+*.[oa]
+*~
+*xyz
+*swp
+Doxyfile
+coordinates/
+statistics/
+parameter/
+particles/
+papers/
+*.pdf
+*.txt
