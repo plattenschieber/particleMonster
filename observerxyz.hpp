@@ -17,14 +17,14 @@ public:
      *
      * @param _W
      */
-    Observer(World& _W);
+    ObserverXYZ(World& _W);
 
     /**
      * @brief destructor
      *
      * closes the files written during the obervation
      */
-    ~Observer();
+    ~ObserverXYZ();
     
     /**
      * @brief notify the observer that the world has changed
@@ -60,7 +60,7 @@ protected:
 
 private:
     /// Disabled Standard Constructor
-    Observer();
+    ObserverXYZ();
 };
 
 #endif // _OBSERVER_HPP
