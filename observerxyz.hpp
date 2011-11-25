@@ -8,7 +8,7 @@
 /**
  * @brief an observer for the timediscretization
  */
-class Observer {
+class ObserverXYZ {
 public:
     /**
      * @brief constructor
