@@ -54,7 +54,7 @@ void VelocityVerlet::comp_F()
     		for (int d=0; d<DIM; d++)
 		    dist += sqr(j->x[d]-i->x[d]);	
 		    // only particles which are closer than rcut
-		    if(dist <= rcut) 
+		    if(dist <= rcut*999) 
 		         // computes the force between particle i and j and add it to our potential
 			 W.e_pot += Pot.force(*i, *j);
 		}
