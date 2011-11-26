@@ -10,5 +10,4 @@ public:
     /// r_cut used for calculation of the cell length
     real cell_r_cut;
     World_LC::read_parameters();
-    World LC::read particles();
 };
