@@ -41,10 +41,10 @@ public:
     void read_Particles(const std::string &filename);
 
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world
-    enum BorderType { unknown = 0, leaving = 1 }; 
+    enum BorderType { unknown = 0, leaving = 1, periodic = 2 }; 
     
     // Value-Defintions of the different String values
-    enum Option { NAME, DELTA_T, T_END, LENGTH, UPPER_BORDER, LOWER_BORDER}; 
+    enum Option { NAME, DELTA_T, T_END, LENGTH, UPPER_BORDER, LOWER_BORDER, EPSILON, SIGMA, CELLRCUT}; 
     
     // Map to associate the strings with the enum values
     std::map<std::string, World::Option> mapOptions;

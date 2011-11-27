@@ -4,15 +4,19 @@
 #include <map>
 
 
-// intializing via intializer list - order is set by definings in .hpp; setting map mapOptions for switchcase
+// intializing via intializer list - order is set by definings in .hpp; 
 World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0)
 {    
+    //setting map mapOptions for switchcase
     mapOptions["name"] = NAME;
     mapOptions["delta_t"] = DELTA_T;  
     mapOptions["t_end"] = T_END;
     mapOptions["length"] = LENGTH;
     mapOptions["upper_border"] = UPPER_BORDER;
     mapOptions["lower_border"] = LOWER_BORDER;
+    mapOptions["sigma"] = SIGMA;
+    mapOptions["epsilon"] = EPSILON;
+    mapOptions["cell_r_cut"] = CELLRCUT;
    }
 
 void World::read_Parameter(const std::string &filename)
@@ -60,6 +64,7 @@ void World::read_Parameter(const std::string &filename)
                 for (int i=0; i<DIM; i++)
                 {
                     if (tmp == "leaving") upper_border[i] = leaving;   
+		    else if (tmp == "periodic") upper_border[i] = periodic;
                     else upper_border[i] = unknown;
                 }
                 break;
@@ -68,6 +73,7 @@ void World::read_Parameter(const std::string &filename)
                 for (int i=0; i<DIM; i++)
                 {
                     if (tmp == "leaving") lower_border[i] = leaving;   
+		    else if (tmp == "periodic") upper_border[i] = periodic;
                     else lower_border[i] = unknown;
                 }
                 break;
