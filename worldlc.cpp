@@ -39,9 +39,12 @@ void WorldLC::read_Parameter(const std::string &filename)
         // push next read value, with internal converter of string stream, into the propper place 
         if (mapOptions[option] == CELLRCUT)
 	    	strstr >> cell_r_cut;
+    }
     // close file
     parfile.close();
     // TODO: ADD Code to handle cell_r_cut and cell dimensions... 
+    
+
 }
 
 void WorldLC::read_Particles(const std::string &filename)
