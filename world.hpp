@@ -63,6 +63,10 @@ public:
     real e_tot;
     /// the axis lengths of our world
     real length[DIM];
+    /// zero breakthrough
+    real sigma;
+    // potential depth
+    real epsilon;
     /// Vector of particles
     std::vector<Particle> particles;
     /// upper borders 
