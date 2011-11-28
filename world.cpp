@@ -18,7 +18,7 @@ World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0
     mapOptions["epsilon"] = EPSILON;
 }
 
-virtual void World::read_Parameter(const std::string &filename)
+void World::read_Parameter(const std::string &filename)
 {
   
        // create input filestream
@@ -53,6 +53,10 @@ virtual void World::read_Parameter(const std::string &filename)
             case NAME:
                 strstr >> name;
                 break;
+	    case EPSILON:
+	    	strstr >> epsilon;
+	    case SIGMA:
+	    	strstr >> sigma;
             case LENGTH:
                 for (int i=0; i<DIM; i++) {
                     strstr >> length[i];
@@ -82,7 +86,7 @@ virtual void World::read_Parameter(const std::string &filename)
     parfile.close();
 }
 
-virtual void World::read_Particles(const std::string &filename)
+void World::read_Particles(const std::string &filename)
 {
     // create input filestream
     std::ifstream parfile(filename.c_str());
