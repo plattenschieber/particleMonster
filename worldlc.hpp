@@ -14,6 +14,7 @@
  */
 class WorldLC : public World {
 public:
+    // Standard Ctor
     WorldLC();
 
     /* @brief Overwrite existing World::readParameter to handle new files
@@ -25,6 +26,7 @@ public:
      * @param filename filename of the parameter file
      */
     void read_Parameter(const std::string &filename);
+    void read_Particles(const std::string &filename);
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
