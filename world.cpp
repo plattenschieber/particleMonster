@@ -16,8 +16,7 @@ World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0
     mapOptions["lower_border"] = LOWER_BORDER;
     mapOptions["sigma"] = SIGMA;
     mapOptions["epsilon"] = EPSILON;
-    mapOptions["cell_r_cut"] = CELLRCUT;
-   }
+}
 
 void World::read_Parameter(const std::string &filename)
 {
