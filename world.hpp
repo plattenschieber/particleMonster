@@ -29,14 +29,14 @@ public:
      *
      * @param filename filename of the parameter file
      */
-    void read_Parameter(const std::string &filename);
+    virtual void read_Parameter(const std::string &filename);
 
     /**
      * @brief read the particles from the given data file
      *
      * @param filename filename of the particle data file
      */
-    void read_Particles(const std::string &filename);
+    virtual void read_Particles(const std::string &filename);
 
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world and periodic will let the particles enter on the opposite side
     enum BorderType { unknown = 0, leaving = 1, periodic = 2 }; 
