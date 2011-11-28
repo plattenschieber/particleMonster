@@ -1,12 +1,13 @@
-#ifndef _VELOCITYVERLET_HPP
-#define _VELOCITYVERLET_HPP
+#ifndef _VELOCITYVERLETLC_HPP
+#define _VELOCITYVERLETLC_HPP
 
-#include "timediscretization.hpp"
+#include "velocityverlet.hpp"
 
 /**
- * @brief Implementation of the Velocity Verlet Algorithm
+ * @brief Implementation of the Velocity Verlet Algorithm by means of our cell structure
+ * Inheritance from VelocityVerlet, because we don't need to reimplement constructor, simulate, ... 
  */
-class VelocityVerlet : public TimeDiscretization {
+class VelocityVerletLC : public VelocityVerlet {
 public:
     /**
      * @brief constructor
@@ -15,7 +16,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerlet(World& _W, Potential& _Pot, Observer &_O);
+    VelocityVerletLC(World& _W, Potential& _Pot, Observer &_O);
     
     /**
      * @brief constructor
@@ -27,7 +28,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerlet(World& _W, Potential* _Pot, Observer &_O);
+    VelocityVerletLC(World& _W, Potential* _Pot, Observer &_O);
     
     /**
      * @brief run a single timestep
@@ -65,8 +66,8 @@ protected:
     // data structures inherited from TimeDiscretization
     
 private:
-    VelocityVerlet();
+    VelocityVerletLC();
 };
 
-#endif // _VELOCITYVERLET_HPP
+#endif // _VELOCITYVERLETLC_HPP
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
