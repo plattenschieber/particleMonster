@@ -21,7 +21,7 @@ public:
     /**
      * @brief read the world parameters from the given parameter file
      *
-     * parameter file example
+     * parameter file example TODO: rewrite code example
      * \code
      * delta_t 0.1
      * t_end 1.0
