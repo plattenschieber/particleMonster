@@ -18,7 +18,7 @@ World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0
     mapOptions["epsilon"] = EPSILON;
 }
 
-void World::read_Parameter(const std::string &filename)
+virtual void World::read_Parameter(const std::string &filename)
 {
   
        // create input filestream
@@ -82,7 +82,7 @@ void World::read_Parameter(const std::string &filename)
     parfile.close();
 }
 
-void World::read_Particles(const std::string &filename)
+virtual void World::read_Particles(const std::string &filename)
 {
     // create input filestream
     std::ifstream parfile(filename.c_str());
