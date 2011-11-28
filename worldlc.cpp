@@ -1,4 +1,9 @@
-class World_LC:World {
+#include "world.hpp"
+#include <stdexcept>
+#include <sstream>
+#include <map>
+
+World_LC:World {
 public:
     // data structures
     /// cells
