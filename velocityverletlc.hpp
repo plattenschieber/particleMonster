@@ -1,6 +1,7 @@
 #ifndef _VELOCITYVERLETLC_HPP
 #define _VELOCITYVERLETLC_HPP
 
+#include "worldlc.hpp"
 #include "velocityverlet.hpp"
 
 /**
@@ -16,7 +17,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(WorldLC & _W, Potential & _Pot, Observer & _O);
+    VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer &_O);
     
     /**
      * @brief constructor
