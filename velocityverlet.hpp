@@ -34,12 +34,12 @@ public:
      *
      * @param delta_t length of the timestep
      */
-    virtual void timestep(real delta_t);
+    void timestep(real delta_t);
     
     /**
      * @brief run the simulation
      */
-    virtual void simulate();
+    void simulate();
     
     /**
      * @brief calculates the forces affecting the particles at the current time
@@ -59,7 +59,7 @@ public:
     /**
      * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
      */
-    virtual void handle_borders();
+    void handle_borders();
     
 protected:
     // data structures inherited from TimeDiscretization
