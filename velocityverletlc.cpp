@@ -1,40 +1,13 @@
-#include "velocityverlet.hpp"
+#include "velocityverletlc.hpp"
 #include <math.h> 
-VelocityVerlet::VelocityVerlet(World& _W, Potential& _Pot, Observer& _O) : TimeDiscretization(_W,_Pot,_O)
+VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
 {
     // empty constructor(CBR) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
 }
 
-VelocityVerlet::VelocityVerlet(World& _W, Potential* _Pot, Observer& _O) : TimeDiscretization(_W,(*_Pot),_O)
+VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
 {
     // empty constructor(CBV) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
-}
-
-// runs the simulation
-void VelocityVerlet::simulate()
-{
-    // while simulation end time not reached
-    while (W.t < W.t_end)
-        // it's just one step for a man, but a big step for the world...
-        timestep(W.delta_t);
-}
-
-// a timestep is a timestep is a timestep. It doesn't matter, when it happens. Our model stays consistent!
-void VelocityVerlet::timestep(real delta_t)
-{
-    // first of all, we have to update our positions by means of their actual position, pace and force
-	update_X(); 
-    // then we update their new force, based on the potential and the new world situation
-	comp_F();
-    // now we can compute their new pace
-	update_V();
-    
-    // if they left the world, no other treatment of the particles is neaded
-    handle_borders();
-    // increase time
-    W.t += delta_t;
-    // notify observer
-    O.notify();
 }
 
 void VelocityVerlet::comp_F()
