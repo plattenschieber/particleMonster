@@ -3,12 +3,14 @@
 // TODO: Is this already right, with the initializer list?
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
 {
-    // empty constructor(CBR) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
+    // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
+    W = _W;
 }
 // TODO: same here!!
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
 {
-    // empty constructor(CBV) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
+    // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
+    W = _W;
 }
 
 void VelocityVerletLC::comp_F()
@@ -36,19 +38,20 @@ void VelocityVerletLC::comp_F()
 
 void VelocityVerletLC::update_V()
 {
-    // there is no e_kin in the beginning
+        // there is no e_kin in the beginning
 	W.e_kin = 0.0;
 	// roll over every cell	
-    for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
-	for (std::vector<Particle>::iterator i = cell.begin(); i < cell.end(); i++)
-	    // ...and every of it's dimensions
-	    for (unsigned int d=0; d<DIM; d++)
-            {
-		// compute new velocity in dimension d
-		i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
-                // add now the pro rata e_kin 
-                W.e_kin += .5*i->m*sqr(i->v[d]);
-            }
+    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+		// foreach cell go through it's particles... 
+		for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
+	    	// ...and over every dimension of particle i
+	    		for (unsigned int d=0; d<DIM; d++)
+            		{
+				// compute new velocity in dimension d
+				i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+                		// add now the pro rata e_kin 
+                		W.e_kin += .5*i->m*sqr(i->v[d]);
+            		}
 
 
 }
