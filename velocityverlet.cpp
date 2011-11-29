@@ -54,7 +54,7 @@ void VelocityVerlet::comp_F()
     		for (int d=0; d<DIM; d++)
 		    dist += sqr(j->x[d]-i->x[d]);	
 		    // only particles which are closer than rcut
-		    if(dist <= rcut*999) 
+		    if(dist <= rcut) 
 		         // computes the force between particle i and j and add it to our potential
 			 W.e_pot += Pot.force(*i, *j);
 		}
@@ -106,7 +106,7 @@ void VelocityVerlet::handle_borders()
 			    break;
 		        }
             		// same here, except of handling the particles under zero
-            		else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) && (i->x[d] < -1* W.length[d]) )
+            		else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) )
             		{
                 	    W.particles.erase(i);
                		    break;
