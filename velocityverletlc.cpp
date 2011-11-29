@@ -1,16 +1,17 @@
 #include "velocityverletlc.hpp"
 #include <math.h> 
+// TODO: Is this already right, with the initializer list?
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
 {
     // empty constructor(CBR) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
 }
-
+// TODO: same here!!
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
 {
     // empty constructor(CBV) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
 }
 
-void VelocityVerlet::comp_F()
+void VelocityVerletLC::comp_F()
 {
     // check the distance and throw out all that's more far away than rcut
     real dist = 0.0, rcut = 2.5;
@@ -33,7 +34,7 @@ void VelocityVerlet::comp_F()
 		}
 }
 
-void VelocityVerlet::update_V()
+void VelocityVerletLC::update_V()
 {
     // there is no e_kin in the beginning
 	W.e_kin = 0.0;
@@ -49,7 +50,7 @@ void VelocityVerlet::update_V()
         }
 }
 
-void VelocityVerlet::update_X()
+void VelocityVerletLC::update_X()
 {
     // roll over every particle...
     for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
@@ -63,35 +64,6 @@ void VelocityVerlet::update_X()
             // ... and don't forget to set the actual force to zero
 			i->F[d] = 0;
 		}
-}
-
-void VelocityVerlet::handle_borders()
-{
-    // roll over every particle...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
-        // ...and every ojf it's dimensions
-		for (unsigned int d=0; d<DIM; d++)
-		{
-            // if particle is above zero, there are no borders and it's further than our worlds length in this axis, then pop it
-               // DEBUG  std::string tmp; 
-                // DEBUG if(i->x[d] > W.length[d])
-                   // DEBUG  tmp ="hans"; else tmp ="peter";
-               // DEBUG  std::cout << tmp << W.length[d] << "und" << i->x[d] << "welt" << W.particles.size() <<std::endl;
-            if ( (W.upper_border[d] == W.leaving) &&
-                (i->x[d]>0) &&
-                (i->x[d] > W.length[d]) )
-            {
-                W.particles.erase(i);
-                break;
-            }
-            // same here, except of handling the particles under zero
-            else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) && (i->x[d] < -1* W.length[d]) )
-            {
-                W.particles.erase(i);
-                break;
-            }
-            // all other particles are at least on the point zero. This point is actually included ;) 
-        }
 }
 
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
