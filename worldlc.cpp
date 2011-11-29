@@ -23,7 +23,7 @@ void WorldLC::read_Parameter(const std::string &filename)
         throw std::runtime_error("read_Parameter(): Can't open file '" + filename + "' for reading.");
     
     // helper strings
-    std::string line, option, tmp;
+    std::string line, option;
     
     // read file till eof
     while (parfile.good())
@@ -34,7 +34,7 @@ void WorldLC::read_Parameter(const std::string &filename)
         std::stringstream strstr;
         // put line into string stream
         strstr << line;
-        // read option and value from stringstream
+        // read option from stringstream
         strstr >> option;
         // push next read value, with internal converter of string stream, into the propper place 
         if (mapOptions[option] == CELLRCUT)
@@ -44,6 +44,8 @@ void WorldLC::read_Parameter(const std::string &filename)
     parfile.close();
     // TODO: ADD Code to handle cell_r_cut and cell dimensions... 
     
+    // #cells in dimension = floor(length per cell-cutlength)
+    cell_N[d] = (int)length[d]/cell_r_cut;
 
 }
 
