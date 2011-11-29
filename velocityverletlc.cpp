@@ -38,16 +38,19 @@ void VelocityVerletLC::update_V()
 {
     // there is no e_kin in the beginning
 	W.e_kin = 0.0;
-	// roll over every particle i...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
-        // ...and every of it's dimensions
-		for (unsigned int d=0; d<DIM; d++)
-        {
-            // compute new velocity in dimension d
-			i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
-            // add now the pro rata e_kin 
-            W.e_kin += .5*i->m*sqr(i->v[d]);
-        }
+	// roll over every cell	
+    for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+	for (std::vector<Particle>::iterator i = cell.begin(); i < cell.end(); i++)
+	    // ...and every of it's dimensions
+	    for (unsigned int d=0; d<DIM; d++)
+            {
+		// compute new velocity in dimension d
+		i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+                // add now the pro rata e_kin 
+                W.e_kin += .5*i->m*sqr(i->v[d]);
+            }
+
+
 }
 
 void VelocityVerletLC::update_X()
