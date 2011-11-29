@@ -12,15 +12,17 @@
 // another macro to expand - this time a for loop based on dimension DIM
 #
 
-VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
+VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
     W = _W;
+    Pot = _Pot;
 }
-VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
+VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
     W = _W;
+    Pot =(* _Pot);
 }
 
 void VelocityVerletLC::comp_F()
@@ -34,9 +36,7 @@ void VelocityVerletLC::comp_F()
     // roll over each cell
     for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
      for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
-	#if DIM == 3
 	for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
-	#endif 
         // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
 	// roll over every particle i in actual cell
         for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i < W.cells[J(jCell,W.cell_N)].particles.end(); i++)
@@ -46,9 +46,7 @@ void VelocityVerletLC::comp_F()
 	    // roll over every neighbour cell
 	    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
 	     for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
-	      #if DIM == 3
 	      for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
-	      #endif
 	      {
 		  // don't forget to reset the distance
 		  dist = 0.0;
@@ -56,7 +54,7 @@ void VelocityVerletLC::comp_F()
 		  {
 		     // accumulate distance between particle and neighbour cell. 
 		     dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);	
-		     // periodic -> , unknown -> , leaving -> TODO: Handle borders more specific
+		     // periodic , unknown , leaving  Handle borders more specific
 		     if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
 		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
 		  }
@@ -123,13 +121,25 @@ void VelocityVerletLC::update_X()
 	    	    i->F[d] = 0;
 		}
 }
-// TODO:
+// put the particles into their right places
 void VelocityVerletLC::handle_borders()
 {
     int jCell[DIM], nbCell[DIM];
-    for (jCell[0]=0; jCel[0]<W.cell_N[0]; jCell[0]++)
-    	for (jCell[1]=0; jCel[1]<W.cell_N[1]; jCell[1]++)
-    	    for (jCell[2]=0; jCel[22<W.cell_N[2]; jCell[2]++)
+    // roll over every cell
+    for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
+    	for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
+    	    for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
+	    {
+	        std::vector<Particle>::iterator i = W.cells[J(jCell,nbCell)].particles.begin();    
+		for (int d=0; d<DIM; d++)
+			nbCell[d] = (int)floor(i->x[d] * W.cell_N[d] / W.cell_length[d]);
+		if((jCell[0]!=nbCell[0] || jCell[1]!=nbCell[1] || jCell[2]!=nbCell[2]))
+			W.cells[J(nbCell,W.cell_N)]; 
+
+
+
+
+	    }
 
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:

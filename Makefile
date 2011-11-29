@@ -9,7 +9,7 @@
 MAIN = particleMonster
 
 # define the C source files
-SRCS = blatt3.cpp world.cpp worldlc.cpp timediscretization.cpp gravitypotential.cpp velocityverlet.cpp velocityverletlc.cpp observer.cpp ljpotential.cpp
+SRCS = blatt3.cpp world.cpp worldlc.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp observer.cpp ljpotential.cpp
 
 # define the C compiler to use
 CC = g++

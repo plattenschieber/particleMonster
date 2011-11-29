@@ -3,6 +3,7 @@
 
 #include "worldlc.hpp"
 #include "velocityverlet.hpp"
+#include "ljpotential.hpp"
 
 /**
  * @brief Implementation of the Velocity Verlet Algorithm by means of our cell structure
@@ -17,7 +18,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer &_O);
+    VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, Observer &_O);
     
     /**
      * @brief constructor
@@ -29,9 +30,10 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer &_O);
+    VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, Observer &_O);
     
     WorldLC W;
+    LJPotential Pot;
     
     /**
      * @brief calculates the forces affecting the particles at the current time
@@ -47,7 +49,6 @@ public:
      * @brief calculate the new position of all particles according to their velocity
      */
     void update_X();
-    
     /**
      * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
      */
