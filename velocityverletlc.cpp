@@ -55,7 +55,7 @@ void VelocityVerletLC::comp_F()
 		  for (int d=0; d<DIM; d++)
 		  {
 		     // accumulate distance between particle and neighbour cell. 
-		     dist += sqr(W.cell_length*nbCell[d] - i->x[d]);	
+		     dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);	
 		     // periodic -> , unknown -> , leaving -> TODO: Handle borders more specific
 		     if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
 		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
