@@ -12,7 +12,7 @@
 class Cell {
 public:
     /// The cell contains particles ...
-    //std::vector<Particle> particles;
+    std::vector<Particle> particles;
 };
 
 #endif // _CELL_HPP
