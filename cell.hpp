@@ -13,6 +13,8 @@ class Cell {
 public:
     /// The cell contains particles ...
     std::vector<Particle> particles;
+    // DEBUG: 
+    int position; //int groesse
 };
 
 #endif // _CELL_HPP
