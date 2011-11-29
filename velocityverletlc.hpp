@@ -16,7 +16,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(World& _W, Potential& _Pot, Observer &_O);
+    VelocityVerletLC(WorldLC & _W, Potential & _Pot, Observer & _O);
     
     /**
      * @brief constructor
@@ -28,39 +28,28 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(World& _W, Potential* _Pot, Observer &_O);
+    VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer &_O);
     
-    /**
-     * @brief run a single timestep
-     *
-     * @param delta_t length of the timestep
-     */
-    virtual void timestep(real delta_t);
-    
-    /**
-     * @brief run the simulation
-     */
-    virtual void simulate();
     
     /**
      * @brief calculates the forces affecting the particles at the current time
      */
-    virtual void comp_F();
+    void comp_F();
     
     /**
      * @brief calculates the new velocity of the particles
      */
-    virtual void update_V();
+    void update_V();
     
     /**
      * @brief calculate the new position of all particles according to their velocity
      */
-    virtual void update_X();
+    void update_X();
     
     /**
      * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
      */
-    virtual void handle_borders();
+    void handle_borders();
     
 protected:
     // data structures inherited from TimeDiscretization
