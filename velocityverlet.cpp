@@ -83,11 +83,11 @@ void VelocityVerlet::update_X()
         // ...and every of it's dimensions
 		for (unsigned int d=0; d<DIM; d++)
 		{
-            // computing new location of the particle i
+		    // computing new location of the particle i
 			i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-            // save last force...
+		    // save last force...
 			i->F_old[d] = i->F[d];
-            // ... and don't forget to set the actual force to zero
+		    // ... and don't forget to set the actual force to zero
 			i->F[d] = 0;
 		}
 }
@@ -96,29 +96,23 @@ void VelocityVerlet::handle_borders()
 {
     // roll over every particle...
     for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
-        // ...and every ojf it's dimensions
+        // ...and every of it's dimensions
 		for (unsigned int d=0; d<DIM; d++)
 		{
-            // if particle is above zero, there are no borders and it's further than our worlds length in this axis, then pop it
-               // DEBUG  std::string tmp; 
-                // DEBUG if(i->x[d] > W.length[d])
-                   // DEBUG  tmp ="hans"; else tmp ="peter";
-               // DEBUG  std::cout << tmp << W.length[d] << "und" << i->x[d] << "welt" << W.particles.size() <<std::endl;
-            if ( (W.upper_border[d] == W.leaving) &&
-                (i->x[d]>0) &&
-                (i->x[d] > W.length[d]) )
-            {
-                W.particles.erase(i);
-                break;
-            }
-            // same here, except of handling the particles under zero
-            else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) && (i->x[d] < -1* W.length[d]) )
-            {
-                W.particles.erase(i);
-                break;
-            }
-            // all other particles are at least on the point zero. This point is actually included ;) 
-        }
+			// is leaving AND above zero AND outer space
+            		if ( (W.upper_border[d] == W.leaving) & (i->x[d]>0) & (i->x[d] > W.length[d]) )
+		        {
+			    W.particles.erase(i);
+			    break;
+		        }
+            		// same here, except of handling the particles under zero
+            		else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) && (i->x[d] < -1* W.length[d]) )
+            		{
+                	    W.particles.erase(i);
+               		    break;
+           		}
+            		// all other particles are at least on the point zero. This point is actually included ;) 
+       		 }
 }
 
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
