@@ -3,10 +3,12 @@
 #include <cstdio>
 #include <math.h>
 
+#include "world.hpp"
 #include "worldlc.hpp"
 #include "gravitypotential.hpp"
 #include "ljpotential.hpp"
 #include "velocityverlet.hpp"
+#include "velocityverletlc.hpp"
 #include "observer.hpp"
 
 int main(int argc, const char *argv[]) {
@@ -41,10 +43,10 @@ int main(int argc, const char *argv[]) {
     
     // instanciate timediscretization 
     // remark: & is used to get the address of Pot // reremark: removed the & 
-    VelocityVerlet Verlet(W, LPot, O);
+    VelocityVerletLC VerletLC(W, LPot, O);
     
     // run the simulation
-    Verlet.simulate();
+    VerletLC.simulate();
     
     return EXIT_SUCCESS;
 }
