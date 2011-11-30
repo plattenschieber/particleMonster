@@ -54,12 +54,13 @@ void VelocityVerletLC::comp_F()
 		  dist = 0.0;
 		  for (int d=0; d<DIM; d++)
 		  {
-		     // accumulate distance between particle and neighbour cell. If it's too far away, no calc of inner (more far away) particles is needed! 
+		     // accumulate distance between particle and neighbour cell. 
 		     dist += sqr(W.cell_length*nbCell[d] - i->x[d]);	
 		     // periodic -> , unknown -> , leaving -> TODO: Handle borders more specific
 		     if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
 		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
 		  }
+		  // If neighbour cell is too far away, no calc of inner (more far away) particles are needed! 
 		  if (dist <= W.cell_r_cut)
 	             for (std::vector<Particle>::iterator j = W.cells[J(jCell,W.cell_N)].particles.begin(); j < W.cells[J(jCell,W.cell_N)].particles.end();)
                         // ...except of the computation with itself (i!=j) 
@@ -72,7 +73,7 @@ void VelocityVerletLC::comp_F()
 				// only particles which are closer than rcut
 				if(dist <= W.cell_r_cut ) 
 				     // computes the force between particle i and j and add it to our potential
-				     W.e_pot += Pot.force(*i, *j);
+				     W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
 			}
 	      }
 	}
@@ -101,17 +102,21 @@ void VelocityVerletLC::update_V()
 
 void VelocityVerletLC::update_X()
 {
-    // roll over every particle...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
-        // ...and every of it's dimensions
+	// roll over every cell	
+    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+  	    // foreach cell go through it's particles... 
+	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
+	    	// ...and over every dimension of particle i
 		for (unsigned int d=0; d<DIM; d++)
 		{
-            // computing new location of the particle i
-			i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-            // save last force...
-			i->F_old[d] = i->F[d];
-            // ... and don't forget to set the actual force to zero
-			i->F[d] = 0;
+                    // computing new location of the particle i
+	  	    i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
+		    // periodic
+		    if (W.cell_length
+                    // save last force...
+		    i->F_old[d] = i->F[d];
+                    // ... and don't forget to set the actual force to zero
+	    	    i->F[d] = 0;
 		}
 }
 
