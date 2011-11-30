@@ -35,16 +35,21 @@ void VelocityVerletLC::comp_F()
     // there is no e_pot in the beginning
     W.e_pot = 0.0;
     // roll over each cell
-    for (std::vector<Cell>::iterator cell = W.cells.begin(); cell < W.cells.end(); cell++)
+    for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
+     for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
+      for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
+         
         // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
 	// roll over every particle i in actual cell
-        for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
+        for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)]->particles.begin(); i < cell->particles.end(); i++)
 	{
 	    // set all F_i to zero
 	    for (int d=0; d<DIM; d++) i->F[d]=0;
 	    // roll over every neighbour cell
-	    for (std::vector<Cell>::iterator neighbour = cell+1; neighbour += 2)    
-                // ...except of the computation with itself (i!=j)
+	    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
+	     for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
+	      for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
+                // ...except of the computation with itself (i!=j) 
 	        for (std::vector<Particle>::iterator j = neighbour->particles.begin(); j < neighbour->particles.end(); j++) 
 	        {
 			if(i!=j)
