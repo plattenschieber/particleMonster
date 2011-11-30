@@ -59,7 +59,7 @@ public:
     /**
      * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
      */
-    void handle_borders();
+    virtual void handle_borders();
     
 protected:
     // data structures inherited from TimeDiscretization
