@@ -48,8 +48,8 @@ void WorldLC::read_Parameter(const std::string &filename)
     { 
 	// #cells in dimension = floor(length per cell-cutlength)
 	cell_N[d] = (int)length[d]/cell_r_cut;
-	for (int i=0; i<cell_N[d]; i++)
-	    cells.assign
+	for (int i=0; i<cell_N[d]; i++);
+	    //cells.push_back(NULL);
 
     }
 }

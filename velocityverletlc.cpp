@@ -1,6 +1,3 @@
-#ifndef _WORLDLC_HPP
-#define _WORLDLC_HPP
-
 // index J of cell will be computed by our cell indices jCell
 #if DIM==2
 #define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*(jCell)[1]) 
@@ -9,8 +6,6 @@
 #endif
 
 // in addiction to our DIM we will span up a "for"-tree
-#if DIM==2
-#define foreachdim(iCell
 #include "velocityverletlc.hpp"
 #include <math.h> 
 // TODO: Is this already right, with the initializer list?
@@ -54,7 +49,7 @@ void VelocityVerletLC::comp_F()
 		  // periodic -> , unknown -> , leaving ->
 		  for (int d=0; d<DIM; d++)
 		  {
-		     if (W.nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
+		     if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
 		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
 		  }
 	             for (std::vector<Particle>::iterator j = W.cells[J(jcell,W.cell_N)]->particles.begin(); j < W.cells[J(jcell,W.cell_N)]->particles.end();
