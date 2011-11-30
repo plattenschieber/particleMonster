@@ -41,7 +41,7 @@ void VelocityVerletLC::comp_F()
          
         // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
 	// roll over every particle i in actual cell
-        for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)]->particles.begin(); i < cell->particles.end(); i++)
+        for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)]->particles.begin(); i < W.cells[J(jCell,W.cell_N)]->particles.end(); i++)
 	{
 	    // set all F_i to zero
 	    for (int d=0; d<DIM; d++) i->F[d]=0;
@@ -49,9 +49,16 @@ void VelocityVerletLC::comp_F()
 	    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
 	     for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
 	      for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
-                // ...except of the computation with itself (i!=j) 
-	        for (std::vector<Particle>::iterator j = neighbour->particles.begin(); j < neighbour->particles.end(); j++) 
-	        {
+	      {
+		  // handle borders
+		  // periodic -> , unknown -> , leaving ->
+		  for (int d=0; d<DIM; d++)
+		  {
+		     if (W.nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
+		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
+		  }
+	             for (std::vector<Particle>::iterator j = W.cells[J(jcell,W.cell_N)]->particles.begin(); j < W.cells[J(jcell,W.cell_N)]->particles.end();
+                        // ...except of the computation with itself (i!=j) 
 			if(i!=j)
 			{
 			    // don't forget to reset the distance
@@ -63,7 +70,7 @@ void VelocityVerletLC::comp_F()
 				     // computes the force between particle i and j and add it to our potential
 				     W.e_pot += Pot.force(*i, *j);
 			}
-	       }
+	      }
 	}
     
 }
