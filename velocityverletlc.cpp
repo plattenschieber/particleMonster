@@ -109,15 +109,27 @@ void VelocityVerletLC::update_X()
 	    	// ...and over every dimension of particle i
 		for (unsigned int d=0; d<DIM; d++)
 		{
-                    // computing new location of the particle i
+                    // computing new location of the particle i if it's leaving the world, elsewhise just call handle_borders (-lc version) in the end
 	  	    i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-		    // periodic
-		    if (W.cell_length
+		    // periodic - position = position % worldlength
+		    if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic) i->x[d] = fmod(i->x[d], W.length[d]);
+		    if (i->x[d] < 0 && W.lower_border[d] == W.periodic) i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
+		    // leaving - it just bumps out
+		    if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving) { cell->particles.erase(i); d=DIM; break; }
+		    if (i->x[d] < 0  && W.lower_border[d] == W.leaving) { cell->particles.erase(i); d=DIM; break; }
                     // save last force...
 		    i->F_old[d] = i->F[d];
                     // ... and don't forget to set the actual force to zero
 	    	    i->F[d] = 0;
 		}
 }
+// TODO:
+void VelocityVerletLC::handle_borders()
+{
+    int jCell[DIM], nbCell[DIM];
+    for (jCell[0]=0; jCel[0]<W.cell_N[0]; jCell[0]++)
+    	for (jCell[1]=0; jCel[1]<W.cell_N[1]; jCell[1]++)
+    	    for (jCell[2]=0; jCel[22<W.cell_N[2]; jCell[2]++)
 
+}
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
