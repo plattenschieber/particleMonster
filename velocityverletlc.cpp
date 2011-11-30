@@ -1,3 +1,16 @@
+#ifndef _WORLDLC_HPP
+#define _WORLDLC_HPP
+
+// index J of cell will be computed by our cell indices jCell
+#if DIM==2
+#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*(jCell)[1]) 
+#elif DIM==3
+#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*((jCell[1] + (cell_N)[1]*(jCell)[2])))
+#endif
+
+// in addiction to our DIM we will span up a "for"-tree
+#if DIM==2
+#define foreachdim(iCell
 #include "velocityverletlc.hpp"
 #include <math.h> 
 // TODO: Is this already right, with the initializer list?
@@ -15,8 +28,10 @@ VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer& _O) :
 
 void VelocityVerletLC::comp_F()
 {
+    // Cell and neighbour cell indices 
+    int jCell[DIM], nbCell[DIM];
     // check the distance and throw out all that's more far away than rcut
-    real dist = 0.0, rcut = 2.5;
+    real dist = 0.0;
     // there is no e_pot in the beginning
     W.e_pot = 0.0;
     // roll over each cell
