@@ -42,11 +42,16 @@ void WorldLC::read_Parameter(const std::string &filename)
     }
     // close file
     parfile.close();
-    // TODO: ADD Code to handle cell_r_cut and cell dimensions... 
     
-    // #cells in dimension = floor(length per cell-cutlength)
-    cell_N[d] = (int)length[d]/cell_r_cut;
+    
+    for (int d=0; d<DIM; d++) 
+    { 
+	// #cells in dimension = floor(length per cell-cutlength)
+	cell_N[d] = (int)length[d]/cell_r_cut;
+	for (int i=0; i<cell_N[d]; i++)
+	    cells.assign
 
+    }
 }
 
 void WorldLC::read_Particles(const std::string &filename)
