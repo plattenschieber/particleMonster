@@ -1,20 +1,22 @@
-// index J of cell will be computed by our cell indices jCell
-#if DIM==2
-#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*(jCell)[1]) 
-#elif DIM==3
-#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*((jCell[1] + (cell_N)[1]*(jCell)[2])))
-#endif
-
 // in addiction to our DIM we will span up a "for"-tree
 #include "velocityverletlc.hpp"
 #include <math.h> 
-// TODO: Is this already right, with the initializer list?
+
+// small macro, to expand index calculation for different dimensions
+#if DIM == 2
+#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*(jCell)[1]) 
+#elif DIM == 3
+#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*((jCell[1] + (cell_N)[1]*(jCell)[2])))
+#endif
+
+// another macro to expand - this time a for loop based on dimension DIM
+#
+
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
     W = _W;
 }
-// TODO: same here!!
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, Potential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
@@ -32,27 +34,34 @@ void VelocityVerletLC::comp_F()
     // roll over each cell
     for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
      for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
-      for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
-         
+	#if DIM == 3
+	for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
+	#endif 
         // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
 	// roll over every particle i in actual cell
-        for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)]->particles.begin(); i < W.cells[J(jCell,W.cell_N)]->particles.end(); i++)
+        for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i < W.cells[J(jCell,W.cell_N)].particles.end(); i++)
 	{
-	    // set all F_i to zero
+	    // set all F_d to zero
 	    for (int d=0; d<DIM; d++) i->F[d]=0;
 	    // roll over every neighbour cell
 	    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
 	     for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
+	      #if DIM == 3
 	      for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
+	      #endif
 	      {
-		  // handle borders
-		  // periodic -> , unknown -> , leaving ->
+		  // don't forget to reset the distance
+		  dist = 0.0;
 		  for (int d=0; d<DIM; d++)
 		  {
+		     // accumulate distance between particle and neighbour cell. If it's too far away, no calc of inner (more far away) particles is needed! 
+		     dist += sqr(W.cell_length*nbCell[d] - i->x[d]);	
+		     // periodic -> , unknown -> , leaving -> TODO: Handle borders more specific
 		     if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
 		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
 		  }
-	             for (std::vector<Particle>::iterator j = W.cells[J(jcell,W.cell_N)]->particles.begin(); j < W.cells[J(jcell,W.cell_N)]->particles.end();
+		  if (dist <= W.cell_r_cut)
+	             for (std::vector<Particle>::iterator j = W.cells[J(jCell,W.cell_N)].particles.begin(); j < W.cells[J(jCell,W.cell_N)].particles.end();)
                         // ...except of the computation with itself (i!=j) 
 			if(i!=j)
 			{
@@ -61,7 +70,7 @@ void VelocityVerletLC::comp_F()
 			    // check the distance
 			    for (int d=0; d<DIM; d++) dist += sqr(j->x[d] - i->x[d]);	
 				// only particles which are closer than rcut
-				if(dist <= rcut) 
+				if(dist <= W.cell_r_cut ) 
 				     // computes the force between particle i and j and add it to our potential
 				     W.e_pot += Pot.force(*i, *j);
 			}
