@@ -53,9 +53,6 @@ public:
      */
     void handle_borders();
     
-protected:
-    // data structures inherited from TimeDiscretization
-    
 private:
     VelocityVerletLC();
 };
