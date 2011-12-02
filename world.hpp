@@ -21,10 +21,16 @@ public:
     /**
      * @brief read the world parameters from the given parameter file
      *
-     * parameter file example TODO: rewrite code example
+     * parameter file example
      * \code
+     * name example01
      * delta_t 0.1
      * t_end 1.0
+     * epsilon 1
+     * sigma 1
+     * length 10 10 15
+     * upper_border leaving leaving leaving
+     * lower_border leaving leaving leaving
      * \endcode
      *
      * @param filename filename of the parameter file
