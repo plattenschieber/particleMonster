@@ -53,10 +53,10 @@ void World::read_Parameter(const std::string &filename)
             case NAME:
                 strstr >> name;
                 break;
-	    case EPSILON:
-	    	strstr >> epsilon;
-	    case SIGMA:
-	    	strstr >> sigma;
+            case EPSILON:
+                strstr >> epsilon;
+            case SIGMA:
+                strstr >> sigma;
             case LENGTH:
                 for (int i=0; i<DIM; i++) {
                     strstr >> length[i];
@@ -67,7 +67,7 @@ void World::read_Parameter(const std::string &filename)
                 for (int i=0; i<DIM; i++)
                 {
                     if (tmp == "leaving") upper_border[i] = leaving;   
-		    else if (tmp == "periodic") upper_border[i] = periodic;
+                    else if (tmp == "periodic") upper_border[i] = periodic;
                     else upper_border[i] = unknown;
                 }
                 break;
@@ -76,15 +76,15 @@ void World::read_Parameter(const std::string &filename)
                 for (int i=0; i<DIM; i++)
                 {
                     if (tmp == "leaving") lower_border[i] = leaving;   
-		            else if (tmp == "periodic") upper_border[i] = periodic;
+                    else if (tmp == "periodic") upper_border[i] = periodic;
                     else lower_border[i] = unknown;
                 }
                 break;
-            // 
+            // handle unknown options
             case default:
                 cout << "'" << option << "' is an invalid option." << std::endl;
-        break;
-        }
+                break;
+         }
     }
     // close file
     parfile.close();
