@@ -76,10 +76,14 @@ void World::read_Parameter(const std::string &filename)
                 for (int i=0; i<DIM; i++)
                 {
                     if (tmp == "leaving") lower_border[i] = leaving;   
-		    else if (tmp == "periodic") upper_border[i] = periodic;
+		            else if (tmp == "periodic") upper_border[i] = periodic;
                     else lower_border[i] = unknown;
                 }
                 break;
+            // 
+            case default:
+                cout << "'" << option << "' is an invalid option." << std::endl;
+        break;
         }
     }
     // close file
@@ -109,8 +113,8 @@ void World::read_Particles(const std::string &filename)
         std::stringstream strstr;
         // push line into string stream
         strstr << line;    
-        
-        // grab ID
+    
+        // grab ID:
         strstr >> tmpparticle.ID;        
         // save the particles mass
         strstr >> tmpparticle.m; 
