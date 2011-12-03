@@ -11,6 +11,8 @@
  */
 class Cell {
 public:
+    // standard ctor 
+    Cell();
     /// The cell contains particles ...
     std::vector<Particle> particles;
     // DEBUG: 
