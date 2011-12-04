@@ -81,8 +81,8 @@ void World::read_Parameter(const std::string &filename)
                 }
                 break;
             // handle unknown options
-            case default:
-                cout << "'" << option << "' is an invalid option." << std::endl;
+            default:
+                std::cout << "'" << option << "' is an invalid option." << std::endl;
                 break;
          }
     }
