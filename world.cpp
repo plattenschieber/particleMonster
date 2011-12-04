@@ -21,7 +21,7 @@ World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0
 void World::read_Parameter(const std::string &filename)
 {
   
-       // create input filestream
+    // create input filestream
     std::ifstream parfile(filename.c_str());
     // check if file is open
     if (!parfile.is_open())
@@ -107,13 +107,13 @@ void World::read_Particles(const std::string &filename)
     {
         // read line from file
         getline(parfile,line);
+        // break if there is a blank line, e.g. a newline at the eof 
         if (line=="")
             break;
         // create a string stream
         std::stringstream strstr;
         // push line into string stream
         strstr << line;    
-    
         // grab ID:
         strstr >> tmpparticle.ID;        
         // save the particles mass
@@ -128,7 +128,7 @@ void World::read_Particles(const std::string &filename)
         for(int i=0; i<DIM; i++)
             tmpparticle.F[i] = tmpparticle.F_old[i] = 0.0;
         
-        // add the new particle to our particles
+        // add the new particle to our worlds' particles
         particles.push_back(tmpparticle);
         // resets tmpparticle for next 
         tmpparticle.clear();
