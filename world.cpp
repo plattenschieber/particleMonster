@@ -5,7 +5,7 @@
 
 
 // intializing via intializer list - order is set by definings in .hpp; 
-World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0)
+World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),sigma(0.0),epsilon(0.0)
 {    
     //setting map mapOptions for switchcase
     mapOptions["name"] = NAME;
