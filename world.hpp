@@ -49,7 +49,7 @@ public:
 
     // Value-Defintions of the different String values
     // DEFAULT is needed to handle unknown options - otherwise a new option with value 0 is created and will map NAME 
-    enum Option { DEFAULT, NAME, DELTA_T, T_END, LENGTH, UPPER_BORDER, LOWER_BORDER, EPSILON, SIGMA}; 
+    enum Option { DEFAULT=0, NAME=0, DELTA_T=0, T_END=0, LENGTH=0, UPPER_BORDER=0, LOWER_BORDER=0, EPSILON=0, SIGMA=0}; 
     
     // Map to associate the strings with the enum values
     std::map<std::string, World::Option> mapOptions;
