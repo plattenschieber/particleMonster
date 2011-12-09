@@ -46,11 +46,11 @@ void VelocityVerlet::comp_F()
     // we compute the e_pot for each pair of particles and add it to the worlds' e_pot...
     for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
         // ...except of the computation with itself (i!=j)
-	for (std::vector<Particle>::iterator j = W.particles.begin(); j < i; j++) 
-	{
-		// don't forget to reset the distance
-		dist = 0.0;
-		// check the distance
+        for (std::vector<Particle>::iterator j = W.particles.begin(); j < i; j++) 
+        {
+            // don't forget to reset the distance
+            dist = 0.0;
+            // check the distance
     		for (int d=0; d<DIM; d++)
 		    dist += sqr(j->x[d]-i->x[d]);	
 		    // only particles which are closer than rcut
