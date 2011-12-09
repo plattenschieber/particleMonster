@@ -36,6 +36,7 @@ void WorldLC::read_Parameter(const std::string &filename)
         strstr << line;
         // read option from stringstream
         strstr >> option;
+        // TODO: Add eps and sigma!
         // push next read value, with internal converter of string stream, into the propper place 
         if (mapOptions[option] == CELLRCUT)
 	    	strstr >> cell_r_cut;
@@ -45,13 +46,13 @@ void WorldLC::read_Parameter(const std::string &filename)
     
     
     for (int d=0; d<DIM; d++) 
-    { 
-	// #cells in dimension = floor(length per cell-cutlength)
-	cell_N[d] = (int)length[d]/cell_r_cut;
-	for (int i=0; i<cell_N[d]; i++);
-	    //cells.push_back(NULL);
+        // #cells in dimension = floor(length per cell-cutlength)
+        cell_N[d] = (int)(length[d]/cell_r_cut);
 
-    }
+    system("pause");
+    for (int d=0; d<cell_N[d]; d++);
+    //cells.push_back(NULL);
+
 }
 
 void WorldLC::read_Particles(const std::string &filename)
