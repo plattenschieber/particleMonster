@@ -3,6 +3,7 @@
 
 #include "defines.hpp"
 #include <vector>
+#include "particle.hpp"
 
 /**
  * @brief Particle data
@@ -12,7 +13,12 @@
 class Cell {
 public:
     // standard ctor 
-    Cell();
+    // TODO: REMOVE!!! workaround
+    Cell() 
+    {
+        // add empty Particle
+        particles.push_back(Particle());
+    };
     /// The cell contains particles ...
     std::vector<Particle> particles;
     // DEBUG: 
