@@ -4,9 +4,9 @@
 
 // small macro, to expand index calculation for different dimensions
 #if DIM == 2
-#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*(jCell)[1]) 
+#define J(jCell,cell_N) ((jCell)[1] + (cell_N)[1]*(jCell)[0]) 
 #elif DIM == 3
-#define J(jCell,cell_N) ((jCell)[0] + (cell_N)[0]*((jCell[1] + (cell_N)[1]*(jCell)[2])))
+#define J(jCell,cell_N) ((jCell)[2] + (cell_N)[2]*((jCell[1] + (cell_N)[1]*(jCell)[0])))
 #endif
 
 // another macro to expand - this time a for loop based on dimension DIM
