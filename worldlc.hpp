@@ -30,6 +30,8 @@ public:
     void read_Parameter(const std::string &filename);
     // TODO: Add some comment here
     void read_Particles(const std::string &filename);
+    // retrieve Index of Cell by coordinates
+    int getCellNumber(const std::vector<Particle>::iterator i);
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
