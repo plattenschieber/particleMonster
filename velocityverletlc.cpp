@@ -1,13 +1,9 @@
 // in addiction to our DIM we will span up a "for"-tree
 #include "velocityverletlc.hpp"
 #include <math.h> 
+#include "defines.hpp"
 
-// small macro, to expand index calculation for different dimensions
-#if DIM == 2
-#define J(jCell,cell_N) ((jCell)[1] + (cell_N)[1]*(jCell)[0]) 
-#elif DIM == 3
-#define J(jCell,cell_N) ((jCell)[2] + (cell_N)[2]*((jCell[1] + (cell_N)[1]*(jCell)[0])))
-#endif
+
 
 // another macro to expand - this time a for loop based on dimension DIM
 #
