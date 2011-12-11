@@ -47,5 +47,17 @@ public:
    /// r_cut used for calculation of the cell length
    real cell_r_cut;
 };
+
+/**
+ * @brief a ostream operator for the WorldLC class
+ *
+ * @param os stream object
+ * @param W the world
+ *
+ * @return resulting stream object
+ */
+std::ostream& operator << (std::ostream& os, WorldLC& W);
+
+
 #endif // _WORLDLC_HPP
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
