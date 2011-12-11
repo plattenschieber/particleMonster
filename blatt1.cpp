@@ -9,7 +9,7 @@
 #include "velocityverlet.hpp"
 #include "observer.hpp"
 
-int main(int argc, const char *argv[]) {
+int main2(int argc, const char *argv[]) {
     
     // check arguments
     if (argc < 2) {
