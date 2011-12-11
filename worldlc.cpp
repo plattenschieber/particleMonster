@@ -7,7 +7,7 @@
 
 
 // ctor, which calls World::World()   
-WorldLC::WorldLC() {
+WorldLC::WorldLC():cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
 }
@@ -62,15 +62,6 @@ void WorldLC::read_Parameter(const std::string &filename)
     }
     // DEBUG 
     std::cout << "#Cells: " << nCells << std::endl;
-
-    // hold on computer and give us all what you have! 
-    std::cin.clear(); 
-    std::cin.ignore(INT_MAX, '\n');  
-    std::cout << "Press Return..." << std::endl;  
-    std::cin.get();
-
-
-    
     
     // insert empty cells
     for (int i=0; i<nCells; i++);
@@ -84,14 +75,17 @@ void WorldLC::read_Particles(const std::string &filename)
     // Write every particle into it's belonging cell
     for (std::vector<Particle>::iterator i = particles.begin(); i < particles.end(); i++)
     {
+        std::cout << "Push and erase particles[" << i-particles.begin() << "] " << std::endl; 
         // add particle to right cell...
         // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
         cells[getCellNumber(i)].particles.push_back(particles[i-particles.begin()]);
             //particles.push_back(i);
         // ...and remove it from our particle list
-        particles.erase(i);
+        //particles.erase(i);
 
     }
+    std::cout << "FINISHED READING PARTICLES - NOW CLEAR PARTICLES" << std::endl;
+    particles.clear();
 }
 int WorldLC::getCellNumber(const std::vector<Particle>::iterator i) 
 {
