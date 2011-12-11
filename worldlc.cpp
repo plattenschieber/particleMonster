@@ -45,12 +45,12 @@ void WorldLC::read_Parameter(const std::string &filename)
     // close file
     parfile.close();
     
+
     // #of all cells
     int nCells = 1;
-
+    // Calc #cells
     for (int d=0; d<DIM; d++) 
     {
-        std::cout << std::endl << "length: " << length[d] << "cell r cut: " << cell_r_cut << std::endl;
         // #cells in dimension = floor(length per cell-cutlength)
         cell_N[d] = (int)(length[d]/cell_r_cut);
         // cell length = world length per #cells
@@ -58,14 +58,16 @@ void WorldLC::read_Parameter(const std::string &filename)
 
         nCells *= cell_N[d];
         // DEBUG
-        std::cout << "#Cell: " << cell_N[d] << "\tCelllength: " << cell_length[d] << std::endl;
+        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
+                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
     }
-    // DEBUG 
-    std::cout << "#Cells: " << nCells << std::endl;
     
     // insert empty cells
-    for (int i=0; i<nCells; i++);
+    for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
+
+     // DEBUG 
+    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
 void WorldLC::read_Particles(const std::string &filename)
@@ -84,20 +86,59 @@ void WorldLC::read_Particles(const std::string &filename)
         //particles.erase(i);
 
     }
-    std::cout << "FINISHED READING PARTICLES - NOW CLEAR PARTICLES" << std::endl;
-    particles.clear();
+    std::cout << "***************************************************" << std::endl
+              << "FINISHED READING PARTICLES - NOW CLEAR PARTICLES" << std::endl
+              << "*************************************************** \n" << std::endl;
+    //particles.clear();
 }
+
 int WorldLC::getCellNumber(const std::vector<Particle>::iterator i) 
 {
     int tmp[3] = {0,0,0};
+    // DEBUG Table
+    std::cout << "Cell coord \tPart. coord \tRatio #Cell/WordLength" << std::endl;
     for (int d=0; d<DIM; d++)
     {
         tmp[d] = i->x[d] * cell_N[d] / length[d];
         // DEBUG
-        std::cout << tmp[d] << "\tx[" << d << "]: " << i->x[d] << "\t "<< cell_N[d] / length[d] << std::endl;
+        std::cout << tmp[d] << "\t\tx[" << d << "]: " << i->x[d] << "\t "<< cell_N[d] / length[d] << std::endl;
     }
-    std::cout << "Corresponding Index: " << J(tmp,cell_N) << std::endl;
+    std::cout << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
     return J(tmp,cell_N);
 
 }
+
+std::ostream& operator << (std::ostream& os, WorldLC& W) 
+{
+    // Get out some information about the world
+    os << W.name << " Dim=" << DIM << " t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
+       << " Number of Cells=" << W.cells.size() << " cell_r_cut=" << W.cell_r_cut << std::endl; 
+    // roll over each Cell
+    for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)
+    {
+        // if there are some particles in this cell, show it off
+        if (W.cells[i-W.cells.begin()].particles.size() > 0)
+        {
+            // we are now in cell# x
+            os << "cell[" << i-W.cells.begin() << "] = " ;
+            // get out every particle in this cell
+            for (std::vector<Particle>::iterator j = W.cells[i-W.cells.begin()].particles.begin();j < W.cells[i-W.cells.begin()].particles.end(); j++)
+            {
+                // Particle Number
+                os <<  j - W.cells[i-W.cells.begin()].particles.begin() << ": ";
+                //  get out the particles location 
+                for (unsigned int d=0; d<DIM; d++)
+                    os << j->x[d] << "\t";
+                // tabulator after each particle
+                os << "\t";
+            }
+            // newline after each cell
+            os << std::endl;
+        }
+        // else observe next cell
+        else continue;         
+    }
+    return os;
+}
+
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
