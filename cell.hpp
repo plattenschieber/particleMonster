@@ -12,13 +12,6 @@
  */
 class Cell {
 public:
-    // standard ctor 
-    // TODO: REMOVE!!! workaround
-    Cell() 
-    {
-        // add empty Particle
-        particles.push_back(Particle());
-    };
     /// The cell contains particles ...
     std::vector<Particle> particles;
     // DEBUG: 
