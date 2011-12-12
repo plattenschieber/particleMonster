@@ -131,40 +131,66 @@ void VelocityVerletLC::update_X()
 		    for (unsigned int d=0; d<DIM; d++)
 		    {
                 // DEBUG:
-                std::cout << "Aktuelle Position von Partikel " <<  i-cell->particles.begin() << " << i->x[" << d << "]=" << i->x[d] << std::endl;
+                std::cout << "Actual:" 
+                          << "Cell[" << cell-W.cells.begin() << "]"
+                          << ".particles["  <<  i-cell->particles.begin() << "]"
+                          << ".x[" << d << "]=" << i->x[d] << std::endl;
+                int checkCell = W.getCellNumber(i);
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-                std::cout << "Neue Position von Partikel " <<  i-cell->particles.begin() << " << i->x[" << d << "]=" << i->x[d] << std::endl;
-		        // periodic - position = position % worldlength
-		        if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
+                std::cout << "New:" 
+                          << "Cell[" << cell-W.cells.begin() << "]"
+                          << ".particles["  <<  i-cell->particles.begin() << "]"
+                          << ".x[" << d << "]=" << i->x[d] << std::endl;
+ 
+                if (W.getCellNumber(i) != checkCell)
                 {
-                    i->x[d] = fmod(i->x[d], W.length[d]);
+                    // periodic - position = position % worldlength
+                    if (i->x[d] >= W.length[d] && W.upper_border[d] == W.periodic)
+                    {
+                        i->x[d] = fmod(i->x[d], W.length[d]);
 
-                    // DEBUG:
-                    std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
+                        // DEBUG:
+                        std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
 
+                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        d=DIM;
+                        cell->particles.erase(i);
+                        break;
 
-                }
-                else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
-                {
-		            i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
-		            // DEBUG:
-                    std::cout << "Neue Position (unten raus Periodisch): " << i->x[d] << std::endl;
-                }
-		        // leaving - it just bumps out
-                else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving) 
-		        {
-		            // DEBUG:
-                    std::cout << "Neue Position (oben raus Wegvomfenster): " << std::endl;
-		            cell->particles.erase(i); d=DIM; break; 
-                }
-                else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
-		        { 
-		            // DEBUG:
-                    std::cout << "Neue Position (unten raus Wegvomfenster): " << std::endl;
-		            cell->particles.erase(i); d=DIM; break; 
-		        }
-                else
+                    }
+                    // periodic - position = position % worldlength
+                    else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
+                    {
+                        i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
+                        // DEBUG:
+                        std::cout << "Neue Position (unten raus Periodisch): " << i->x[d] << std::endl;
+                        
+                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        d=DIM;
+                        cell->particles.erase(i);
+                        break;
+
+                    }
+                    // leaving - it just bumps out
+                    else if (i->x[d] >= W.length[d] && W.upper_border[d] == W.leaving) 
+                    {
+                        // DEBUG:
+                        std::cout << "Neue Position (oben raus Wegvomfenster): " << std::endl;
+                        cell->particles.erase(i);
+                        d=DIM; 
+                        break; 
+                    }
+                    // leaving - it just bumps out 
+                    else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
+                    { 
+                        // DEBUG:
+                        std::cout << "Neue Position (unten raus Wegvomfenster): " << std::endl;
+                        cell->particles.erase(i);
+                        d=DIM;
+                        break; 
+                    }
+                } 
                 // save last force...
 		        i->F_old[d] = i->F[d];
                 // ... and don't forget to set the actual force to zero
@@ -172,27 +198,5 @@ void VelocityVerletLC::update_X()
 		    }
         }
     }
-}
-// put the particles into their right places
-void VelocityVerletLC::handle_borders()
-{
-    int jCell[DIM], nbCell[DIM];
-    // roll over every cell
-    for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
-    {
-    	for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
-        {
-            for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
-	        {
-	            for (std::vector<Particle>::iterator i = W.cells[J(jCell,nbCell)].particles.begin(); i < W.cells[J(jCell,nbCell)].particles.end(); i++)   
-                {
-                    for (int d=0; d<DIM; d++)
-			            nbCell[d] = (int)floor(i->x[d] * W.cell_N[d] / W.cell_length[d]);
-		            if((jCell[0]!=nbCell[0] || jCell[1]!=nbCell[1] || jCell[2]!=nbCell[2]))
-            			W.cells[J(nbCell,W.cell_N)]; 
-                }
-            }
-        }
-    }   
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
