@@ -30,7 +30,7 @@ void VelocityVerlet::timestep(real delta_t)
 	update_V();
     
     // if they left the world, no other treatment of the particles is neaded
-    handle_borders();
+    //handle_borders();
     // increase time
     W.t += delta_t;
     // notify observer
