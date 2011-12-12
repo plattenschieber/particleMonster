@@ -7,7 +7,7 @@
 
 
 // ctor, which calls World::World()   
-WorldLC::WorldLC():cell_r_cut(2.5) {
+WorldLC::WorldLC() : nParticles(0), cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
 }
@@ -74,6 +74,7 @@ void WorldLC::read_Particles(const std::string &filename)
 {
     // call the base function
     World::read_Particles(filename);
+    nParticles = particles.size();
     // Write every particle into it's belonging cell
     for (std::vector<Particle>::iterator i = particles.begin(); i < particles.end(); i++)
     {
