@@ -8,8 +8,8 @@
 # define the executable file 
 MAIN = particleMonster
 
-# define the C source files
-SRCS = blatt3.cpp world.cpp worldlc.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp observer.cpp ljpotential.cpp
+# define the C source files hallo
+SRCS = blatt3.cpp world.cpp worldlc.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp ljpotential.cpp observerxyz.cpp
 
 # define the C compiler to use
 CC = g++
