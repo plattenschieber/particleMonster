@@ -139,29 +139,32 @@ void VelocityVerletLC::update_X()
 		        if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
                 {
                     i->x[d] = fmod(i->x[d], W.length[d]);
+
                     // DEBUG:
                     std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
 
+
                 }
-		        if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
+                else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
                 {
 		            i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
 		            // DEBUG:
                     std::cout << "Neue Position (unten raus Periodisch): " << i->x[d] << std::endl;
                 }
 		        // leaving - it just bumps out
-		        if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving) 
+                else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving) 
 		        {
 		            // DEBUG:
                     std::cout << "Neue Position (oben raus Wegvomfenster): " << std::endl;
 		            cell->particles.erase(i); d=DIM; break; 
                 }
-		        if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
+                else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
 		        { 
 		            // DEBUG:
                     std::cout << "Neue Position (unten raus Wegvomfenster): " << std::endl;
 		            cell->particles.erase(i); d=DIM; break; 
 		        }
+                else
                 // save last force...
 		        i->F_old[d] = i->F[d];
                 // ... and don't forget to set the actual force to zero
