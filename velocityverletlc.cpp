@@ -31,33 +31,19 @@ void VelocityVerletLC::comp_F()
     W.e_pot = 0.0;
     // roll over each cell
     for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
-     for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
-	for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
-        // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
-	// roll over every particle i in actual cell
-        for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i < W.cells[J(jCell,W.cell_N)].particles.end(); i++)
-	{
-	    // roll over every neighbour cell
-	    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
-	     for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
-	      for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
-	      {
 		  // don't forget to reset the distance
 		  dist = 0.0;
 		  for (int d=0; d<DIM; d++)
-		  {
 		     // accumulate distance between particle and neighbour cell. 
 		     dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);	
 		     // periodic , unknown , leaving  Handle borders more specific
 		     if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]; 
 		     else if (nbCell[d]>W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
-		  }
 		  // If neighbour cell is too far away, no calc of inner (more far away) particles are needed! 
 		  if (dist <= W.cell_r_cut)
 	             for (std::vector<Particle>::iterator j = W.cells[J(jCell,W.cell_N)].particles.begin(); j < W.cells[J(jCell,W.cell_N)].particles.end();)
                         // ...except of the computation with itself (i!=j) 
 			if(i!=j)
-			{
 			    // don't forget to reset the distance
 			    dist = 0.0;
 			    // check the distance
@@ -66,28 +52,53 @@ void VelocityVerletLC::comp_F()
 				if(dist <= W.cell_r_cut ) 
 				     // computes the force between particle i and j and add it to our potential
 				     W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
-			}
-	      }
-	}
+    {
+        for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
+        {
+        	for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
+            {
+                    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
+                    {
+                        for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
+                        {
+                           for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
+                           {
+                              {
+                              }
+                              { 
+                                {
+                                }
+                              }
+                           }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
 }
 
 void VelocityVerletLC::update_V()
 {
-        // there is no e_kin in the beginning
+    // there is no e_kin in the beginning
 	W.e_kin = 0.0;
 	// roll over every cell	
-    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
-		// foreach cell go through it's particles... 
-		for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
-	    	// ...and over every dimension of particle i
-	    		for (unsigned int d=0; d<DIM; d++)
-            		{
-				// compute new velocity in dimension d
-				i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
-                		// add now the pro rata e_kin 
-                		W.e_kin += .5*i->m*sqr(i->v[d]);
-            		}
+    for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+    {
+        // foreach cell go through it's particles... 
+        for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
+        {
+            // ...and over every dimension of particle i
+            for (unsigned int d=0; d<DIM; d++)
+            {
+                // compute new velocity in dimension d
+                i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+                // add now the pro rata e_kin 
+                W.e_kin += .5*i->m*sqr(i->v[d]);
+            }
+        }
+    }
 
 
 }
@@ -95,7 +106,8 @@ void VelocityVerletLC::update_V()
 void VelocityVerletLC::update_X()
 {
 	// roll over every cell	
-    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+   	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+    {
   	    // foreach cell go through it's particles... 
 	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
 	    	// ...and over every dimension of particle i
@@ -113,7 +125,9 @@ void VelocityVerletLC::update_X()
 		    i->F_old[d] = i->F[d];
                     // ... and don't forget to set the actual force to zero
 	    	    i->F[d] = 0;
-		}
+		    }
+        }
+    }
 }
 // put the particles into their right places
 void VelocityVerletLC::handle_borders()
@@ -121,19 +135,20 @@ void VelocityVerletLC::handle_borders()
     int jCell[DIM], nbCell[DIM];
     // roll over every cell
     for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
+    {
     	for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
-    	    for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
-	    {
-	        std::vector<Particle>::iterator i = W.cells[J(jCell,nbCell)].particles.begin();    
-		for (int d=0; d<DIM; d++)
-			nbCell[d] = (int)floor(i->x[d] * W.cell_N[d] / W.cell_length[d]);
-		if((jCell[0]!=nbCell[0] || jCell[1]!=nbCell[1] || jCell[2]!=nbCell[2]))
-			W.cells[J(nbCell,W.cell_N)]; 
-
-
-
-
-	    }
-
+        {
+            for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
+	        {
+	            for (std::vector<Particle>::iterator i = W.cells[J(jCell,nbCell)].particles.begin(); i < W.cells[J(jCell,nbCell)].particles.end(); i++)   
+                {
+                    for (int d=0; d<DIM; d++)
+			            nbCell[d] = (int)floor(i->x[d] * W.cell_N[d] / W.cell_length[d]);
+		            if((jCell[0]!=nbCell[0] || jCell[1]!=nbCell[1] || jCell[2]!=nbCell[2]))
+            			W.cells[J(nbCell,W.cell_N)]; 
+                }
+            }
+        }
+    }   
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
