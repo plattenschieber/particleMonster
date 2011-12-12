@@ -4,6 +4,7 @@
 #include "worldlc.hpp"
 #include "velocityverlet.hpp"
 #include "ljpotential.hpp"
+#include "observerxyz.hpp"
 
 /**
  * @brief Implementation of the Velocity Verlet Algorithm by means of our cell structure
@@ -18,7 +19,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, Observer &_O);
+    VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, ObserverXYZ &_O);
     
     /**
      * @brief constructor
@@ -30,7 +31,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, Observer &_O);
+    VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ &_O);
     
     WorldLC W;
     LJPotential Pot;

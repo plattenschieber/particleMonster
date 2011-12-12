@@ -1,5 +1,5 @@
-#ifndef _OBSERVER_HPP
-#define _OBSERVER_HPP
+#ifndef _OBSERVERXYZ_HPP
+#define _OBSERVERXYZ_HPP
 
 #include "world.hpp"
 #include <iostream>
@@ -8,7 +8,7 @@
 /**
  * @brief This Observer will look for our XYZ Data
  */
-class ObserverXYZ {
+class ObserverXYZ  {
 public:
     /**
      * @brief constructor
@@ -17,7 +17,7 @@ public:
      *
      * @param _W
      */
-    ObserverXYZ(World& _W);
+    ObserverXYZ(WorldLC& _W);
 
     /**
      * @brief destructor
@@ -63,5 +63,5 @@ private:
     ObserverXYZ();
 };
 
-#endif // _OBSERVER_HPP
+#endif // _OBSERVERXYZ_HPP
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:

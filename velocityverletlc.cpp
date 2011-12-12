@@ -8,13 +8,13 @@
 // another macro to expand - this time a for loop based on dimension DIM
 #
 
-VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, Observer& _O) : VelocityVerlet(_W,_Pot,_O)
+VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,_Pot,_O)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
     W = _W;
     Pot = _Pot;
 }
-VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, Observer& _O) : VelocityVerlet(_W,(*_Pot),_O)
+VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,(*_Pot),_O)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
     W = _W;

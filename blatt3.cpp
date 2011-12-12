@@ -9,7 +9,7 @@
 #include "ljpotential.hpp"
 #include "velocityverlet.hpp"
 #include "velocityverletlc.hpp"
-#include "observer.hpp"
+#include "observerxyz.hpp"
 
 int main(int argc, const char *argv[]) {
     
@@ -39,11 +39,12 @@ int main(int argc, const char *argv[]) {
     std::cout << W << std::endl;
     
     // create the Observer
-    Observer O(W);
+    ObserverXYZ O(W);
     
     // instanciate timediscretization 
     // remark: & is used to get the address of Pot // reremark: removed the & 
     VelocityVerletLC VerletLC(W, LPot, O);
+    std::cout << "WHAT THE FUCK" << std::endl;
     
     // run the simulation
     VerletLC.simulate();
