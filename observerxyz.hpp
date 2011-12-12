@@ -1,7 +1,7 @@
 #ifndef _OBSERVERXYZ_HPP
 #define _OBSERVERXYZ_HPP
 
-#include "world.hpp"
+#include "worldlc.hpp"
 #include <iostream>
 #include <fstream>
 
@@ -50,7 +50,7 @@ public:
 
 protected:
     /// The world we are observing
-    World &W;
+    WorldLC &W;
     /// filestream for xyz data
     std::ofstream xyz;
     /// Statistics filestream
