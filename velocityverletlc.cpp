@@ -143,6 +143,7 @@ void VelocityVerletLC::update_X()
                           << ".particles["  <<  i-cell->particles.begin() << "]"
                           << ".x[" << d << "]=" << i->x[d] << std::endl;
  
+                // check if particle left its cell and handle then border issues, or 
                 if (W.getCellNumber(i) != checkCell)
                 {
                     // periodic - position = position % worldlength
@@ -190,6 +191,15 @@ void VelocityVerletLC::update_X()
                         d=DIM;
                         break; 
                     }
+                    else 
+                    {
+                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        d=DIM;
+                       // cell->particles.erase(i);
+                        break;
+
+                    }
+
                 } 
                 // save last force...
 		        i->F_old[d] = i->F[d];
