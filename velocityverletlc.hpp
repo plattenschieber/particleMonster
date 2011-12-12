@@ -50,11 +50,6 @@ public:
      * @brief calculate the new position of all particles according to their velocity
      */
     void update_X();
-    /**
-     * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
-     */
-    void handle_borders();
-    
 private:
     VelocityVerletLC();
 };
