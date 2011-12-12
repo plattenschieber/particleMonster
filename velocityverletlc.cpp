@@ -110,20 +110,45 @@ void VelocityVerletLC::update_X()
     {
   	    // foreach cell go through it's particles... 
 	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
-	    	// ...and over every dimension of particle i
-		for (unsigned int d=0; d<DIM; d++)
-		{
-                    // computing new location of the particle i if it's leaving the world, elsewhise just call handle_borders (-lc version) in the end
-	  	    i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-		    // periodic - position = position % worldlength
-		    if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic) i->x[d] = fmod(i->x[d], W.length[d]);
-		    if (i->x[d] < 0 && W.lower_border[d] == W.periodic) i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
-		    // leaving - it just bumps out
-		    if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving) { cell->particles.erase(i); d=DIM; break; }
-		    if (i->x[d] < 0  && W.lower_border[d] == W.leaving) { cell->particles.erase(i); d=DIM; break; }
-                    // save last force...
-		    i->F_old[d] = i->F[d];
-                    // ... and don't forget to set the actual force to zero
+        {
+            // ...and over every dimension of particle i
+		    for (unsigned int d=0; d<DIM; d++)
+		    {
+                // DEBUG:
+                std::cout << "Aktuelle Position von Partikel " <<  i-cell->particles.begin() << " << i->x[" << d << "]=" << i->x[d] << std::endl;
+                // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
+	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
+                std::cout << "Neue Position von Partikel " <<  i-cell->particles.begin() << " << i->x[" << d << "]=" << i->x[d] << std::endl;
+		        // periodic - position = position % worldlength
+		        if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
+                {
+                    i->x[d] = fmod(i->x[d], W.length[d]);
+                    // DEBUG:
+                    std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
+
+                }
+		        if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
+                {
+		            i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
+		            // DEBUG:
+                    std::cout << "Neue Position (unten raus Periodisch): " << i->x[d] << std::endl;
+                }
+		        // leaving - it just bumps out
+		        if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving) 
+		        {
+		            // DEBUG:
+                    std::cout << "Neue Position (oben raus Wegvomfenster): " << std::endl;
+		            cell->particles.erase(i); d=DIM; break; 
+                }
+		        if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
+		        { 
+		            // DEBUG:
+                    std::cout << "Neue Position (unten raus Wegvomfenster): " << std::endl;
+		            cell->particles.erase(i); d=DIM; break; 
+		        }
+                // save last force...
+		        i->F_old[d] = i->F[d];
+                // ... and don't forget to set the actual force to zero
 	    	    i->F[d] = 0;
 		    }
         }
