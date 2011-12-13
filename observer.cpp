@@ -3,7 +3,7 @@
 Observer::Observer(World &_W) : W(_W)
 {
     // open statistics file
-    std::string statistics_filename = "statistics/" + W.name + ".statistics";
+    std::string statistics_filename = W.name + ".statistics";
     // open file, overwrite existing files, take no prisioners
     statistics.open(statistics_filename.c_str());
     if ( statistics.is_open() )
@@ -11,7 +11,7 @@ Observer::Observer(World &_W) : W(_W)
         std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
     
     // open coordinates file
-    std::string coordinates_filename = "coordinates/" + W.name + ".coordinates";
+    std::string coordinates_filename = W.name + ".coordinates";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordinates_filename.c_str());
     if ( coordinates.is_open() )
@@ -53,7 +53,7 @@ void Observer::output_coordinates()
 {
     // write updating time
     coordinates << W.t << "\t";
-    // run over each particle...
+    // run over each particle (use const where you can)...
     for (std::vector<Particle>::const_iterator i = W.particles.begin(); i != W.particles.end(); ++i)
         // ...and each of it's dimensions
         for (unsigned int d=0; d<DIM; d++)
