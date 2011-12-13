@@ -54,13 +54,12 @@ void VelocityVerletLC::comp_F()
                                  // PERIODIC
                                  if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]-1; 
                                  else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
-                                 // TODO: LEAVING
+                                 // TODO LEAVING
                                  if (nbCell[d]<0 && W.lower_border[d]==W.leaving) nbCell[d]=W.cell_N[d]-1; 
                                  else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) nbCell[d]=0; 
 
 
                               }
-                              // If neighbour cell is too far away, no calc of inner (more far away) particles are needed! 
                               // if (dist <= W.cell_r_cut)
                               // foreach particle j in neighbourcell compute force
                               for (std::vector<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j < W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
@@ -88,7 +87,7 @@ void VelocityVerletLC::comp_F()
             }
         }
     }
-    
+   
 }
 
 void VelocityVerletLC::update_V()
@@ -123,22 +122,32 @@ void VelocityVerletLC::update_X()
   	    // foreach cell go through it's particles... 
 	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
         {
+            // compare Cell Numbers of (maybe) moved particle i
+            int checkCell = W.getCellNumber(i);
+
             // ...and over every dimension of particle i
 		    for (unsigned int d=0; d<DIM; d++)
 		    {
-		        // compare Cell Numbers of (maybe) moved particle i
-                int checkCell = W.getCellNumber(i);
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-
-	  	        // DEBUG:
-                std::cout << "Cell[" << cell-W.cells.begin() << "]"
-                          << ".particles["  <<  i-cell->particles.begin() << "]"
-                          << ".x[" << d << "]=" << i->x[d] << std::endl;
- 
-                // check if particle left its cell and then handle moving issues (respective border issues) 
-                if (W.getCellNumber(i) != checkCell)
+                // save last force...
+		        i->F_old[d] = i->F[d];
+                // ... and don't forget to set the actual force to zero
+	    	    i->F[d] = 0;
+		    }
+		    
+           
+            // check if particle left its cell and then handle moving issues (respective border issues) 
+            if (W.getCellNumber(i) != checkCell)
+            {
+                // check in every dimension if it popped by means of the border handling or just changed the cell
+                for (int d=0; d<DIM; d++)
                 {
+                     // DEBUG:
+                   std::cout << "Cell[" << cell-W.cells.begin() << "]"
+                             << ".particles["  <<  i-cell->particles.begin() << "]"
+                             << ".x[" << d << "]=" << i->x[d] << std::endl;
+
                     // periodic - position = position % worldlength
                     if (i->x[d] >= W.length[d] && W.upper_border[d] == W.periodic)
                     {
@@ -147,7 +156,9 @@ void VelocityVerletLC::update_X()
                         // DEBUG:
                         std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
 
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        W.particles.push_back(cell->particles[i-cell->particles.begin()]);
+
                         i = cell->particles.erase(i);
                         d=DIM;
                         //i--;
@@ -161,7 +172,9 @@ void VelocityVerletLC::update_X()
                         // DEBUG:
                         std::cout << "New Position (unten raus Periodisch): " << i->x[d] << std::endl;
                         
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        W.particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        
                         i = cell->particles.erase(i);
                         d=DIM;
                         //i--;
@@ -193,21 +206,22 @@ void VelocityVerletLC::update_X()
                     // the particle just changes the cell
                     else 
                     {
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        // W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        W.particles.push_back(cell->particles[i-cell->particles.begin()]);
                         i = cell->particles.erase(i);
                         d=DIM;
                         //i--;
                         break;
 
                     }
-
-                } 
-                // save last force...
-		        i->F_old[d] = i->F[d];
-                // ... and don't forget to set the actual force to zero
-	    	    i->F[d] = 0;
-		    }
+                }
+            } 
         }
+    }
+    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    {
+        W.cells[W.getCellNumber(i)].particles.push_back( W.particles[i-W.particles.begin()] );
+        i = W.particles.erase(i);
     }
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
