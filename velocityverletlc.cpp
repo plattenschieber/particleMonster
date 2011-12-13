@@ -150,8 +150,9 @@ void VelocityVerletLC::update_X()
                         std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
 
                         W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        i = cell->particles.erase(i);
                         d=DIM;
-                        cell->particles.erase(i);
+                        //i--;
                         break;
 
                     }
@@ -163,8 +164,9 @@ void VelocityVerletLC::update_X()
                         std::cout << "New Position (unten raus Periodisch): " << i->x[d] << std::endl;
                         
                         W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
-                        d=DIM;
                         cell->particles.erase(i);
+                        d=DIM;
+                        i--;
                         break;
 
                     }
@@ -175,6 +177,7 @@ void VelocityVerletLC::update_X()
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
                         cell->particles.erase(i);
                         d=DIM; 
+                        i--;
                         break; 
                     }
                     // leaving - it just bumps out 
@@ -184,6 +187,7 @@ void VelocityVerletLC::update_X()
                         std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
                         cell->particles.erase(i);
                         d=DIM;
+                        i--;
                         break; 
                     }
                     else 
@@ -191,8 +195,9 @@ void VelocityVerletLC::update_X()
                         // DEBUG:
                         
                         W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        cell->particles.erase(i);
                         d=DIM;
-                       // cell->particles.erase(i);
+                        i--;
                         break;
 
                     }
