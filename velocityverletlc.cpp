@@ -128,9 +128,7 @@ void VelocityVerletLC::comp_F()
                                  }
                               }
                            }
-                           //std::cout << "Cell in first dimension increased" << std::endl;
                         }
-                        //std::cout << "Cell in first dimension increased" << std::endl;
                     }
                 }
             }
