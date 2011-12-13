@@ -174,6 +174,7 @@ void VelocityVerletLC::update_X()
                         // DEBUG:
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
                         i = cell->particles.erase(i);
+                        W.nParticles--;
                         d=DIM; 
                         //i--;
                         break; 
@@ -184,14 +185,14 @@ void VelocityVerletLC::update_X()
                         // DEBUG:
                         std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
                         i = cell->particles.erase(i);
+                        W.nParticles--;
                         d=DIM;
                         //i--;
                         break; 
                     }
+                    // the particle just changes the cell
                     else 
                     {
-                        // DEBUG:
-                        
                         W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
                         i = cell->particles.erase(i);
                         d=DIM;
