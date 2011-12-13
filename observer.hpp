@@ -31,11 +31,6 @@ public:
      */
     void notify(); 
     
-    /**
-     * @brief generate a pymol readable file
-     */
-    void output_xyz();
-
     /** 
      * @brief output statistics like kinetic, potential and total energy
      */
@@ -51,8 +46,6 @@ public:
 protected:
     /// The world we are observing
     World &W;
-    /// filestream for xyz data
-    std::ofstream xyz;
     /// Statistics filestream
     std::ofstream statistics;
     /// coordiantes filestream

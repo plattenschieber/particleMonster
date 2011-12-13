@@ -2,15 +2,6 @@
 
 Observer::Observer(World &_W) : W(_W)
 {
-
-    // open xyz file
-    std::string xyz_filename = "xyz/" + W.name + ".xyz";
-    // open file, overwrite existing files, take no prisioners
-    xyz.open(xyz_filename.c_str());
-    if ( xyz.is_open() )
-        // and tell the world
-        std::cout << "Opened " << xyz_filename << " for writing." << std::endl;
-    
     // open statistics file
     std::string statistics_filename = "statistics/" + W.name + ".statistics";
     // open file, overwrite existing files, take no prisioners
@@ -31,12 +22,6 @@ Observer::Observer(World &_W) : W(_W)
 
 Observer::~Observer()
 {
-    // close the coordinates file
-    if ( xyz.is_open() )
-    {
-        xyz.close();
-        std::cout << "Closed xyz" << std::endl;
-    }
     // close the statistics file
     if ( statistics.is_open() )
     {
@@ -78,35 +63,12 @@ void Observer::output_coordinates()
     coordinates << std::endl;
 }
 
-void Observer::output_xyz()
-{
-    // write size and actual time of our world W
-    xyz << W.particles.size() << std::endl << "Time: " << W.t << std::endl;
-    // get out every particle to satisfy the xyz format
-    for (std::vector<Particle>::const_iterator i = W.particles.begin(); i != W.particles.end(); ++i)
-    {
-        // each particle should be an H-atom. At least now... 
-        xyz << "H\t";
-        // particle i is located in a DIM-dimensional space
-        for (unsigned int d=0; d<DIM; d++)
-            // get it out, seperated with tabulars
-            xyz << i->x[d] << "\t";
-        // new line only after the last particle
-        if(i != W.particles.end()-1) xyz << std::endl;
-    }
-    // new line at end of one timestep
-    xyz << std::endl;
-    
-}
-
 void Observer::notify()
 {
     // write statistics 
     output_statistics();
     // write the coordinates of our particles
     output_coordinates();
-    // write the xyz-format
-    output_xyz();
 }
 
 
