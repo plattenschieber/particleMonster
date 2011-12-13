@@ -37,11 +37,11 @@ void VelocityVerletLC::comp_F()
                 for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i < W.cells[J(jCell,W.cell_N)].particles.end(); i++)
                 {
                     // roll over every neighbour cell
-                    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
+                    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]; nbCell[0]++)
                     {
-                        for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
+                        for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]; nbCell[1]++)
                         {
-                           for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
+                           for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]; nbCell[2]++)
                            {
                               // don't forget to reset the distance
                               //dist = 0.0;
