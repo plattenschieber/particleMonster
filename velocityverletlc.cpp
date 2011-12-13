@@ -1,4 +1,3 @@
-// in addiction to our DIM we will span up a "for"-tree
 #include "velocityverletlc.hpp"
 #include <math.h> 
 #include "defines.hpp"
@@ -43,41 +42,90 @@ void VelocityVerletLC::comp_F()
                         {
                            for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]; nbCell[2]++)
                            {
+                              bool leftWorld = false;
+                              bool periodic[DIM] = {false, false, false};
                               // don't forget to reset the distance
                               //dist = 0.0;
                               // set neighbour to its new place if world is periodic and observed cell is located at the border  
                               for (int d=0; d<DIM; d++)
                               {
                                  // accumulate distance between particle and neighbour cell. 
-                                 // dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);	
-                                 // periodic , unknown , leaving  Handle borders more specific
+                                 // dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);
+
                                  // PERIODIC
-                                 if (nbCell[d]<0 && W.lower_border[d]==W.periodic) nbCell[d]=W.cell_N[d]-1; 
-                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic) nbCell[d]=0; 
-                                 // TODO: LEAVING
-                                 if (nbCell[d]<0 && W.lower_border[d]==W.leaving) nbCell[d]=W.cell_N[d]-1; 
-                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) nbCell[d]=0; 
+                                 if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
+                                 {
+                                     nbCell[d] = W.cell_N[d]-1;
+                                     periodic[d] = true;
+                                 }
+                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
+                                 {
+                                     nbCell[d]=0;
+                                     periodic[d] = true;
+                                 }
+                                 // LEAVING
+                                 if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
+                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
 
 
                               }
                               // If neighbour cell is too far away, no calc of inner (more far away) particles are needed! 
                               // if (dist <= W.cell_r_cut)
-                              // foreach particle j in neighbourcell compute force
-                              for (std::vector<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j < W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
-                              { 
-                              // ...except of the computation with itself (i!=j) 
-                                if (i!=j)
-                                {
-                                    // don't forget to reset the distance
-                                    dist = 0.0;
-                                    // TODO: check the distance by means of border handling (periodic...)
-                                    for (int d=0; d<DIM; d++) 
-                                        dist += sqr(j->x[d] - i->x[d]);	
-                                    // only particles which are closer than rcut
-                                    if (dist <= W.cell_r_cut) 
-                                        // computes the force between particle i and j and add it to our potential
-                                        W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
-                                }
+
+                              // if the cell isn't outside the world compute!
+                              if(!leftWorld)
+                              {
+                                   // foreach particle j in neighbourcell compute force
+                                   for (std::vector<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j < W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
+                                   {
+                                   // ...except of the computation with itself (i!=j)
+                                     if (i!=j)
+                                     {
+                                         // don't forget to reset the distance
+                                         dist = 0.0;
+                                         for (int d=0; d<DIM; d++)
+                                         {
+                                             // IN PERIODIC:
+                                             if (periodic[d] && W.cells.size() > 1)
+                                             {
+                                                // if cell left upper border -> j.x[d] < i.x[d]
+                                                if (j->x[d] < i->x[d])
+                                                {
+                                                     // calc cell coordinate in which i lies
+                                                     int tmp = i->x[d] * W.cell_N[d] / W.length[d];
+                                                     // add the distance from i to the right border
+                                                     dist += (W.cell_length[d] - (i->x[d] - tmp));
+
+                                                     // calc cell coordinate in which j lies
+                                                     tmp = j->x[d] * W.cell_N[d] / W.length[d];
+                                                     // add the distance from j to the left border
+                                                     dist += j->x[d] - tmp;
+                                                }
+                                                // else if cell left lower border -> j.x[d] > i.x[d]
+                                                else /*if (j->x[d] > i->x[d])*/
+                                                {
+                                                    // calc cell coordinate in which i lies
+                                                    int tmp = j->x[d] * W.cell_N[d] / W.length[d];
+                                                    // add the distance from i to the right border
+                                                    dist += sqr(W.cell_length[d] - (i->x[d] - tmp));
+
+                                                    // calc cell coordinate in which j lies
+                                                    tmp = i->x[d] * W.cell_N[d] / W.length[d];
+                                                    // add the distance from j to the left border
+                                                    dist += sqr(j->x[d] - tmp);
+                                                }
+
+                                             }
+                                             // else cell is only cell and the distance is calculated as usual
+                                             else
+                                                dist += sqr(j->x[d] - i->x[d]);
+                                         }
+                                         // only particles which are closer than rcut
+                                         if (dist <= W.cell_r_cut)
+                                             // computes the force between particle i and j and add it to our potential
+                                             W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                    }
+                                 }
                               }
                            }
                            //std::cout << "Cell in first dimension increased" << std::endl;
