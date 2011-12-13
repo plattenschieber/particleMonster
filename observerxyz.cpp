@@ -43,18 +43,17 @@ void ObserverXYZ::output_coordinates()
 {
     // write updating time
     coordinates << ((WorldLC)W).t << "\t";
-    // run over each particle...
-    for (std::vector<Cell>::const_iterator i = ((WorldLC)W).cells.begin(); i < ((WorldLC)W).cells.end(); i++)
-	// TODO: Change in other place, too
-	for (std::vector<Particle>::const_iterator j = i->particles.begin(); j < i->particles.begin();	j++)
-	{
- 	    // ...and each of it's dimensions
+    // run over each particle,...
+    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+        // each cell...
+        for (std::vector<Particle>::const_iterator j = i->particles.begin(); j < i->particles.begin();	j++)
+            // ...and each of it's dimensions
             for (unsigned int d=0; d<DIM; d++)
                 // get it out, seperated with tabulars
                 coordinates << j->x[d] << "\t";
-            // end of line
-	    coordinates << std::endl;
-	}
+     // end of line
+     coordinates << std::endl;
+
 }
 
 void ObserverXYZ::output_xyz()
@@ -68,20 +67,13 @@ void ObserverXYZ::output_xyz()
     	{
             // each particle should be an H-atom. At least now... 
             xyz << "H\t";
-            std::cout <<  "H\t";
             // particle j is located in a DIM-dimensional space
             for (unsigned int d=0; d<DIM; d++)
-            {
                 // get it out, seperated with tabulars
                 xyz << j->x[d] << "\t";
-                std::cout << j->x[d] << "\t";
-            }
+            // newline at end of each particle
             xyz << std::endl;
-            std::cout << std::endl;
 	    }
-	    // new line at end of one timestep
-        if(i == W.cells.end()-1); 
-            //xyz << std::endl;
     }
 }
 
@@ -90,7 +82,6 @@ void ObserverXYZ::notify()
     // write statistics and coordinates 
     Observer::notify();
     // write the xyz-format
-   // std::cout << "NOTIFYXYZ" << std::endl;
     output_xyz();
 }
 
