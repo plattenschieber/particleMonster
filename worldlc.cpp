@@ -97,14 +97,19 @@ int WorldLC::getCellNumber(const std::vector<Particle>::iterator i)
 {
     int tmp[3] = {0,0,0};
     // DEBUG Table
-    std::cout << "Cell coord \tPart. coord \tRatio #Cell/WordLength" << std::endl;
+    std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
         tmp[d] = i->x[d] * cell_N[d] / length[d];
         // DEBUG
-        std::cout << tmp[d] << "\t\tx[" << d << "]: " << i->x[d] << "\t "<< cell_N[d] / length[d] << std::endl;
+        std::cout << tmp[d] << "\t";
     }
-    std::cout << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
+    //DEBUG FOR-LOOP
+    std::cout << std::endl;
+    for (int d=0; d<DIM; d++)
+        std::cout << "x[" << d << "]: " << i->x[d] << "\t";
+
+    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
     return J(tmp,cell_N);
 
 }
