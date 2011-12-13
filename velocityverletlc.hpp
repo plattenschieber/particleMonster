@@ -33,8 +33,8 @@ public:
      */
     VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ &_O);
     
-    WorldLC W;
-    LJPotential Pot;
+    WorldLC& W;
+    LJPotential& Pot;
     
     /**
      * @brief calculates the forces affecting the particles at the current time
