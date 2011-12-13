@@ -126,19 +126,17 @@ void VelocityVerletLC::update_X()
             // ...and over every dimension of particle i
 		    for (unsigned int d=0; d<DIM; d++)
 		    {
-                // DEBUG:
-                //std::cout << "Actual:" 
-                //          << "Cell[" << cell-W.cells.begin() << "]"
-                //          << ".particles["  <<  i-cell->particles.begin() << "]"
                 //          << ".x[" << d << "]=" << i->x[d] << std::endl;
+		        // compare Cell Numbers of (maybe) moved particle i
                 int checkCell = W.getCellNumber(i);
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
+
                 std::cout << "Cell[" << cell-W.cells.begin() << "]"
                           << ".particles["  <<  i-cell->particles.begin() << "]"
                           << ".x[" << d << "]=" << i->x[d] << std::endl;
  
-                // check if particle left its cell and handle then border issues, or 
+                // check if particle left its cell and then handle moving issues (respective border issues) 
                 if (W.getCellNumber(i) != checkCell)
                 {
                     // periodic - position = position % worldlength
