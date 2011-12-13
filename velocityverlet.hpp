@@ -15,7 +15,6 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    // TODO: ObserverXYZ remove
     VelocityVerlet(World& _W, Potential& _Pot, ObserverXYZ &_O);
     
     /**
