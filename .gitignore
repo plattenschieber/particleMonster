@@ -4,11 +4,11 @@
 *swp
 Doxyfile
 particleMonster
-coordinates/
+*coordinates
 cpp
-statistics/
-parameter/
-particles/
+*statistics
+*parameter
+particles*
 papers/
 *.pdf
 *.txt
