@@ -2,13 +2,14 @@
 #define _OBSERVERXYZ_HPP
 
 #include "worldlc.hpp"
+#include "observer.hpp"
 #include <iostream>
 #include <fstream>
 
 /**
  * @brief This Observer will look for our XYZ Data
  */
-class ObserverXYZ  {
+class ObserverXYZ : Observer  {
 public:
     /**
      * @brief constructor
@@ -37,11 +38,6 @@ public:
     void output_xyz();
 
     /** 
-     * @brief output statistics like kinetic, potential and total energy
-     */
-    void output_statistics();
-
-    /** 
      * @brief output coordinates of the particles
      */
     void output_coordinates();
@@ -53,8 +49,6 @@ protected:
     WorldLC &W;
     /// filestream for xyz data
     std::ofstream xyz;
-    /// Statistics filestream
-    std::ofstream statistics;
     /// coordiantes filestream
     std::ofstream coordinates;
 

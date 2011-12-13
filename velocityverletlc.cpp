@@ -84,9 +84,9 @@ void VelocityVerletLC::comp_F()
                                 }
                               }
                            }
-                           std::cout << "Cell in first dimension increased" << std::endl;
+                           //std::cout << "Cell in first dimension increased" << std::endl;
                         }
-                        std::cout << "Cell in first dimension increased" << std::endl;
+                        //std::cout << "Cell in first dimension increased" << std::endl;
                     }
                 }
             }
@@ -131,15 +131,14 @@ void VelocityVerletLC::update_X()
 		    for (unsigned int d=0; d<DIM; d++)
 		    {
                 // DEBUG:
-                std::cout << "Actual:" 
-                          << "Cell[" << cell-W.cells.begin() << "]"
-                          << ".particles["  <<  i-cell->particles.begin() << "]"
-                          << ".x[" << d << "]=" << i->x[d] << std::endl;
+                //std::cout << "Actual:" 
+                //          << "Cell[" << cell-W.cells.begin() << "]"
+                //          << ".particles["  <<  i-cell->particles.begin() << "]"
+                //          << ".x[" << d << "]=" << i->x[d] << std::endl;
                 int checkCell = W.getCellNumber(i);
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-                std::cout << "New:" 
-                          << "Cell[" << cell-W.cells.begin() << "]"
+                std::cout << "Cell[" << cell-W.cells.begin() << "]"
                           << ".particles["  <<  i-cell->particles.begin() << "]"
                           << ".x[" << d << "]=" << i->x[d] << std::endl;
  
@@ -165,7 +164,7 @@ void VelocityVerletLC::update_X()
                     {
                         i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
                         // DEBUG:
-                        std::cout << "Neue Position (unten raus Periodisch): " << i->x[d] << std::endl;
+                        std::cout << "New Position (unten raus Periodisch): " << i->x[d] << std::endl;
                         
                         W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
                         d=DIM;
@@ -177,7 +176,7 @@ void VelocityVerletLC::update_X()
                     else if (i->x[d] >= W.length[d] && W.upper_border[d] == W.leaving) 
                     {
                         // DEBUG:
-                        std::cout << "Neue Position (oben raus Wegvomfenster): " << std::endl;
+                        std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
                         cell->particles.erase(i);
                         d=DIM; 
                         break; 
@@ -186,13 +185,15 @@ void VelocityVerletLC::update_X()
                     else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
                     { 
                         // DEBUG:
-                        std::cout << "Neue Position (unten raus Wegvomfenster): " << std::endl;
+                        std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
                         cell->particles.erase(i);
                         d=DIM;
                         break; 
                     }
                     else 
                     {
+                        // DEBUG:
+                        
                         W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
                         d=DIM;
                        // cell->particles.erase(i);

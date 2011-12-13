@@ -29,7 +29,7 @@ public:
     /**
      * @brief notify the observer that the world has changed
      */
-    void notify(); 
+    virtual void notify(); 
     
     /** 
      * @brief output statistics like kinetic, potential and total energy
@@ -39,7 +39,7 @@ public:
     /** 
      * @brief output coordinates of the particles
      */
-    void output_coordinates();
+    virtual void output_coordinates();
     
   
 

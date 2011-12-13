@@ -1,26 +1,18 @@
 #include "observerxyz.hpp"
 
-ObserverXYZ::ObserverXYZ(WorldLC &_W) : W(_W)
+ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
 {
 
     // open xyz file
-    std::string xyz_filename = "xyz/" + W.name + ".xyz";
+    std::string xyz_filename = "xyz/" + ((WorldLC)W).name + ".xyz";
     // open file, overwrite existing files, take no prisioners
     xyz.open(xyz_filename.c_str());
     if ( xyz.is_open() )
         // and tell the world
         std::cout << "Opened " << xyz_filename << " for writing." << std::endl;
     
-    // open statistics file
-    std::string statistics_filename = "statistics/" + W.name + ".statistics";
-    // open file, overwrite existing files, take no prisioners
-    statistics.open(statistics_filename.c_str());
-    if ( statistics.is_open() )
-        // and tell the world
-        std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
-    
     // open coordinates file
-    std::string coordinates_filename = "coordinates/" + W.name + ".coordinates";
+    std::string coordinates_filename = "coordinates/" + ((WorldLC)W).name + ".coordinates";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordinates_filename.c_str());
     if ( coordinates.is_open() )
@@ -37,12 +29,6 @@ ObserverXYZ::~ObserverXYZ()
         xyz.close();
         std::cout << "Closed xyz" << std::endl;
     }
-    // close the statistics file
-    if ( statistics.is_open() )
-    {
-        statistics.close();
-        std::cout << "Closed statistics" << std::endl;
-    }
     // close the coordinates file
     if ( coordinates.is_open() )
     {
@@ -53,23 +39,12 @@ ObserverXYZ::~ObserverXYZ()
     std::cout << "Everything closed properly" << std::endl;
 }
 
-void ObserverXYZ::output_statistics()
-{
-    // write statistics into the filestream, seperated with tabulars
-    statistics
-        << W.t << "\t" 
-        << W.e_pot << "\t"
-        << W.e_kin << "\t"
-        << W.e_kin + W.e_pot // observe conservation of energy 
-        << std::endl;
-}
-
 void ObserverXYZ::output_coordinates()
 {
     // write updating time
-    coordinates << W.t << "\t";
+    coordinates << ((WorldLC)W).t << "\t";
     // run over each particle...
-    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+    for (std::vector<Cell>::const_iterator i = ((WorldLC)W).cells.begin(); i < ((WorldLC)W).cells.end(); i++)
 	// TODO: Change in other place, too
 	for (std::vector<Particle>::const_iterator j = i->particles.begin(); j < i->particles.begin();	j++)
 	{
@@ -112,11 +87,10 @@ void ObserverXYZ::output_xyz()
 
 void ObserverXYZ::notify()
 {
-    // write statistics 
-    output_statistics();
-    // write the coordinates of our particles
-    output_coordinates();
+    // write statistics and coordinates 
+    Observer::notify();
     // write the xyz-format
+   // std::cout << "NOTIFYXYZ" << std::endl;
     output_xyz();
 }
 
