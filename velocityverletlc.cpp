@@ -116,7 +116,7 @@ void VelocityVerletLC::comp_F()
                                                 }
 
                                              }
-                                             // else cell is only cell and the distance is calculated as usual
+                                             // else cell is only cell in periodic case or we are in the world and the distance is calculated as usual
                                              else
                                                 dist += sqr(j->x[d] - i->x[d]);
                                          }
