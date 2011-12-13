@@ -25,7 +25,7 @@ void VelocityVerlet::timestep(real delta_t)
     // first of all, we have to update our positions by means of their actual position, pace and force
 	update_X(); 
     // then we update their new force, based on the potential and the new world situation
-	comp_F();
+    comp_F();
     // now we can compute their new pace
 	update_V();
     
