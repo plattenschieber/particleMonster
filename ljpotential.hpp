@@ -18,8 +18,10 @@ public:
      *
      * @return potential energy
      */
-    virtual real force(Particle &p, Particle &q); /*, real eps, real sigma*/
-    virtual real force(Particle &p, Particle &q, real dist, real eps, real sigma);
+    real force (Particle& p, Particle& q, real dist, real eps, real sigma);
+
+private:
+    real force (Particle& p, Particle& q){return 0.0;};
 };
 
 #endif // _LJPOTENTIAL_HPP
