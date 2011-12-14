@@ -22,7 +22,7 @@ public:
     real F[DIM];
     /// Force (previous step)
     real F_old[DIM];
-	/// Clear all data of the particle (for tmp particles)
+    /// Clear all data of the particle (for tmp particles)
 	void clear() {
 		m = 0;
 		for(int i=0; i<DIM; i++)
