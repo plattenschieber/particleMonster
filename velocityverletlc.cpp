@@ -169,11 +169,11 @@ void VelocityVerletLC::update_X()
   	    // foreach cell go through it's particles... 
 	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
         {
-            // ...and over every dimension of particle i
-		    for (unsigned int d=0; d<DIM; d++)
+            // compare Cell Numbers of (maybe) moved particle i
+            int checkCell = W.getCellNumber(i);
+            // 	..at first calc new position in every dimension
+            for (unsigned int d=0; d<DIM; d++)
 		    {
-		        // compare Cell Numbers of (maybe) moved particle i
-                int checkCell = W.getCellNumber(i);
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
@@ -182,77 +182,90 @@ void VelocityVerletLC::update_X()
                           << ".particles["  <<  i-cell->particles.begin() << "]"
                           << ".x[" << d << "]=" << i->x[d] << std::endl;
  
-                // check if particle left its cell and then handle moving issues (respective border issues) 
-                if (W.getCellNumber(i) != checkCell)
-                {
-                    // periodic - position = position % worldlength
-                    if (i->x[d] >= W.length[d] && W.upper_border[d] == W.periodic)
-                    {
-                        i->x[d] = fmod(i->x[d], W.length[d]);
-
-                        // DEBUG:
-                        std::cout << "Neue Position (oben raus Periodisch): " << i->x[d] << std::endl;
-
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
-                        i = cell->particles.erase(i);
-                        d=DIM;
-                        //i--;
-                        break;
-
-                    }
-                    // periodic - position = position % worldlength
-                    else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
-                    {
-                        i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
-                        // DEBUG:
-                        std::cout << "New Position (unten raus Periodisch): " << i->x[d] << std::endl;
-                        
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
-                        i = cell->particles.erase(i);
-                        d=DIM;
-                        //i--;
-                        break;
-
-                    }
-                    // leaving - it just bumps out
-                    else if (i->x[d] >= W.length[d] && W.upper_border[d] == W.leaving) 
-                    {
-                        // DEBUG:
-                        std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
-                        i = cell->particles.erase(i);
-                        W.nParticles--;
-                        d=DIM; 
-                        //i--;
-                        break; 
-                    }
-                    // leaving - it just bumps out 
-                    else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
-                    { 
-                        // DEBUG:
-                        std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
-                        i = cell->particles.erase(i);
-                        W.nParticles--;
-                        d=DIM;
-                        //i--;
-                        break; 
-                    }
-                    // the particle just changes the cell
-                    else 
-                    {
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
-                        i = cell->particles.erase(i);
-                        d=DIM;
-                        //i--;
-                        break;
-
-                    }
-
-                } 
                 // save last force...
 		        i->F_old[d] = i->F[d];
                 // ... and don't forget to set the actual force to zero
 	    	    i->F[d] = 0;
 		    }
+
+            // then check if particle left its cell and handle moving issues (respective border issues)
+            if (W.getCellNumber(i) != checkCell)
+            {
+                // check it in every dimension
+                for (unsigned int d = 0; d<DIM; d++)
+                {
+                    // periodic - position = position % worldlength
+                    if (i->x[d] >= W.length[d] && W.upper_border[d] == W.periodic)
+                    {
+                        // new position is at the beginning of world plus the overhead that x left the world
+                        i->x[d] = fmod(i->x[d], W.length[d]);
+
+                        // calc the position in all dimension and THEN push it into the right cell
+                        if (d==DIM-1)
+                        {
+                            // DEBUG:
+                            std::cout << "New position (oben raus Periodisch): " << i->x[d] << std::endl;
+
+                            // Add particle i to its corresponding cell
+                            W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                            i = cell->particles.erase(i);
+                            break;
+                        }
+                    }
+                    // periodic - position = position % worldlength
+                    else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
+                    {
+                        // new position is end of world minus overhead that x left the world
+                        i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
+
+                        // calc the new position in every dimension and THEN push it into the right cell
+                        if (d==DIM-1)
+                        {
+                            // DEBUG:
+                            std::cout << "New Position (unten raus Periodisch): " << i->x[d] << std::endl;
+
+                            // push it into the right cell
+                            W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                            i = cell->particles.erase(i);
+                            break;
+                        }
+                    }
+                    // leaving - it just bumps out
+                    else if (i->x[d] >= W.length[d] && W.upper_border[d] == W.leaving)
+                    {
+                        // DEBUG:
+                        std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
+                        // regardless in which dimension, just erase
+                        i = cell->particles.erase(i);
+                        W.nParticles--;
+                        // don't forget to set dimension to DIM  or you will handle another particle in the wrong dimension
+                        d=DIM;
+                        break;
+                    }
+                    // leaving - it just bumps out
+                    else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
+                    {
+                        // DEBUG:
+                        std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
+                        // regardless in which dimension, just erase
+                        i = cell->particles.erase(i);
+                        W.nParticles--;
+                        d=DIM;
+                        break;
+                    }
+                    // the particle just changes the cell
+                    else
+                    {
+                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        // push the moved cell temporary to worlds particle list and reinsert it later
+                        //W.particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        i = cell->particles.erase(i);
+                        d=DIM;
+                        break;
+
+                    }
+                }
+            }
         }
     }
 }
