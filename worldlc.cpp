@@ -81,15 +81,12 @@ void WorldLC::read_Particles(const std::string &filename)
         std::cout << "Push and erase particles[" << i-particles.begin() << "] " << std::endl; 
         // add particle to right cell...
         // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
-        cells[getCellNumber(i)].particles.push_back(particles[i-particles.begin()]);
-            //particles.push_back(i);
-        // ...and remove it from our particle list
-        //particles.erase(i);
-
+        cells[getCellNumber(i)].particles.push_back(*i);
     }
     std::cout << "***************************************************" << std::endl
               << "FINISHED READING PARTICLES - NOW CLEAR PARTICLES" << std::endl
               << "*************************************************** \n" << std::endl;
+    // Clear all particles in our World Vector
     particles.clear();
 }
 
