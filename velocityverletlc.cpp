@@ -163,7 +163,6 @@ void VelocityVerletLC::update_V()
 
 void VelocityVerletLC::update_X()
 {
-    real tmp=0.0;
 	// roll over every cell	
    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
@@ -175,19 +174,13 @@ void VelocityVerletLC::update_X()
             // 	..at first calc new position in every dimension
             for (unsigned int d=0; d<DIM; d++)
 		    {
-                //DEBUG:
-                tmp = i->x[d];
-
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
-                //DEBUG:
-                tmp = i->x[d];
-
 	  	        // DEBUG:
-                std::cout << "Cell[" << cell-W.cells.begin() << "]"
-                          << ".particles["  <<  i-cell->particles.begin() << "]"
-                          << ".x[" << d << "]=" << i->x[d] << std::endl;
+//                std::cout << "Cell[" << cell-W.cells.begin() << "]"
+//                          << ".particles["  <<  i-cell->particles.begin() << "]"
+//                          << ".x[" << d << "]=" << i->x[d] << std::endl;
  
                 // save last force...
 		        i->F_old[d] = i->F[d];
@@ -211,7 +204,7 @@ void VelocityVerletLC::update_X()
                         if (d==DIM-1)
                         {
                             // DEBUG:
-                            std::cout << "New position (oben raus Periodisch): " << i->x[d] << std::endl;
+//                            std::cout << "New position (oben raus Periodisch): " << i->x[d] << std::endl;
 
                             // Add particle i to its corresponding cell
                             W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
@@ -273,11 +266,11 @@ void VelocityVerletLC::update_X()
             }
         }
     }
+    // and now add the particles again to their belonging cells
     for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
     {
-        int cellNumber = W.getCellNumber(i);
         //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
-        W.cells[W.getCellNumber(i)].particles.push_back(W.particles[i - W.particles.begin()]);
+        W.cells[W.getCellNumber(i)].particles.push_back(W.particles[i-W.particles.begin()]);
         i = W.particles.erase(i);
     }
 }

@@ -58,16 +58,16 @@ void WorldLC::read_Parameter(const std::string &filename)
 
         nCells *= cell_N[d];
         // DEBUG
-        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
-                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
+//        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
+//                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
     }
     
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
 
-     // DEBUG 
-    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
+     // DEBUG
+//    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
 void WorldLC::read_Particles(const std::string &filename)
@@ -96,23 +96,23 @@ void WorldLC::read_Particles(const std::string &filename)
 int WorldLC::getCellNumber(const std::vector<Particle>::iterator i) 
 {
     int tmp[3] = {0,0,0};
-    // DEBUG Table
-    std::cout << "Cell coordinate: " ;
+//    // DEBUG Table
+//    std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
         if (i->x[d] < 0)
             return -1;
         tmp[d] = i->x[d] * cell_N[d] / length[d];
-        // DEBUG
-        std::cout << tmp[d] << "\t";
+//        // DEBUG
+//        std::cout << tmp[d] << "\t";
 
     }
-    //DEBUG FOR-LOOP
-    std::cout << std::endl;
-    for (int d=0; d<DIM; d++)
-        std::cout << "x[" << d << "]: " << i->x[d] << "\t";
+//    //DEBUG FOR-LOOP
+//    std::cout << std::endl;
+//    for (int d=0; d<DIM; d++)
+//        std::cout << "x[" << d << "]: " << i->x[d] << "\t";
 
-    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
+//    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
     return J(tmp,cell_N);
 
 }
