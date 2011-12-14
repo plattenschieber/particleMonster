@@ -102,14 +102,16 @@ void VelocityVerlet::handle_borders()
 			// is leaving AND above zero AND outer space
             		if ( (W.upper_border[d] == W.leaving) & (i->x[d]>0) & (i->x[d] > W.length[d]) )
 		        {
-			    W.particles.erase(i);
-			    break;
+                      W.particles.erase(i);
+                      i--;
+                      break;
 		        }
             		// same here, except of handling the particles under zero
             		else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) )
             		{
-                	    W.particles.erase(i);
-               		    break;
+                        W.particles.erase(i);
+                        i--;
+                        break;
            		}
             		// all other particles are at least on the point zero. This point is actually included ;) 
        		 }
