@@ -163,6 +163,7 @@ void VelocityVerletLC::update_V()
 
 void VelocityVerletLC::update_X()
 {
+    real tmp=0.0;
 	// roll over every cell	
    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
@@ -174,8 +175,14 @@ void VelocityVerletLC::update_X()
             // 	..at first calc new position in every dimension
             for (unsigned int d=0; d<DIM; d++)
 		    {
+                //DEBUG:
+                tmp = i->x[d];
+
                 // computing new location of the particle i if it's leaving the world, elsewise just call handle_borders (-lc version) in the end
 	  	        i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
+
+                //DEBUG:
+                tmp = i->x[d];
 
 	  	        // DEBUG:
                 std::cout << "Cell[" << cell-W.cells.begin() << "]"
@@ -256,17 +263,22 @@ void VelocityVerletLC::update_X()
                     // the particle just changes the cell
                     else
                     {
-                        W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
                         // push the moved cell temporary to worlds particle list and reinsert it later
-                        //W.particles.push_back(cell->particles[i-cell->particles.begin()]);
+                        W.particles.push_back(cell->particles[i-cell->particles.begin()]);
                         i = cell->particles.erase(i);
-                        d=DIM;
                         break;
-
                     }
                 }
             }
         }
+    }
+    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    {
+        int cellNumber = W.getCellNumber(i);
+        //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
+        W.cells[W.getCellNumber(i)].particles.push_back(W.particles[i - W.particles.begin()]);
+        i = W.particles.erase(i);
     }
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
