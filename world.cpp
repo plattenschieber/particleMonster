@@ -76,7 +76,7 @@
                     for (int i=0; i<DIM; i++)
                     {
                         if (tmp == "leaving") lower_border[i] = leaving;   
-                        else if (tmp == "periodic") upper_border[i] = periodic;
+                        else if (tmp == "periodic") lower_border[i] = periodic;
                         else lower_border[i] = unknown;
                     }
                     break;
