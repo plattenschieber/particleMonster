@@ -14,7 +14,7 @@ real LJPotential::force(Particle &p, Particle &q, real dist , real eps, real sig
 	double force = 24*eps*(1/dist)*pow(sigma*sigma/dist,3)*(1-2*pow(sigma*sigma/dist,3))*(q.x[d]-p.x[d]);
 	p.F[d] += force;
 	// do we really can already pull it off? NO!
-    q.F[d] -= force;
+	//q.F[d] -= force;
     }
     return Urij;
 }
