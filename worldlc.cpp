@@ -90,7 +90,7 @@ void WorldLC::read_Particles(const std::string &filename)
     std::cout << "***************************************************" << std::endl
               << "FINISHED READING PARTICLES - NOW CLEAR PARTICLES" << std::endl
               << "*************************************************** \n" << std::endl;
-    //particles.clear();
+    particles.clear();
 }
 
 int WorldLC::getCellNumber(const std::vector<Particle>::iterator i) 
