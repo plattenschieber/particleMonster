@@ -100,9 +100,12 @@ int WorldLC::getCellNumber(const std::vector<Particle>::iterator i)
     std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
+        if (i->x[d] < 0)
+            return -1;
         tmp[d] = i->x[d] * cell_N[d] / length[d];
         // DEBUG
         std::cout << tmp[d] << "\t";
+
     }
     //DEBUG FOR-LOOP
     std::cout << std::endl;
