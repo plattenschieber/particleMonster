@@ -1,15 +1,15 @@
 particleMonsterQT.*
 *.[oad]
 *~
-*xyz
 *swp
 Doxyfile
 particleMonster
 *coordinates
+*particles
+*xyz
 cpp
 *statistics
 *parameter
-particles*
 papers/
 *.pdf
 *.txt
