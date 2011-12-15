@@ -4,12 +4,10 @@ particleMonsterQT.*
 *swp
 Doxyfile
 particleMonster
-*coordinates
-*particles
-*xyz
 cpp
-*statistics
-*parameter
 papers/
 *.pdf
 *.txt
+data/
+log/
+api-doc/
