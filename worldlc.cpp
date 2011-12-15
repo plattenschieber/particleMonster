@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <map>
+#include <cmath>
 
 
 // ctor, which calls World::World()   
@@ -99,11 +100,13 @@ int WorldLC::getCellNumber(const std::vector<Particle>::iterator i)
     {
         if (i->x[d] < 0)
             return -1;
-        tmp[d] = i->x[d] * cell_N[d] / length[d];
-//        // DEBUG
-//        std::cout << tmp[d] << "\t";
+        tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
+	
+//      // DEBUG
+	 // std::cout << tmp[d] << "\t";
 
     }
+
 //    //DEBUG FOR-LOOP
 //    std::cout << std::endl;
 //    for (int d=0; d<DIM; d++)

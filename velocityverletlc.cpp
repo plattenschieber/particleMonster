@@ -69,12 +69,13 @@ void VelocityVerletLC::comp_F()
 
 
                               }
-                              // If neighbour cell is too far away, no calc of inner (more far away) particles are needed! 
+                              // If neighbour cell is too far away, no calc of inner (more far away) particles is needed!
                               // if (dist <= W.cell_r_cut)
 
                               // if the cell isn't outside the world compute!
                               if(!leftWorld)
                               {
+                                  int watchCell = J(nbCell, W.cell_N);
                                    // foreach particle j in neighbourcell compute force
                                    for (std::vector<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j < W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
                                    {
@@ -197,8 +198,8 @@ void VelocityVerletLC::update_X()
                 // ... and don't forget to set the actual force to zero
                 i->F[d] = 0;
 		    }
-            std::cout << "Cell[" << W.getCellNumber(i) << "]"
-                      << ".particle["  <<  i->ID  << "]" << std::endl;
+			//std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+			//<< ".particle["  <<  i->ID  << "]" << std::endl;
             // then check if particle left its cell and handle moving issues (respective border issues)
             if (W.getCellNumber(i) != checkCell)
             {
