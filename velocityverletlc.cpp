@@ -64,7 +64,7 @@ void VelocityVerletLC::comp_F()
                                      periodic[d] = true;
                                  }
                                  // LEAVING
-                                 if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
+                                 else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
                                  else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
 
 
