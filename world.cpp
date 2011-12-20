@@ -140,10 +140,11 @@
 std::ostream& operator << (std::ostream& os, World& W) {
     os << "t=" << W.t << " deltaT=" << W.deltaT << " tEnd=" << W.tEnd
     << " Number of Particles=" << W.particles.size();
-    for (unsigned int i=0; i<W.particles.size(); i++) {
-        os << "particle[" << i << "] = (";
+    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
+    {
+        os << "particle[" << i->ID << "] = (";
         for (unsigned int d=0; d<DIM; d++)
-            os << W.particles[i].x[d] << ", ";
+            os << i->x[d] << ", ";
         os << ")";
     }
     return os;

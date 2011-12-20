@@ -4,6 +4,7 @@
 #include "defines.hpp"
 #include "particle.hpp"
 #include <vector>
+#include <list>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -74,7 +75,7 @@ public:
     /// potential depth
     real epsilon;
     /// Vector of particles
-    std::vector<Particle> particles;
+    std::list<Particle> particles;
     /// upper borders 
     borderType upperBorder[DIM];
     /// lower borders
