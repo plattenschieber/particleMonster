@@ -72,7 +72,7 @@ void VelocityVerletLC::comp_F()
                               // If neighbour cell is too far away, no calc of inner (more far away) particles is needed!
                               // if (dist <= W.cell_r_cut)
 
-                              // if the cell isn't outside the world compute!
+                              // compute only if the neighbour cell is inside the world
                               if(!leftWorld)
                               {
                                   int watchCell = J(nbCell, W.cell_N);
@@ -174,6 +174,13 @@ void VelocityVerletLC::update_X()
   	    // foreach cell go through it's particles... 
 	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
         {
+            // DEBUG at first get out every particle and it's cell number
+            std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+                      << ".particle["  <<  i->ID  << "]";
+            for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
+            std::cout << std::endl;
+
+
             // if the flag is checked, push the particle in the last round into it's new position
             doIt = false;
             // if flag is not checked, particle is we are at the border
@@ -198,7 +205,7 @@ void VelocityVerletLC::update_X()
                 // ... and don't forget to set the actual force to zero
                 i->F[d] = 0;
 		    }
-			//std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+            //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
 			//<< ".particle["  <<  i->ID  << "]" << std::endl;
             // then check if particle left its cell and handle moving issues (respective border issues)
             if (W.getCellNumber(i) != checkCell)
@@ -269,6 +276,7 @@ void VelocityVerletLC::update_X()
                     }
                 }
             }
+
         }
     }
     // and now add the particles again to their belonging cells
@@ -279,5 +287,6 @@ void VelocityVerletLC::update_X()
         i = W.particles.erase(i);
         i--;
     }
+
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
