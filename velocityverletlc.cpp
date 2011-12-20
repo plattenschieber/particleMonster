@@ -33,7 +33,7 @@ void VelocityVerletLC::compF()
             {
                 // we compute the ePot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' ePot...
                 // roll over every particle i in actual cell
-                for (std::vector<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i < W.cells[J(jCell,W.cell_N)].particles.end(); i++)
+                for (std::list<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i != W.cells[J(jCell,W.cell_N)].particles.end(); i++)
                 {
                     // roll over every neighbour cell
                     for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
@@ -77,7 +77,7 @@ void VelocityVerletLC::compF()
                               {
                                   int watchCell = J(nbCell, W.cell_N);
                                    // foreach particle j in neighbourcell compute force
-                                   for (std::vector<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j < W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
+                                   for (std::list<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j != W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
                                    {
                                    // ...except of the computation with itself (i!=j)
                                      if (i!=j)
@@ -146,7 +146,7 @@ void VelocityVerletLC::updateV()
     for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
         // foreach cell go through it's particles... 
-        for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
+        for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
             // ...and over every dimension of particle i
             for (unsigned int d=0; d<DIM; d++)
@@ -172,7 +172,7 @@ void VelocityVerletLC::updateX()
    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
   	    // foreach cell go through it's particles... 
-	    for (std::vector<Particle>::iterator i = cell->particles.begin(); i < cell->particles.end(); i++)
+        for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
             // DEBUG at first get out every particle and it's cell number
             std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
@@ -280,7 +280,7 @@ void VelocityVerletLC::updateX()
         }
     }
     // and now add the particles again to their belonging cells
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
     {
         //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
         W.cells[W.getCellNumber(i)].particles.push_back(*i);

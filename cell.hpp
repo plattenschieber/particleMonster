@@ -2,7 +2,7 @@
 #define _CELL_HPP
 
 #include "defines.hpp"
-#include <vector>
+#include <list>
 #include "particle.hpp"
 
 /**
@@ -13,7 +13,7 @@
 class Cell {
 public:
     /// The cell contains particles ...
-    std::vector<Particle> particles;
+    std::list<Particle> particles;
 };
 
 #endif // _CELL_HPP

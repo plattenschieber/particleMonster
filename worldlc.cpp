@@ -76,9 +76,9 @@ void WorldLC::readParticles(const std::string &filename)
     World::readParticles(filename);
     nParticles = particles.size();
     // Write every particle into it's belonging cell
-    for (std::vector<Particle>::iterator i = particles.begin(); i < particles.end(); i++)
+    for (std::list<Particle>::iterator i = particles.begin(); i != particles.end(); i++)
     {
-        std::cout << "Push and erase particles[" << i-particles.begin() << "] " << std::endl; 
+        std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
         // add particle to right cell...
         // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
         cells[getCellNumber(i)].particles.push_back(*i);
@@ -90,7 +90,7 @@ void WorldLC::readParticles(const std::string &filename)
     particles.clear();
 }
 
-int WorldLC::getCellNumber(const std::vector<Particle>::iterator i) 
+int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 {
     int tmp[3] = {0,0,0};
 //    // DEBUG Table
@@ -130,10 +130,10 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
             // we are now in cell# x
             os << "cell[" << i-W.cells.begin() << "] = " ;
             // get out every particle in this cell
-            for (std::vector<Particle>::iterator j = W.cells[i-W.cells.begin()].particles.begin();j < W.cells[i-W.cells.begin()].particles.end(); j++)
+            for (std::list<Particle>::iterator j = W.cells[i-W.cells.begin()].particles.begin();j != W.cells[i-W.cells.begin()].particles.end(); j++)
             {
                 // Particle Number
-                os <<  j - W.cells[i-W.cells.begin()].particles.begin() << ": ";
+                os <<  j->ID << ": ";
                 //  get out the particles location 
                 for (unsigned int d=0; d<DIM; d++)
                     os << j->x[d] << "\t";

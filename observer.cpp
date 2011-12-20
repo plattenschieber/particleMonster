@@ -54,7 +54,7 @@ void Observer::outputcoordinates()
     // write updating time
     coordinates << W.t << "\t";
     // run over each particle (use const where you can)...
-    for (std::vector<Particle>::const_iterator i = W.particles.begin(); i != W.particles.end(); ++i)
+    for (std::list<Particle>::const_iterator i = W.particles.begin(); i != W.particles.end(); ++i)
         // ...and each of it's dimensions
         for (unsigned int d=0; d<DIM; d++)
             // get it out, seperated with tabulars

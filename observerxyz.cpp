@@ -46,7 +46,7 @@ void ObserverXYZ::outputCoordinates()
     // run over each particle,...
     for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
         // each cell...
-        for (std::vector<Particle>::const_iterator j = i->particles.begin(); j < i->particles.begin();	j++)
+        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end();	j++)
             // ...and each of it's dimensions
             for (unsigned int d=0; d<DIM; d++)
                 // get it out, seperated with tabulars
@@ -63,7 +63,7 @@ void ObserverXYZ::outputXYZ()
     // get out every particle to satisfy the xyz format
     for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
     {
-        for (std::vector<Particle>::const_iterator j = i->particles.begin(); j < i->particles.end(); j++)    
+        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
     	{
             // each particle should be an H-atom. At least now... 
             xyz << "H\t";

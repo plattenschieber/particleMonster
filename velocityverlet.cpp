@@ -44,9 +44,9 @@ void VelocityVerlet::compF()
     // there is no ePot in the beginning
     W.ePot = 0.0;
     // we compute the ePot for each pair of particles and add it to the worlds' ePot...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...except of the computation with itself (i!=j)
-        for (std::vector<Particle>::iterator j = W.particles.begin(); j < i; j++) 
+        for (std::list<Particle>::iterator j = W.particles.begin(); j != i; j++)
         {
             // don't forget to reset the distance
             dist = 0.0;
@@ -65,7 +65,7 @@ void VelocityVerlet::updateV()
     // there is no eKin in the beginning
     W.eKin = 0.0;
 	// roll over every particle i...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...and every of it's dimensions
 		for (unsigned int d=0; d<DIM; d++)
         {
@@ -79,7 +79,7 @@ void VelocityVerlet::updateV()
 void VelocityVerlet::updateX()
 {
     // roll over every particle...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...and every of it's dimensions
 		for (unsigned int d=0; d<DIM; d++)
 		{
@@ -95,7 +95,7 @@ void VelocityVerlet::updateX()
 void VelocityVerlet::handleBorders()
 {
     // roll over every particle...
-    for (std::vector<Particle>::iterator i = W.particles.begin(); i < W.particles.end(); i++)
+    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...and every of it's dimensions
 		for (unsigned int d=0; d<DIM; d++)
 		{
