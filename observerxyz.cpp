@@ -4,7 +4,7 @@ ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
 {
 
     // open xyz file
-    std::string xyz_filename = W.name + ".xyz";
+    std::string xyz_filename = "log/" + W.name + ".xyz";
     // open file, overwrite existing files, take no prisioners
     xyz.open(xyz_filename.c_str());
     if ( xyz.is_open() )
@@ -12,7 +12,7 @@ ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
         std::cout << "Opened " << xyz_filename << " for writing." << std::endl;
     
     // open coordinates file
-    std::string coordinates_filename = W.name + ".coordinates";
+    std::string coordinates_filename = "log/" + W.name + ".coordinates";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordinates_filename.c_str());
     if ( coordinates.is_open() )
