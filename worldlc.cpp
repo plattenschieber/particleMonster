@@ -6,7 +6,6 @@
 #include <map>
 #include <cmath>
 
-
 // ctor, which calls World::World()   
 WorldLC::WorldLC() : nParticles(0), cell_r_cut(2.5) {
     // we do need another mapOption
@@ -14,15 +13,15 @@ WorldLC::WorldLC() : nParticles(0), cell_r_cut(2.5) {
 }
 
 
-void WorldLC::read_Parameter(const std::string &filename)
+void WorldLC::readParameter(const std::string &filename)
 {
     // call the base function 
-    World::read_Parameter(filename); 
+    World::readParameter(filename);
     // create input filestream
     std::ifstream parfile(filename.c_str());
     // check if file is open
     if (!parfile.is_open())
-        throw std::runtime_error("read_Parameter(): Can't open file '" + filename + "' for reading.");
+        throw std::runtime_error("readParameter(): Can't open file '" + filename + "' for reading.");
     
     // helper strings
     std::string line, option;
@@ -71,10 +70,10 @@ void WorldLC::read_Parameter(const std::string &filename)
 //    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
-void WorldLC::read_Particles(const std::string &filename)
+void WorldLC::readParticles(const std::string &filename)
 {
     // call the base function
-    World::read_Particles(filename);
+    World::readParticles(filename);
     nParticles = particles.size();
     // Write every particle into it's belonging cell
     for (std::vector<Particle>::iterator i = particles.begin(); i < particles.end(); i++)
@@ -120,7 +119,7 @@ int WorldLC::getCellNumber(const std::vector<Particle>::iterator i)
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
     // Get out some information about the world
-    os << W.name << " Dim=" << DIM << " t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
+    os << W.name << " Dim=" << DIM << " t=" << W.t << " deltaT=" << W.deltaT << " tEnd=" << W.tEnd
        << " Number of Cells=" << W.cells.size() << " cell_r_cut=" << W.cell_r_cut << std::endl; 
     // roll over each Cell
     for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)

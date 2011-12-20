@@ -4,20 +4,20 @@ ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
 {
 
     // open xyz file
-    std::string xyz_filename = "log/" + W.name + ".xyz";
+    std::string xyzFilename = "log/" + W.name + ".xyz";
     // open file, overwrite existing files, take no prisioners
-    xyz.open(xyz_filename.c_str());
+    xyz.open(xyzFilename.c_str());
     if ( xyz.is_open() )
         // and tell the world
-        std::cout << "Opened " << xyz_filename << " for writing." << std::endl;
+        std::cout << "Opened " << xyzFilename << " for writing." << std::endl;
     
     // open coordinates file
-    std::string coordinates_filename = "log/" + W.name + ".coordinates";
+    std::string coordFilename = "log/" + W.name + ".coordinates";
     // open file, overwrite existing files, take no prisioners
-    coordinates.open(coordinates_filename.c_str());
+    coordinates.open(coordFilename.c_str());
     if ( coordinates.is_open() )
         // and tell the world
-        std::cout << "Opened " << coordinates_filename << " for writing." << std::endl;
+        std::cout << "Opened " << coordFilename << " for writing." << std::endl;
 }
 
 
@@ -39,7 +39,7 @@ ObserverXYZ::~ObserverXYZ()
     std::cout << "Everything closed properly" << std::endl;
 }
 
-void ObserverXYZ::output_coordinates()
+void ObserverXYZ::outputCoordinates()
 {
     // write updating time
     coordinates << ((WorldLC)W).t << "\t";
@@ -56,7 +56,7 @@ void ObserverXYZ::output_coordinates()
 
 }
 
-void ObserverXYZ::output_xyz()
+void ObserverXYZ::outputXYZ()
 {
     // write size and actual time of our world W
     xyz << W.nParticles << std::endl << "Time: " << W.t << std::endl;
@@ -82,7 +82,7 @@ void ObserverXYZ::notify()
     // write statistics and coordinates 
     Observer::notify();
     // write the xyz-format
-    output_xyz();
+    outputXYZ();
 }
 
 

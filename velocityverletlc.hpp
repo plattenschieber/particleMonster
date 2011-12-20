@@ -39,17 +39,17 @@ public:
     /**
      * @brief calculates the forces affecting the particles at the current time
      */
-    void comp_F();
+    void compF();
     
     /**
      * @brief calculates the new velocity of the particles
      */
-    void update_V();
+    void updateV();
     
     /**
      * @brief calculate the new position of all particles according to their velocity
      */
-    void update_X();
+    void updateX();
 private:
     VelocityVerletLC();
 };

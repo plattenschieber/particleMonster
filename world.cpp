@@ -5,27 +5,27 @@
 
 
     // intializing via intializer list - order is set by definings in .hpp; 
-    World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),sigma(1.0),epsilon(1.0)
+    World::World() : name("unknown"),t(0),deltaT(0.0),tEnd(0.0),eKin(0.0),ePot(0.0),eTot(0.0),sigma(1.0),epsilon(1.0)
     {    
         //setting map mapOptions for switchcase
         mapOptions["name"] = NAME;
-        mapOptions["delta_t"] = DELTA_T;  
-        mapOptions["t_end"] = T_END;
+        mapOptions["delta_T"] = DELTA_T;
+        mapOptions["t_End"] = T_END;
         mapOptions["length"] = LENGTH;
-        mapOptions["upper_border"] = UPPER_BORDER;
-        mapOptions["lower_border"] = LOWER_BORDER;
+        mapOptions["upper_border"] = UPPERBORDER;
+        mapOptions["lower_border"] = LOWERBORDER;
         mapOptions["sigma"] = SIGMA;
         mapOptions["epsilon"] = EPSILON;
     }
 
-    void World::read_Parameter(const std::string &filename)
+    void World::readParameter(const std::string &filename)
     {
       
         // create input filestream
         std::ifstream parfile(filename.c_str());
         // check if file is open
         if (!parfile.is_open())
-            throw std::runtime_error("read_Parameter(): Can't open file '" + filename + "' for reading.");
+            throw std::runtime_error("readParameter(): Can't open file '" + filename + "' for reading.");
         
         // helper strings
         std::string line, option, tmp;
@@ -45,10 +45,10 @@
             switch(mapOptions[option])
             {
                 case DELTA_T:
-                    strstr >> delta_t;
+                    strstr >> deltaT;
                     break;
                 case T_END:
-                    strstr >> t_end;
+                    strstr >> tEnd;
                     break;
                 case NAME:
                     strstr >> name;
@@ -62,22 +62,22 @@
                         strstr >> length[i];
                     } 
                     break;
-                case UPPER_BORDER:
+                case UPPERBORDER:
                     strstr >> tmp;
                     for (int i=0; i<DIM; i++)
                     {
-                        if (tmp == "leaving") upper_border[i] = leaving;   
-                        else if (tmp == "periodic") upper_border[i] = periodic;
-                        else upper_border[i] = unknown;
+                        if (tmp == "leaving") upperBorder[i] = leaving;
+                        else if (tmp == "periodic") upperBorder[i] = periodic;
+                        else upperBorder[i] = unknown;
                     }
                     break;
-                case LOWER_BORDER:
+                case LOWERBORDER:
                     strstr >> tmp;
                     for (int i=0; i<DIM; i++)
                     {
-                        if (tmp == "leaving") lower_border[i] = leaving;   
-                        else if (tmp == "periodic") lower_border[i] = periodic;
-                        else lower_border[i] = unknown;
+                        if (tmp == "leaving") lowerBorder[i] = leaving;
+                        else if (tmp == "periodic") lowerBorder[i] = periodic;
+                        else lowerBorder[i] = unknown;
                     }
                     break;
                 // handle unknown options
@@ -90,13 +90,13 @@
         parfile.close();
     }
 
-    void World::read_Particles(const std::string &filename)
+    void World::readParticles(const std::string &filename)
     {
         // create input filestream
         std::ifstream parfile(filename.c_str());
         // check if file is open
         if (!parfile.is_open())
-            throw std::runtime_error("read_Particles(): Can't open file '" + filename + "' for reading.");
+            throw std::runtime_error("readParticles(): Can't open file '" + filename + "' for reading.");
         
         // helper strings
         std::string line;
@@ -138,7 +138,7 @@
 }
 
 std::ostream& operator << (std::ostream& os, World& W) {
-    os << "t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
+    os << "t=" << W.t << " deltaT=" << W.deltaT << " tEnd=" << W.tEnd
     << " Number of Particles=" << W.particles.size();
     for (unsigned int i=0; i<W.particles.size(); i++) {
         os << "particle[" << i << "] = (";

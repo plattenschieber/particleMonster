@@ -29,10 +29,10 @@ int main2(int argc, const char *argv[]) {
     std::cout << argv[2] << std::endl;
     
     // read Parameters
-    W.read_Parameter(argv[1]);
+    W.readParameter(argv[1]);
     
     // read Particles
-    W.read_Particles(argv[2]);
+    W.readParticles(argv[2]);
     
     // print World configuration after Building it up
     std::cout << W << std::endl;
