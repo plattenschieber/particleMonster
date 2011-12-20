@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstdio>
-#include <math.h>
+#include <cmath>
 
 #include "world.hpp"
 #include "worldlc.hpp"
