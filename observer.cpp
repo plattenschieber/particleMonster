@@ -43,9 +43,9 @@ void Observer::outputstatistics()
     // write statistics into the filestream, seperated with tabulars
     statistics
         << W.t << "\t" 
-        << W.ePot << "\t"
-        << W.eKin << "\t"
-        << W.eKin + W.ePot // observe conservation of energy
+        << W.e_pot << "\t"
+        << W.e_kin << "\t"
+        << W.e_kin + W.e_pot // observe conservation of energy
         << std::endl;
 }
 

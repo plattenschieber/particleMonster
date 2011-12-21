@@ -22,8 +22,8 @@ void VelocityVerletLC::compF()
     int jCell[DIM], nbCell[DIM];
     // check the distance and throw out all that's more far away than rcut
     real dist = 0.0;
-    // there is no ePot in the beginning
-    W.ePot = 0.0;
+    // there is no e_pot in the beginning
+    W.e_pot = 0.0;
     // roll over each cell
     for (jCell[0]=0; jCell[0]<W.cell_N[0]; jCell[0]++)
     {
@@ -31,7 +31,7 @@ void VelocityVerletLC::compF()
         {
         	for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
             {
-                // we compute the ePot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' ePot...
+                // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
                 // roll over every particle i in actual cell
                 for (std::list<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i != W.cells[J(jCell,W.cell_N)].particles.end(); i++)
                 {
@@ -53,19 +53,19 @@ void VelocityVerletLC::compF()
                                  // dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);
 
                                  // PERIODIC
-                                 if (nbCell[d]<0 && W.lowerBorder[d]==W.periodic)
+                                 if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
                                  {
                                      nbCell[d] = W.cell_N[d]-1;
                                      periodic[d] = true;
                                  }
-                                 else if (nbCell[d]>=W.cell_N[d] && W.upperBorder[d]==W.periodic)
+                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
                                  {
                                      nbCell[d]=0;
                                      periodic[d] = true;
                                  }
                                  // LEAVING
-                                 else if (nbCell[d]<0 && W.lowerBorder[d]==W.leaving) leftWorld = true;
-                                 else if (nbCell[d]>=W.cell_N[d] && W.upperBorder[d]==W.leaving) leftWorld = true;
+                                 else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
+                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
 
 
                               }
@@ -124,7 +124,7 @@ void VelocityVerletLC::compF()
                                          // only particles which are closer than rcut
                                          if (dist <= W.cell_r_cut)
                                              // computes the force between particle i and j and add it to our potential
-                                             W.ePot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                             W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
                                     }
                                  }
                               }
@@ -140,8 +140,8 @@ void VelocityVerletLC::compF()
 
 void VelocityVerletLC::updateV()
 {
-    // there is no eKin in the beginning
-    W.eKin = 0.0;
+    // there is no e_kin in the beginning
+    W.e_kin = 0.0;
 	// roll over every cell	
     for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
@@ -152,9 +152,9 @@ void VelocityVerletLC::updateV()
             for (unsigned int d=0; d<DIM; d++)
             {
                 // compute new velocity in dimension d
-                i->v[d] += .5*(i->F_old[d] + i->F[d])*W.deltaT/i->m;
-                // add now the pro rata eKin
-                W.eKin += .5*i->m*sqr(i->v[d]);
+                i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+                // add now the pro rata e_kin
+                W.e_kin += .5*i->m*sqr(i->v[d]);
             }
         }
     }
@@ -175,10 +175,10 @@ void VelocityVerletLC::updateX()
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
             // DEBUG at first get out every particle and it's cell number
-            std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
-                      << ".particle["  <<  i->ID  << "]";
-            for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
-            std::cout << std::endl;
+            //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+              //        << ".particle["  <<  i->ID  << "]";
+            //for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
+            //std::cout << std::endl;
 
 
             // if the flag is checked, push the particle in the last round into it's new position
@@ -193,7 +193,7 @@ void VelocityVerletLC::updateX()
             for (unsigned int d=0; d<DIM; d++)
 		    {
                 // computing new location of the particle i if it's leaving the world, elsewise just call handleBorders (-lc version) in the end
-                i->x[d] += W.deltaT*i->v[d] + (.5*i->F[d]*sqr(W.deltaT)) / i->m;
+                i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
 
 //                std::cout << "Cell[" << W.getCellNumber(i) << "]"
@@ -214,8 +214,10 @@ void VelocityVerletLC::updateX()
                 for (unsigned int d = 0; d<DIM; d++)
                 {
                     // periodic - position = position % worldlength
-                    if (i->x[d] > W.length[d] && W.upperBorder[d] == W.periodic)
+                    if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
                     {
+                        // DEBUG:
+                        std::cout << "New position (oben Raus Untenwiederrein)" << std::endl;
                         // new position is at the beginning of world plus the overhead that x left the world
                         i->x[d] = fmod(i->x[d], W.length[d]);
 
@@ -223,8 +225,10 @@ void VelocityVerletLC::updateX()
                         doIt = true;
                     }
                     // periodic - position = position % worldlength
-                    else if (i->x[d] < 0 && W.lowerBorder[d] == W.periodic)
+                    else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
                     {
+                        // DEBUG:
+                        std::cout << "New position (unten Raus Obenwiederrein)" << std::endl;
                         // new position is end of world minus overhead that x left the world
                         i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
 
@@ -232,7 +236,7 @@ void VelocityVerletLC::updateX()
                         doIt = true;
                     }
                     // leaving - it just bumps out
-                    else if (i->x[d] > W.length[d] && W.upperBorder[d] == W.leaving)
+                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
                     {
                         // DEBUG:
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
@@ -244,7 +248,7 @@ void VelocityVerletLC::updateX()
                         break;
                     }
                     // leaving - it just bumps out
-                    else if (i->x[d] < 0  && W.lowerBorder[d] == W.leaving)
+                    else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
                     {
                         // DEBUG:
                         std::cout << "New position (unten raus Wegvomfenster): " << std::endl;

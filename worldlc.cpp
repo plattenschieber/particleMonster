@@ -81,6 +81,7 @@ void WorldLC::readParticles(const std::string &filename)
         std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
         // add particle to right cell...
         // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
+
         cells[getCellNumber(i)].particles.push_back(*i);
     }
     std::cout << "***************************************************" << std::endl
@@ -102,7 +103,7 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
         tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
 	
 //      // DEBUG
-	 // std::cout << tmp[d] << "\t";
+     // std::cout << tmp[d] << "\t";
 
     }
 
@@ -119,7 +120,7 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
     // Get out some information about the world
-    os << W.name << " Dim=" << DIM << " t=" << W.t << " deltaT=" << W.deltaT << " tEnd=" << W.tEnd
+    os << W.name << " Dim=" << DIM << " t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
        << " Number of Cells=" << W.cells.size() << " cell_r_cut=" << W.cell_r_cut << std::endl; 
     // roll over each Cell
     for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)

@@ -23,9 +23,9 @@ public:
     /**
      * @brief run a single timestep
      *
-     * @param deltaT length of the timestep
+     * @param delta_t length of the timestep
      */
-    virtual void timestep(real deltaT) = 0;
+    virtual void timestep(real delta_t) = 0;
 
     /**
      * @brief run the simulation

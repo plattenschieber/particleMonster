@@ -14,13 +14,13 @@ VelocityVerlet::VelocityVerlet(World& _W, Potential* _Pot, ObserverXYZ& _O) : Ti
 void VelocityVerlet::simulate()
 {
     // while simulation end time not reached
-    while (W.t < W.tEnd)
+    while (W.t < W.t_end)
         // it's just one step for a man, but a big step for the world...
-        timestep(W.deltaT);
+        timestep(W.delta_t);
 }
 
 // a timestep is a timestep is a timestep. It doesn't matter, when it happens. Our model stays consistent!
-void VelocityVerlet::timestep(real deltaT)
+void VelocityVerlet::timestep(real delta_t)
 {
     // first of all, we have to update our positions by means of their actual position, pace and force
     updateX();
@@ -32,7 +32,7 @@ void VelocityVerlet::timestep(real deltaT)
     // if they left the world, no other treatment of the particles is neaded
     //handleBorders();
     // increase time
-    W.t += deltaT;
+    W.t += delta_t;
     // notify observer
     O.notify();
 }
@@ -41,9 +41,9 @@ void VelocityVerlet::compF()
 {
     // check the distance and throw out all that's more far away than rcut
     real dist = 0.0, rcut = 2.5;
-    // there is no ePot in the beginning
-    W.ePot = 0.0;
-    // we compute the ePot for each pair of particles and add it to the worlds' ePot...
+    // there is no e_pot in the beginning
+    W.e_pot = 0.0;
+    // we compute the e_pot for each pair of particles and add it to the worlds' e_pot...
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...except of the computation with itself (i!=j)
         for (std::list<Particle>::iterator j = W.particles.begin(); j != i; j++)
@@ -56,23 +56,23 @@ void VelocityVerlet::compF()
 		    // only particles which are closer than rcut
 		    if(dist <= rcut) 
 		         // computes the force between particle i and j and add it to our potential
-             W.ePot += Pot.force(*i, *j);
+             W.e_pot += Pot.force(*i, *j);
 		}
 }
 
 void VelocityVerlet::updateV()
 {
-    // there is no eKin in the beginning
-    W.eKin = 0.0;
+    // there is no e_kin in the beginning
+    W.e_kin = 0.0;
 	// roll over every particle i...
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...and every of it's dimensions
 		for (unsigned int d=0; d<DIM; d++)
         {
             // compute new velocity in dimension d
-            i->v[d] += .5*(i->F_old[d] + i->F[d])*W.deltaT/i->m;
-            // add now the pro rata eKin
-            W.eKin += .5*i->m*sqr(i->v[d]);
+            i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+            // add now the pro rata e_kin
+            W.e_kin += .5*i->m*sqr(i->v[d]);
         }
 }
 
@@ -84,7 +84,7 @@ void VelocityVerlet::updateX()
 		for (unsigned int d=0; d<DIM; d++)
 		{
 		    // computing new location of the particle i
-            i->x[d] += W.deltaT*i->v[d] + (.5*i->F[d]*sqr(W.deltaT)) / i->m;
+            i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 		    // save last force...
 			i->F_old[d] = i->F[d];
 		    // ... and don't forget to set the actual force to zero
@@ -100,14 +100,14 @@ void VelocityVerlet::handleBorders()
 		for (unsigned int d=0; d<DIM; d++)
 		{
 			// is leaving AND above zero AND outer space
-                    if ( (W.upperBorder[d] == W.leaving) & (i->x[d]>0) & (i->x[d] > W.length[d]) )
+                    if ( (W.upper_border[d] == W.leaving) & (i->x[d]>0) & (i->x[d] > W.length[d]) )
 		        {
                       W.particles.erase(i);
                       i--;
                       break;
 		        }
             		// same here, except of handling the particles under zero
-                    else if( (W.lowerBorder[d] == W.leaving) && (i->x[d]<0) )
+                    else if( (W.lower_border[d] == W.leaving) && (i->x[d]<0) )
             		{
                         W.particles.erase(i);
                         i--;

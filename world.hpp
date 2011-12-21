@@ -25,13 +25,13 @@ public:
      * parameter file example
      * \code
      * name example01
-     * deltaT 0.1
-     * tEnd 1.0
+     * delta_t 0.1
+     * t_end 1.0
      * epsilon 1
      * sigma 1
      * length 10 10 15
-     * upperBorder leaving leaving leaving
-     * lowerBorder leaving leaving leaving
+     * upper_border leaving leaving leaving
+     * lower_border leaving leaving leaving
      * \endcode
      *
      * @param filename filename of the parameter file
@@ -50,7 +50,8 @@ public:
     enum borderType { unknown = 0, leaving = 1, periodic = 2 };
     /// Value-Defintions of the different option strings
     // DEFAULT is needed to handle unknown options - otherwise a new option with value 0 is created and will map NAME 
-    enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPERBORDER=5, LOWERBORDER=6, EPSILON=7, SIGMA=8};
+    enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPERBORDER=5, LOWERBORDER=6, EPSILON=7, SIGMA=8,
+                  SETSTARTTEMPERATURE=9, THERMOSTATSTEPINTERVAL=10, THERMOSTATTARGETTEMPERATURE=11,RANDOMSEED=12 };
     /// Map to associate the strings with the enum values
     std::map<std::string, World::Option> mapOptions;
     // data structures
@@ -59,15 +60,15 @@ public:
     /// Current time
     real t;
     /// Timestep
-    real deltaT;
+    real delta_t;
     /// End of simulation
-    real tEnd;
+    real t_end;
     /// kinetic energy
-    real eKin;
+    real e_kin;
     /// potential energy
-    real ePot;
+    real e_pot;
     /// total energy
-    real eTot;
+    real e_tot;
     /// the axis lengths of our world
     real length[DIM];
     /// zero breakthrough
@@ -77,12 +78,15 @@ public:
     /// Vector of particles
     std::list<Particle> particles;
     /// upper borders 
-    borderType upperBorder[DIM];
+    borderType upper_border[DIM];
     /// lower borders
-    borderType lowerBorder[DIM];
+    borderType lower_border[DIM];
 
     // Thermostat
-    real thermostatStepIntervall;
+    real set_start_temperature;
+    real thermostat_step_intervall;
+    real thermostat_target_temperature;
+
 };
 
 /**

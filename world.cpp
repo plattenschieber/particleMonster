@@ -5,17 +5,21 @@
 
 
     // intializing via intializer list - order is set by definings in .hpp; 
-    World::World() : name("unknown"),t(0),deltaT(0.0),tEnd(0.0),eKin(0.0),ePot(0.0),eTot(0.0),sigma(1.0),epsilon(1.0)
+    World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),sigma(1.0),epsilon(1.0)
     {    
         //setting map mapOptions for switchcase
         mapOptions["name"] = NAME;
-        mapOptions["delta_T"] = DELTA_T;
-        mapOptions["t_End"] = T_END;
+        mapOptions["delta_t"] = DELTA_T;
+        mapOptions["t_end"] = T_END;
         mapOptions["length"] = LENGTH;
         mapOptions["upper_border"] = UPPERBORDER;
         mapOptions["lower_border"] = LOWERBORDER;
         mapOptions["sigma"] = SIGMA;
         mapOptions["epsilon"] = EPSILON;
+        mapOptions["set_start_temperature"] = SETSTARTTEMPERATURE;
+        mapOptions["thermostat_step_intervall"] = THERMOSTATSTEPINTERVAL;
+        mapOptions["thermostat_target_temperature"] = THERMOSTATTARGETTEMPERATURE;
+        mapOptions["random_seed"] = RANDOMSEED;
     }
 
     void World::readParameter(const std::string &filename)
@@ -45,10 +49,10 @@
             switch(mapOptions[option])
             {
                 case DELTA_T:
-                    strstr >> deltaT;
+                    strstr >> delta_t;
                     break;
                 case T_END:
-                    strstr >> tEnd;
+                    strstr >> t_end;
                     break;
                 case NAME:
                     strstr >> name;
@@ -66,19 +70,34 @@
                     strstr >> tmp;
                     for (int i=0; i<DIM; i++)
                     {
-                        if (tmp == "leaving") upperBorder[i] = leaving;
-                        else if (tmp == "periodic") upperBorder[i] = periodic;
-                        else upperBorder[i] = unknown;
+                        if (tmp == "leaving") upper_border[i] = leaving;
+                        else if (tmp == "periodic") upper_border[i] = periodic;
+                        else upper_border[i] = unknown;
                     }
                     break;
                 case LOWERBORDER:
                     strstr >> tmp;
                     for (int i=0; i<DIM; i++)
                     {
-                        if (tmp == "leaving") lowerBorder[i] = leaving;
-                        else if (tmp == "periodic") lowerBorder[i] = periodic;
-                        else lowerBorder[i] = unknown;
+                        if (tmp == "leaving") lower_border[i] = leaving;
+                        else if (tmp == "periodic") lower_border[i] = periodic;
+                        else lower_border[i] = unknown;
                     }
+                    break;
+
+                case SETSTARTTEMPERATURE:
+                    break;
+                case THERMOSTATSTEPINTERVAL:
+                    break;
+                case THERMOSTATTARGETTEMPERATURE:
+                    break;
+                case RANDOMSEED:
+                    double tmp2;
+                    strstr >> tmp2;
+                    if (tmp2<1)
+                        srand(time(NULL));
+                    else
+                        srand(tmp2);
                     break;
                 // handle unknown options
                 default:
@@ -125,8 +144,8 @@
             for(int i=0; i<DIM; i++)
                 strstr >> tmpparticle.v[i];        
             // assure integrity of the force of our tmpparticle
-            for(int i=0; i<DIM; i++)
-                tmpparticle.F[i] = tmpparticle.F_old[i] = 0.0;
+            for(int d=0; d<DIM; d++)
+                tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
             
             // add the new particle to our worlds' particles
             particles.push_back(tmpparticle);
@@ -138,7 +157,7 @@
 }
 
 std::ostream& operator << (std::ostream& os, World& W) {
-    os << "t=" << W.t << " deltaT=" << W.deltaT << " tEnd=" << W.tEnd
+    os << "t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
     << " Number of Particles=" << W.particles.size();
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
     {
