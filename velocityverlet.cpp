@@ -28,11 +28,16 @@ void VelocityVerlet::timestep(real delta_t)
     compF();
     // now we can compute their new pace
     updateV();
+    // compute new energy average
+    updateAverage();
     
     // if they left the world, no other treatment of the particles is neaded
     //handleBorders();
     // increase time
     W.t += delta_t;
+
+    std::cout << "STEP " << W.t;
+
     // notify observer
     O.notify();
 }
@@ -71,6 +76,10 @@ void VelocityVerlet::updateV()
         {
             // compute new velocity in dimension d
             i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+            // if we want to check the temperatur regulary
+            if (fmod(W.t,W.thermo_step_interval) == 0)
+                // multiply velocity by beta
+                i->v[d] *= W.calcBeta(d);
             // add now the pro rata e_kin
             W.e_kin += .5*i->m*sqr(i->v[d]);
         }
@@ -116,5 +125,22 @@ void VelocityVerlet::handleBorders()
             		// all other particles are at least on the point zero. This point is actually included ;) 
        		 }
 }
+
+void VelocityVerlet::updateAverage()
+{
+    // add a new total energy to our average list
+    W.e_avglist.push_back (W.e_pot+W.e_kin);
+    // if there are more than 100 measurements, pop the oldest (the first)
+    if (W.t/W.delta_t > 100)
+        W.e_avglist.pop_front ();
+    // reset average
+    W.e_avg = 0.0;
+    // resum the average
+    for (std::list<real>::iterator i = W.e_avglist.begin (); i != W.e_avglist.end (); i++)
+        W.e_avg += *i;
+    // Divide by number of elements in list or at most 100
+    W.e_avg /= (((W.t/W.delta_t)<100)?(W.t/W.delta_t):100);
+}
+
 
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
