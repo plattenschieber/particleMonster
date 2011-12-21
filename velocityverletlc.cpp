@@ -44,6 +44,9 @@ void VelocityVerletLC::compF()
                            {
                               bool leftWorld = false;
                               bool periodic[DIM] = {false, false, false};
+
+                              int nbTmpCell[DIM];
+                              memcpy(nbTmpCell, nbCell, sizeof(nbCell));
                               // don't forget to reset the distance
                               //dist = 0.0;
                               // set neighbour to its new place if world is periodic and observed cell is located at the border  
@@ -55,12 +58,12 @@ void VelocityVerletLC::compF()
                                  // PERIODIC
                                  if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
                                  {
-                                     nbCell[d] = W.cell_N[d]-1;
+                                     nbTmpCell[d] = W.cell_N[d]-1;
                                      periodic[d] = true;
                                  }
                                  else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
                                  {
-                                     nbCell[d]=0;
+                                     nbTmpCell[d]=0;
                                      periodic[d] = true;
                                  }
                                  // LEAVING
@@ -77,7 +80,7 @@ void VelocityVerletLC::compF()
                               {
                                   int watchCell = J(nbCell, W.cell_N);
                                    // foreach particle j in neighbourcell compute force
-                                   for (std::list<Particle>::iterator j = W.cells[J(nbCell,W.cell_N)].particles.begin(); j != W.cells[J(nbCell,W.cell_N)].particles.end(); j++)
+                                   for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
                                    {
                                    // ...except of the computation with itself (i!=j)
                                      if (i!=j)
