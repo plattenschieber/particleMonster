@@ -156,6 +156,10 @@ void VelocityVerletLC::updateV()
             {
                 // compute new velocity in dimension d
                 i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
+                // if we want to check the temperatur regulary
+                if (fmod(W.t,W.thermo_step_interval) == 0)
+                    // multiply velocity by beta
+                    i->v[d] *= W.calcBeta(d);
                 // add now the pro rata e_kin
                 W.e_kin += .5*i->m*sqr(i->v[d]);
             }
@@ -196,6 +200,7 @@ void VelocityVerletLC::updateX()
             for (unsigned int d=0; d<DIM; d++)
 		    {
                 // computing new location of the particle i if it's leaving the world, elsewise just call handleBorders (-lc version) in the end
+
                 i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
 
