@@ -43,8 +43,6 @@ public:
    std::vector<Cell> cells;
    /// Number of cells in every dimension
    int cell_N[DIM];
-   /// Number of particles overall
-   int nParticles;
    /// length of cells
    real cell_length[DIM];
    /// r_cut used for calculation of the cell length
