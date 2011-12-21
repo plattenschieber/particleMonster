@@ -117,6 +117,15 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 
 }
 
+real WorldLC::calcBeta(int dimension)
+{
+    real tmp = 0.0;
+    for (std::vector<Cell>::iterator cell = cells.begin(); cell != cells.end (); cell++)
+        for (std::list<Particle>::iterator i = cell->particles.begin (); i != cell->particles.end (); i++)
+            tmp += sqr(i->v[dimension]);
+    return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
+}
+
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
     // Get out some information about the world

@@ -9,6 +9,9 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <stdexcept>
+#include <sstream>
+#include <cmath>
 
 /**
  * @brief the world class holds all information of the simulation environment
@@ -45,13 +48,19 @@ public:
      */
     virtual void readParticles(const std::string &filename);
 
+    /**
+     * @brief calculate the new beta
+     */
+    virtual real calcBeta(int dimension);
+
+
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world and periodic will let the particles enter on the opposite side
     /// Type of World Border
     enum borderType { unknown = 0, leaving = 1, periodic = 2 };
     /// Value-Defintions of the different option strings
     // DEFAULT is needed to handle unknown options - otherwise a new option with value 0 is created and will map NAME 
     enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPERBORDER=5, LOWERBORDER=6, EPSILON=7, SIGMA=8,
-                  SETSTARTTEMPERATURE=9, THERMOSTATSTEPINTERVAL=10, THERMOSTATTARGETTEMPERATURE=11,RANDOMSEED=12 };
+                  STARTTEMP=9, STEPINTERVAL=10, TARGETTEMP=11, RANDOMSEED=12 };
     /// Map to associate the strings with the enum values
     std::map<std::string, World::Option> mapOptions;
     // data structures
@@ -69,13 +78,19 @@ public:
     real e_pot;
     /// total energy
     real e_tot;
+    /// average total energy for max the last 100 values (if more are inserted, the first bumps out)
+    std::list<real> e_avglist;
+    /// the sum over the last 100 total energys
+    real e_avg;
     /// the axis lengths of our world
     real length[DIM];
     /// zero breakthrough
     real sigma;
     /// potential depth
     real epsilon;
-    /// Vector of particles
+    /// Number of particles overall
+    int nParticles;
+    /// List of particles
     std::list<Particle> particles;
     /// upper borders 
     borderType upper_border[DIM];
@@ -83,9 +98,13 @@ public:
     borderType lower_border[DIM];
 
     // Thermostat
-    real set_start_temperature;
-    real thermostat_step_intervall;
-    real thermostat_target_temperature;
+    /// if set, the start velocity of all particles is set to it
+    real thermo_start_temp;
+    ///
+    bool isThermoStartTemp;
+    /// every
+    real thermo_step_interval;
+    real thermo_target_temp;
 
 };
 
