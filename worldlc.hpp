@@ -31,8 +31,14 @@ public:
     void readParameter(const std::string &filename);
     // TODO: Add some comment here
     void readParticles(const std::string &filename);
+    /**
+     * @brief calculate the new beta
+     */
+    virtual real calcBeta(int dimension);
+
     // retrieve Index of Cell by coordinates
     int getCellNumber(const std::list<Particle>::iterator i);
+
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
