@@ -31,7 +31,6 @@
 typedef double real;
 // squre define
 #define sqr(_x) ((_x)*(_x))
-
 // small macro, to expand index calculation for different dimensions
 #if DIM == 2
 #define J(jCell,cell_N) ((jCell)[1] + (cell_N)[1]*(jCell)[0]) 

@@ -78,7 +78,7 @@ void VelocityVerletLC::compF()
                               // compute only if the neighbour cell is inside the world
                               if(!leftWorld)
                               {
-                                  int watchCell = J(nbCell, W.cell_N);
+                                  //int watchCell = J(nbCell, W.cell_N);
                                    // foreach particle j in neighbourcell compute force
                                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
                                    {
@@ -151,6 +151,7 @@ void VelocityVerletLC::updateV()
         // foreach cell go through it's particles... 
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
+            Particle &p = *i;
             // ...and over every dimension of particle i
             for (unsigned int d=0; d<DIM; d++)
             {
@@ -159,7 +160,7 @@ void VelocityVerletLC::updateV()
                 // if we want to check the temperatur regulary
                 if (fmod(W.t,W.thermo_step_interval) == 0)
                     // multiply velocity by beta
-                    i->v[d] *= W.calcBeta(d);
+                    i->v[d] *= W.calcBeta();
                 // add now the pro rata e_kin
                 W.e_kin += .5*i->m*sqr(i->v[d]);
             }
@@ -183,8 +184,8 @@ void VelocityVerletLC::updateX()
         {
             // DEBUG at first get out every particle and it's cell number
             //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
-              //        << ".particle["  <<  i->ID  << "]";
-            //for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
+            //          << ".particle["  <<  i->ID  << "]";
+            //for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " " << i->x[d];
             //std::cout << std::endl;
 
 
@@ -225,7 +226,7 @@ void VelocityVerletLC::updateX()
                     if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
                     {
                         // DEBUG:
-                        std::cout << "New position (oben Raus Untenwiederrein)" << std::endl;
+                        //std::cout << "New position (oben Raus Untenwiederrein)" << std::endl;
                         // new position is at the beginning of world plus the overhead that x left the world
                         i->x[d] = fmod(i->x[d], W.length[d]);
 
@@ -236,7 +237,7 @@ void VelocityVerletLC::updateX()
                     else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
                     {
                         // DEBUG:
-                        std::cout << "New position (unten Raus Obenwiederrein)" << std::endl;
+                        //std::cout << "New position (unten Raus Obenwiederrein)" << std::endl;
                         // new position is end of world minus overhead that x left the world
                         i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
 
@@ -247,7 +248,7 @@ void VelocityVerletLC::updateX()
                     else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
                     {
                         // DEBUG:
-                        std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
+                        //std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
                         // regardless in which dimension, just erase
                         i = cell->particles.erase(i);
                         i--;
@@ -259,7 +260,7 @@ void VelocityVerletLC::updateX()
                     else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
                     {
                         // DEBUG:
-                        std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
+                        //std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
                         // regardless in which dimension, just erase
                         i = cell->particles.erase(i);
                         i--;

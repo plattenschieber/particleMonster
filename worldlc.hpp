@@ -34,7 +34,7 @@ public:
     /**
      * @brief calculate the new beta
      */
-    virtual real calcBeta(int dimension);
+    virtual real calcBeta();
 
     // retrieve Index of Cell by coordinates
     int getCellNumber(const std::list<Particle>::iterator i);
