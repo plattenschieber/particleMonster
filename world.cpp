@@ -5,8 +5,8 @@
     // intializing via intializer list - order is set by definings in .hpp; 
     World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),e_avg(0.0),
                      sigma(1.0),epsilon(1.0), nParticles(0),
-                     thermo_start_temp(0.0),isThermoStartTemp(false),
-                     thermo_step_interval(0.0),thermo_target_temp(0.0)
+                     thermo_start_temp(0),isThermoStartTemp(false),
+                     thermo_step_interval(0),thermo_target_temp(0)
     {    
         //setting map mapOptions for switchcase
         mapOptions["name"] = NAME;
@@ -18,7 +18,7 @@
         mapOptions["sigma"] = SIGMA;
         mapOptions["epsilon"] = EPSILON;
         mapOptions["set_start_temperature"] = STARTTEMP;
-        mapOptions["thermostat_step_interval"] = STEPINTERVAL;
+        mapOptions["thermostat_step_intervall"] = STEPINTERVAL;
         mapOptions["thermostat_target_temperature"] = TARGETTEMP;
         mapOptions["random_seed"] = RANDOMSEED;
     }
@@ -154,12 +154,12 @@
             if (isThermoStartTemp)
             {
                 // number crunchers for Maxwell-Boltzmann
-                real s, r, u[2], tmp;
+                real s, r, u[DIM], tmp;
                 do
                 {
                     // reset
                     tmp = 0.0;
-                    for (int d=0; d<2; d++)
+                    for (int d=0; d<DIM; d++)
                     {
                         // get out a number between 0.0 and 1.0 inclusively
                         u[d] = (double(rand()) / RAND_MAX);
@@ -174,10 +174,9 @@
                 // i don't know how it's working exactly
                 r = -2.0*log(s)/s;
                 // set new velocity according to Maxwell-Boltzmann
-                for (int d=0; d<2; d++)
+                for (int d=0; d<DIM; d++)
                     tmpparticle.v[d] = u[d]*sqrt(r);
             }
-            tmpparticle.v[2] = 0.0;
 
             // assure integrity of the force of our tmpparticle
             for(int d=0; d<DIM; d++)
@@ -195,17 +194,11 @@
     }
 
 
-    real World::calcBeta()
+    real World::calcBeta(int dimension)
     {
-        std::cout << "Velocity scaling" << std::endl;
         real tmp = 0.0;
         for (std::list<Particle>::iterator i = particles.begin (); i != particles.end (); i++)
-
-
-            for (int d=0; d<DIM; d++)
-                tmp += sqr(i->v[d]);
-
-
+            tmp += sqr(i->v[dimension]);
         return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
     }
 

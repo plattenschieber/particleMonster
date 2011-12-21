@@ -51,7 +51,7 @@ public:
     /**
      * @brief calculate the new beta
      */
-    virtual real calcBeta();
+    virtual real calcBeta(int dimension);
 
 
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world and periodic will let the particles enter on the opposite side
@@ -100,10 +100,10 @@ public:
     // Thermostat
     /// if set, the start velocity of all particles is set to it
     real thermo_start_temp;
+    ///
     bool isThermoStartTemp;
-    /// every interval length we recalc the temp
+    /// every
     real thermo_step_interval;
-    /// what we want to get in our system
     real thermo_target_temp;
 
 };

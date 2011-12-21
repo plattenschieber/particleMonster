@@ -78,7 +78,7 @@ void WorldLC::readParticles(const std::string &filename)
     // Write every particle into it's belonging cell
     for (std::list<Particle>::iterator i = particles.begin(); i != particles.end(); i++)
     {
-        //std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
+        std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
         // add particle to right cell...
         // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
 
@@ -100,9 +100,9 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
     {
         if (i->x[d] < 0)
             return -1;
-        tmp[d] = (int) (floor(i->x[d] * cell_N[d] / length[d])) % cell_N[d];
+        tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
 	
-     // DEBUG
+//      // DEBUG
      // std::cout << tmp[d] << "\t";
 
     }
@@ -117,13 +117,12 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 
 }
 
-real WorldLC::calcBeta()
+real WorldLC::calcBeta(int dimension)
 {
     real tmp = 0.0;
     for (std::vector<Cell>::iterator cell = cells.begin(); cell != cells.end (); cell++)
         for (std::list<Particle>::iterator i = cell->particles.begin (); i != cell->particles.end (); i++)
-            for (int d=0; d<DIM; d++)
-                tmp += sqr(i->v[d]);
+            tmp += sqr(i->v[dimension]);
     return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
 }
 
