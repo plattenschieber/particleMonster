@@ -57,6 +57,11 @@ public:
     virtual void updateX();
     
     /**
+     * @brief updates the average energy of the last 100 steps
+     */
+    void updateAverage();
+
+    /**
      * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
      */
     virtual void handleBorders();
