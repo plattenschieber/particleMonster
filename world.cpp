@@ -1,11 +1,12 @@
 #include "world.hpp"
-#include <stdexcept>
-#include <sstream>
-#include <map>
+
 
 
     // intializing via intializer list - order is set by definings in .hpp; 
-    World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),sigma(1.0),epsilon(1.0)
+    World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),e_avg(0.0),
+                     sigma(1.0),epsilon(1.0), nParticles(0),
+                     thermo_start_temp(0),isThermoStartTemp(false),
+                     thermo_step_interval(0),thermo_target_temp(0)
     {    
         //setting map mapOptions for switchcase
         mapOptions["name"] = NAME;
@@ -16,9 +17,9 @@
         mapOptions["lower_border"] = LOWERBORDER;
         mapOptions["sigma"] = SIGMA;
         mapOptions["epsilon"] = EPSILON;
-        mapOptions["set_start_temperature"] = SETSTARTTEMPERATURE;
-        mapOptions["thermostat_step_intervall"] = THERMOSTATSTEPINTERVAL;
-        mapOptions["thermostat_target_temperature"] = THERMOSTATTARGETTEMPERATURE;
+        mapOptions["set_start_temperature"] = STARTTEMP;
+        mapOptions["thermostat_step_intervall"] = STEPINTERVAL;
+        mapOptions["thermostat_target_temperature"] = TARGETTEMP;
         mapOptions["random_seed"] = RANDOMSEED;
     }
 
@@ -59,8 +60,10 @@
                     break;
                 case EPSILON:
                     strstr >> epsilon;
+                    break;
                 case SIGMA:
                     strstr >> sigma;
+                    break;
                 case LENGTH:
                     for (int i=0; i<DIM; i++) {
                         strstr >> length[i];
@@ -85,11 +88,15 @@
                     }
                     break;
 
-                case SETSTARTTEMPERATURE:
+                case STARTTEMP:
+                    strstr >> thermo_start_temp;
+                    isThermoStartTemp = true;
                     break;
-                case THERMOSTATSTEPINTERVAL:
+                case STEPINTERVAL:
+                    strstr >> thermo_step_interval;
                     break;
-                case THERMOSTATTARGETTEMPERATURE:
+                case TARGETTEMP:
+                    strstr >> thermo_target_temp;
                     break;
                 case RANDOMSEED:
                     double tmp2;
@@ -141,20 +148,60 @@
             for(int i=0; i<DIM; i++)
                 strstr >> tmpparticle.x[i];
             // push dim read values into tmpparticles velocity
-            for(int i=0; i<DIM; i++)
-                strstr >> tmpparticle.v[i];        
+            for(int d=0; d<DIM; d++)
+                strstr >> tmpparticle.v[d];
+            // set start velocity of particle by means of Maxwell Boltzmann
+            if (isThermoStartTemp)
+            {
+                // number crunchers for Maxwell-Boltzmann
+                real s, r, u[DIM], tmp;
+                do
+                {
+                    // reset
+                    tmp = 0.0;
+                    for (int d=0; d<DIM; d++)
+                    {
+                        // get out a number between 0.0 and 1.0 inclusively
+                        u[d] = (double(rand()) / RAND_MAX);
+                        // scaling
+                        u[d] = 2.0*u[d]-1.0;
+                        tmp += sqr(u[d]);
+                    }
+                    s = tmp;
+
+                // are we inside the R^DIM ball? sin^2 + cos^2 = 1
+                } while (s>1.0);
+                // i don't know how it's working exactly
+                r = -2.0*log(s)/s;
+                // set new velocity according to Maxwell-Boltzmann
+                for (int d=0; d<DIM; d++)
+                    tmpparticle.v[d] = u[d]*sqrt(r);
+            }
+
             // assure integrity of the force of our tmpparticle
             for(int d=0; d<DIM; d++)
                 tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
             
             // add the new particle to our worlds' particles
             particles.push_back(tmpparticle);
+            // update particle size
+            nParticles++;
             // resets tmpparticle for next 
             tmpparticle.clear();
+        }
+        // close file
+        parfile.close();
     }
-    // close file
-    parfile.close();
-}
+
+
+    real World::calcBeta(int dimension)
+    {
+        real tmp = 0.0;
+        for (std::list<Particle>::iterator i = particles.begin (); i != particles.end (); i++)
+            tmp += sqr(i->v[dimension]);
+        return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
+    }
+
 
 std::ostream& operator << (std::ostream& os, World& W) {
     os << "t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
