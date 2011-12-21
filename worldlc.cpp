@@ -7,7 +7,7 @@
 #include <cmath>
 
 // ctor, which calls World::World()   
-WorldLC::WorldLC() : nParticles(0), cell_r_cut(2.5) {
+WorldLC::WorldLC() : cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
 }
