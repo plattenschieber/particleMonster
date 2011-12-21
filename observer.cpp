@@ -38,7 +38,7 @@ Observer::~Observer()
     std::cout << "Everything closed properly" << std::endl;
 }
 
-void Observer::outputstatistics()
+void Observer::outputStatistics()
 {
     // write statistics into the filestream, seperated with tabulars
     statistics
@@ -49,7 +49,7 @@ void Observer::outputstatistics()
         << std::endl;
 }
 
-void Observer::outputcoordinates()
+void Observer::outputCoordinates()
 {
     // write updating time
     coordinates << W.t << "\t";
@@ -66,9 +66,9 @@ void Observer::outputcoordinates()
 void Observer::notify()
 {
     // write statistics 
-    outputstatistics();
+    outputStatistics();
     // write the coordinates of our particles
-    outputcoordinates();
+    outputCoordinates();
 }
 
 
