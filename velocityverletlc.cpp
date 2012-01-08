@@ -175,8 +175,6 @@ void VelocityVerletLC::updateX()
     // if the flag is checked, push the particle in the last round into it's new position
     bool doIt = false;
     bool innerWorld = true;
-
-	// roll over every cell	
     real time = W.t;
    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
