@@ -45,8 +45,7 @@ void Observer::outputStatistics()
         << W.t << "\t" 
         << W.e_pot << "\t"
         << W.e_kin << "\t"
-        << W.e_kin + W.e_pot << "\t" // observe conservation of energy
-        << W.e_avg // observe energy conservation of last 100 steps
+        << W.e_kin + W.e_pot // observe conservation of energy
         << std::endl;
 }
 

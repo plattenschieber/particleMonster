@@ -7,7 +7,7 @@
 #include <cmath>
 
 // ctor, which calls World::World()   
-WorldLC::WorldLC() : cell_r_cut(2.5) {
+WorldLC::WorldLC() : nParticles(0), cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
 }
@@ -115,16 +115,6 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 //    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
     return J(tmp,cell_N);
 
-}
-
-real WorldLC::calcBeta()
-{
-    real tmp = 0.0;
-    for (std::vector<Cell>::iterator cell = cells.begin(); cell != cells.end (); cell++)
-        for (std::list<Particle>::iterator i = cell->particles.begin (); i != cell->particles.end (); i++)
-            for (int d=0; d<DIM; d++)
-                tmp += sqr(i->v[d]);
-    return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
 }
 
 std::ostream& operator << (std::ostream& os, WorldLC& W) 

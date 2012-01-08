@@ -18,7 +18,6 @@ VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& 
 
 void VelocityVerletLC::compF()
 {
-    real time = W.t;
     // Cell and neighbour cell indices 
     int jCell[DIM], nbCell[DIM];
     // check the distance and throw out all that's more far away than rcut
@@ -157,10 +156,6 @@ void VelocityVerletLC::updateV()
             {
                 // compute new velocity in dimension d
                 i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
-                // if we want to check the temperatur regulary
-                if (fmod(W.t,W.thermo_step_interval) == 0 && W.isThermoStartTemp)
-                    // multiply velocity by beta
-                    i->v[d] *= W.calcBeta();
                 // add now the pro rata e_kin
                 W.e_kin += .5*i->m*sqr(i->v[d]);
             }
@@ -175,19 +170,18 @@ void VelocityVerletLC::updateX()
     // if the flag is checked, push the particle in the last round into it's new position
     bool doIt = false;
     bool innerWorld = true;
-    real time = W.t;
+
+	// roll over every cell	
    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
   	    // foreach cell go through it's particles... 
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
-            Particle &p = *i;
             // DEBUG at first get out every particle and it's cell number
-            std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
-                      << ".particle["  <<  i->ID  << "]";
-            for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
-            for (int d=0; d<DIM; d++) std::cout << " -> " << i->v[d] << " ";
-            std::cout << std::endl;
+            //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+              //        << ".particle["  <<  i->ID  << "]";
+            //for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
+            //std::cout << std::endl;
 
 
             // if the flag is checked, push the particle in the last round into it's new position
@@ -202,7 +196,6 @@ void VelocityVerletLC::updateX()
             for (unsigned int d=0; d<DIM; d++)
 		    {
                 // computing new location of the particle i if it's leaving the world, elsewise just call handleBorders (-lc version) in the end
-
                 i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
 
@@ -224,7 +217,7 @@ void VelocityVerletLC::updateX()
                 for (unsigned int d = 0; d<DIM; d++)
                 {
                     // periodic - position = position % worldlength
-                    if (i->x[d] >= W.length[d] && W.upper_border[d] == W.periodic)
+                    if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
                     {
                         // DEBUG:
                         std::cout << "New position (oben Raus Untenwiederrein)" << std::endl;
@@ -246,7 +239,7 @@ void VelocityVerletLC::updateX()
                         doIt = true;
                     }
                     // leaving - it just bumps out
-                    else if (i->x[d] >= W.length[d] && W.upper_border[d] == W.leaving)
+                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
                     {
                         // DEBUG:
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
