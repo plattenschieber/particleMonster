@@ -6,6 +6,7 @@
 #include "defines.hpp"
 #include "particle.hpp"
 #include <vector>
+#include <list>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -27,23 +28,27 @@ public:
      *
      * @param filename filename of the parameter file
      */
-    void read_Parameter(const std::string &filename);
+    void readParameter(const std::string &filename);
     // TODO: Add some comment here
-    void read_Particles(const std::string &filename);
+    void readParticles(const std::string &filename);
+    /**
+     * @brief calculate the new beta
+     */
+    virtual real calcBeta();
+
     // retrieve Index of Cell by coordinates
-    int getCellNumber(const std::vector<Particle>::iterator i);
+    int getCellNumber(const std::list<Particle>::iterator i);
+
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
-    enum Option { NAME, DELTA_T, T_END, LENGTH, UPPER_BORDER, LOWER_BORDER, EPSILON, SIGMA, CELLRCUT}; 
+    enum Option { NAME, DELTA_T, T_END, LENGTH, UPPERBORDER, LOWERBORDER, EPSILON, SIGMA, CELLRCUT};
     // Map to associate the strings with the enum values 
     std::map<std::string, WorldLC::Option> mapOptions;  
    /// cells
    std::vector<Cell> cells;
    /// Number of cells in every dimension
    int cell_N[DIM];
-   /// Number of particles overall
-   int nParticles;
    /// length of cells
    real cell_length[DIM];
    /// r_cut used for calculation of the cell length

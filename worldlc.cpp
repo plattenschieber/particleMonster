@@ -6,23 +6,22 @@
 #include <map>
 #include <cmath>
 
-
 // ctor, which calls World::World()   
-WorldLC::WorldLC() : nParticles(0), cell_r_cut(2.5) {
+WorldLC::WorldLC() : cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
 }
 
 
-void WorldLC::read_Parameter(const std::string &filename)
+void WorldLC::readParameter(const std::string &filename)
 {
     // call the base function 
-    World::read_Parameter(filename); 
+    World::readParameter(filename);
     // create input filestream
     std::ifstream parfile(filename.c_str());
     // check if file is open
     if (!parfile.is_open())
-        throw std::runtime_error("read_Parameter(): Can't open file '" + filename + "' for reading.");
+        throw std::runtime_error("readParameter(): Can't open file '" + filename + "' for reading.");
     
     // helper strings
     std::string line, option;
@@ -71,17 +70,18 @@ void WorldLC::read_Parameter(const std::string &filename)
 //    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
-void WorldLC::read_Particles(const std::string &filename)
+void WorldLC::readParticles(const std::string &filename)
 {
     // call the base function
-    World::read_Particles(filename);
+    World::readParticles(filename);
     nParticles = particles.size();
     // Write every particle into it's belonging cell
-    for (std::vector<Particle>::iterator i = particles.begin(); i < particles.end(); i++)
+    for (std::list<Particle>::iterator i = particles.begin(); i != particles.end(); i++)
     {
-        std::cout << "Push and erase particles[" << i-particles.begin() << "] " << std::endl; 
+        std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
         // add particle to right cell...
         // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
+
         cells[getCellNumber(i)].particles.push_back(*i);
     }
     std::cout << "***************************************************" << std::endl
@@ -91,7 +91,7 @@ void WorldLC::read_Particles(const std::string &filename)
     particles.clear();
 }
 
-int WorldLC::getCellNumber(const std::vector<Particle>::iterator i) 
+int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 {
     int tmp[3] = {0,0,0};
 //    // DEBUG Table
@@ -103,7 +103,7 @@ int WorldLC::getCellNumber(const std::vector<Particle>::iterator i)
         tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
 	
 //      // DEBUG
-	 // std::cout << tmp[d] << "\t";
+     // std::cout << tmp[d] << "\t";
 
     }
 
@@ -115,6 +115,16 @@ int WorldLC::getCellNumber(const std::vector<Particle>::iterator i)
 //    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
     return J(tmp,cell_N);
 
+}
+
+real WorldLC::calcBeta()
+{
+    real tmp = 0.0;
+    for (std::vector<Cell>::iterator cell = cells.begin(); cell != cells.end (); cell++)
+        for (std::list<Particle>::iterator i = cell->particles.begin (); i != cell->particles.end (); i++)
+            for (int d=0; d<DIM; d++)
+                tmp += sqr(i->v[d]);
+    return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
 }
 
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
@@ -131,10 +141,10 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
             // we are now in cell# x
             os << "cell[" << i-W.cells.begin() << "] = " ;
             // get out every particle in this cell
-            for (std::vector<Particle>::iterator j = W.cells[i-W.cells.begin()].particles.begin();j < W.cells[i-W.cells.begin()].particles.end(); j++)
+            for (std::list<Particle>::iterator j = W.cells[i-W.cells.begin()].particles.begin();j != W.cells[i-W.cells.begin()].particles.end(); j++)
             {
                 // Particle Number
-                os <<  j - W.cells[i-W.cells.begin()].particles.begin() << ": ";
+                os <<  j->ID << ": ";
                 //  get out the particles location 
                 for (unsigned int d=0; d<DIM; d++)
                     os << j->x[d] << "\t";

@@ -35,17 +35,17 @@ public:
     /**
      * @brief calculares the forces affecting the particles at the current time
      */
-    virtual void comp_F() = 0;
+    virtual void compF() = 0;
 
     /**
      * @brief calculates the new velocity of the particles
      */
-    virtual void update_V() = 0;
+    virtual void updateV() = 0;
 
     /**
      * @brief calculate the new position of all particles according to their velocity
      */
-    virtual void update_X() = 0;
+    virtual void updateX() = 0;
 
 protected:
     // data structures

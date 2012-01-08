@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstdio>
-#include <math.h>
+#include <cmath>
 
 #include "world.hpp"
 #include "worldlc.hpp"
@@ -30,10 +30,10 @@ int main(int argc, const char *argv[]) {
     std::cout << argv[2] << std::endl;
     
     // read Parameters
-    W.read_Parameter(argv[1]);
+    W.readParameter(argv[1]);
     
     // read Particles
-    W.read_Particles(argv[2]);
+    W.readParticles(argv[2]);
     
     // print World configuration after Building it up
     std::cout << W << std::endl;
@@ -43,11 +43,11 @@ int main(int argc, const char *argv[]) {
     
     // instanciate timediscretization 
     // remark: & is used to get the address of Pot // reremark: removed the & 
-    VelocityVerletLC VerletLC(W, LPot, O);
+    VelocityVerletLC verletLC(W, LPot, O);
     std::cout << "WHAT THE FUCK" << std::endl;
     
     // run the simulation
-    VerletLC.simulate();
+    verletLC.simulate();
     
     return EXIT_SUCCESS;
 }
