@@ -18,6 +18,7 @@ VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& 
 
 void VelocityVerletLC::compF()
 {
+    real time = W.t;
     // Cell and neighbour cell indices 
     int jCell[DIM], nbCell[DIM];
     // check the distance and throw out all that's more far away than rcut
@@ -176,16 +177,19 @@ void VelocityVerletLC::updateX()
     bool innerWorld = true;
 
 	// roll over every cell	
+    real time = W.t;
    	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
   	    // foreach cell go through it's particles... 
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
+            Particle &p = *i;
             // DEBUG at first get out every particle and it's cell number
-            //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
-              //        << ".particle["  <<  i->ID  << "]";
-            //for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
-            //std::cout << std::endl;
+            std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+                      << ".particle["  <<  i->ID  << "]";
+            for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
+            for (int d=0; d<DIM; d++) std::cout << " -> " << i->v[d] << " ";
+            std::cout << std::endl;
 
 
             // if the flag is checked, push the particle in the last round into it's new position
