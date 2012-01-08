@@ -226,7 +226,7 @@ void VelocityVerletLC::updateX()
                 for (unsigned int d = 0; d<DIM; d++)
                 {
                     // periodic - position = position % worldlength
-                    if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
+                    if (i->x[d] >= W.length[d] && W.upper_border[d] == W.periodic)
                     {
                         // DEBUG:
                         std::cout << "New position (oben Raus Untenwiederrein)" << std::endl;
@@ -248,7 +248,7 @@ void VelocityVerletLC::updateX()
                         doIt = true;
                     }
                     // leaving - it just bumps out
-                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
+                    else if (i->x[d] >= W.length[d] && W.upper_border[d] == W.leaving)
                     {
                         // DEBUG:
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
