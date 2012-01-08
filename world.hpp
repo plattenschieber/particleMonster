@@ -4,7 +4,6 @@
 #include "defines.hpp"
 #include "particle.hpp"
 #include <vector>
-#include <list>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -36,23 +35,23 @@ public:
      *
      * @param filename filename of the parameter file
      */
-    virtual void readParameter(const std::string &filename);
+    virtual void read_Parameter(const std::string &filename);
 
     /**
      * @brief read the particles from the given data file
      *
      * @param filename filename of the particle data file
      */
-    virtual void readParticles(const std::string &filename);
+    virtual void read_Particles(const std::string &filename);
 
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world and periodic will let the particles enter on the opposite side
-    /// Type of World Border
-    enum borderType { unknown = 0, leaving = 1, periodic = 2 };
-    /// Value-Defintions of the different option strings
+    enum BorderType { unknown = 0, leaving = 1, periodic = 2 }; 
+
+    // Value-Defintions of the different String values
     // DEFAULT is needed to handle unknown options - otherwise a new option with value 0 is created and will map NAME 
-    enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPERBORDER=5, LOWERBORDER=6, EPSILON=7, SIGMA=8,
-                  SETSTARTTEMPERATURE=9, THERMOSTATSTEPINTERVAL=10, THERMOSTATTARGETTEMPERATURE=11,RANDOMSEED=12 };
-    /// Map to associate the strings with the enum values
+    enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPER_BORDER=5, LOWER_BORDER=6, EPSILON=7, SIGMA=8}; 
+    
+    // Map to associate the strings with the enum values
     std::map<std::string, World::Option> mapOptions;
     // data structures
     /// Name of the simulated world
@@ -73,20 +72,14 @@ public:
     real length[DIM];
     /// zero breakthrough
     real sigma;
-    /// potential depth
+    // potential depth
     real epsilon;
     /// Vector of particles
-    std::list<Particle> particles;
+    std::vector<Particle> particles;
     /// upper borders 
-    borderType upper_border[DIM];
+    BorderType upper_border[DIM];
     /// lower borders
-    borderType lower_border[DIM];
-
-    // Thermostat
-    real set_start_temperature;
-    real thermostat_step_intervall;
-    real thermostat_target_temperature;
-
+    BorderType lower_border[DIM];
 };
 
 /**

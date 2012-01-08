@@ -34,12 +34,12 @@ public:
     /** 
      * @brief output statistics like kinetic, potential and total energy
      */
-    void outputStatistics();
+    void output_statistics();
 
     /** 
      * @brief output coordinates of the particles
      */
-    virtual void outputCoordinates();
+    virtual void output_coordinates();
     
   
 

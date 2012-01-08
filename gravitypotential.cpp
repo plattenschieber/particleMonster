@@ -1,5 +1,5 @@
 #include "gravitypotential.hpp"
-#include <cmath>
+#include <math.h>
 
 real GravityPotential::force(Particle &p, Particle &q)
 {

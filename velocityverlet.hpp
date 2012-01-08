@@ -44,22 +44,22 @@ public:
     /**
      * @brief calculates the forces affecting the particles at the current time
      */
-    virtual void compF();
+    virtual void comp_F();
     
     /**
      * @brief calculates the new velocity of the particles
      */
-    virtual void updateV();
+    virtual void update_V();
     
     /**
      * @brief calculate the new position of all particles according to their velocity
      */
-    virtual void updateX();
+    virtual void update_X();
     
     /**
      * @brief check every particle if it's still inside our word. Open borders will allow, energy loss in our system!
      */
-    virtual void handleBorders();
+    virtual void handle_borders();
     
 protected:
     // data structures inherited from TimeDiscretization

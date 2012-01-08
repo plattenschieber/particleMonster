@@ -35,12 +35,12 @@ public:
     /**
      * @brief generate a pymol readable file
      */
-    void outputXYZ();
+    void output_xyz();
 
     /** 
      * @brief output coordinates of the particles
      */
-    void outputCoordinates();
+    void output_coordinates();
     
   
 

@@ -9,27 +9,23 @@
     {    
         //setting map mapOptions for switchcase
         mapOptions["name"] = NAME;
-        mapOptions["delta_t"] = DELTA_T;
+        mapOptions["delta_t"] = DELTA_T;  
         mapOptions["t_end"] = T_END;
         mapOptions["length"] = LENGTH;
-        mapOptions["upper_border"] = UPPERBORDER;
-        mapOptions["lower_border"] = LOWERBORDER;
+        mapOptions["upper_border"] = UPPER_BORDER;
+        mapOptions["lower_border"] = LOWER_BORDER;
         mapOptions["sigma"] = SIGMA;
         mapOptions["epsilon"] = EPSILON;
-        mapOptions["set_start_temperature"] = SETSTARTTEMPERATURE;
-        mapOptions["thermostat_step_intervall"] = THERMOSTATSTEPINTERVAL;
-        mapOptions["thermostat_target_temperature"] = THERMOSTATTARGETTEMPERATURE;
-        mapOptions["random_seed"] = RANDOMSEED;
     }
 
-    void World::readParameter(const std::string &filename)
+    void World::read_Parameter(const std::string &filename)
     {
       
         // create input filestream
         std::ifstream parfile(filename.c_str());
         // check if file is open
         if (!parfile.is_open())
-            throw std::runtime_error("readParameter(): Can't open file '" + filename + "' for reading.");
+            throw std::runtime_error("read_Parameter(): Can't open file '" + filename + "' for reading.");
         
         // helper strings
         std::string line, option, tmp;
@@ -66,38 +62,23 @@
                         strstr >> length[i];
                     } 
                     break;
-                case UPPERBORDER:
+                case UPPER_BORDER:
                     strstr >> tmp;
                     for (int i=0; i<DIM; i++)
                     {
-                        if (tmp == "leaving") upper_border[i] = leaving;
+                        if (tmp == "leaving") upper_border[i] = leaving;   
                         else if (tmp == "periodic") upper_border[i] = periodic;
                         else upper_border[i] = unknown;
                     }
                     break;
-                case LOWERBORDER:
+                case LOWER_BORDER:
                     strstr >> tmp;
                     for (int i=0; i<DIM; i++)
                     {
-                        if (tmp == "leaving") lower_border[i] = leaving;
+                        if (tmp == "leaving") lower_border[i] = leaving;   
                         else if (tmp == "periodic") lower_border[i] = periodic;
                         else lower_border[i] = unknown;
                     }
-                    break;
-
-                case SETSTARTTEMPERATURE:
-                    break;
-                case THERMOSTATSTEPINTERVAL:
-                    break;
-                case THERMOSTATTARGETTEMPERATURE:
-                    break;
-                case RANDOMSEED:
-                    double tmp2;
-                    strstr >> tmp2;
-                    if (tmp2<1)
-                        srand(time(NULL));
-                    else
-                        srand(tmp2);
                     break;
                 // handle unknown options
                 default:
@@ -109,13 +90,13 @@
         parfile.close();
     }
 
-    void World::readParticles(const std::string &filename)
+    void World::read_Particles(const std::string &filename)
     {
         // create input filestream
         std::ifstream parfile(filename.c_str());
         // check if file is open
         if (!parfile.is_open())
-            throw std::runtime_error("readParticles(): Can't open file '" + filename + "' for reading.");
+            throw std::runtime_error("read_Particles(): Can't open file '" + filename + "' for reading.");
         
         // helper strings
         std::string line;
@@ -144,8 +125,8 @@
             for(int i=0; i<DIM; i++)
                 strstr >> tmpparticle.v[i];        
             // assure integrity of the force of our tmpparticle
-            for(int d=0; d<DIM; d++)
-                tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
+            for(int i=0; i<DIM; i++)
+                tmpparticle.F[i] = tmpparticle.F_old[i] = 0.0;
             
             // add the new particle to our worlds' particles
             particles.push_back(tmpparticle);
@@ -159,11 +140,10 @@
 std::ostream& operator << (std::ostream& os, World& W) {
     os << "t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
     << " Number of Particles=" << W.particles.size();
-    for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
-    {
-        os << "particle[" << i->ID << "] = (";
+    for (unsigned int i=0; i<W.particles.size(); i++) {
+        os << "particle[" << i << "] = (";
         for (unsigned int d=0; d<DIM; d++)
-            os << i->x[d] << ", ";
+            os << W.particles[i].x[d] << ", ";
         os << ")";
     }
     return os;
