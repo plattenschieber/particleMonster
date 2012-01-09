@@ -33,9 +33,6 @@ void VelocityVerletLC::compF()
                 // roll over every particle i in actual cell
                 for (std::list<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i != W.cells[J(jCell,W.cell_N)].particles.end(); i++)
                 {
-                    // DEBUG:
-                    real iTmp[DIM];
-                    memcpy(iTmp, i->x, sizeof(i->x));
 //                    // DEBUG for debugger
 //                    real iTmp[DIM];
 //                    memcpy(iTmp, i->x, sizeof(i->x));
@@ -104,9 +101,9 @@ void VelocityVerletLC::compF()
                                         {
                                             // DEBUG:
                                             // save i's and j's coordinates
-                                            real jTmp[DIM];
-                                            // copy coordinates
-                                            memcpy(jTmp, j->x, sizeof(j->x));
+                                            Particle &tmpj = *j;
+                                            Particle &tmpi = *i;
+
                                             // don't forget to reset the distance
                                             dist = 0.0;
                                             for (int d=0; d<DIM; d++)
@@ -142,6 +139,7 @@ void VelocityVerletLC::compF()
                                                 W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
 //                                                    std::cout << " lets TWIST" << std::endl;
 //                                                    std::cout << " no TWIST" << std::endl;
+//                                            // DEBUG print particle and it's cell number again
 //                                            std::cout << " compF(END): Cell[" << W.getCellNumber(i) << "]"
 //                                                      << ".particle["  <<  i->ID  << "]";
 //                                            std::cout << "x -> ";
