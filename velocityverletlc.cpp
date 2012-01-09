@@ -36,6 +36,20 @@ void VelocityVerletLC::compF()
                     // DEBUG:
                     real iTmp[DIM];
                     memcpy(iTmp, i->x, sizeof(i->x));
+//                    // DEBUG for debugger
+//                    real iTmp[DIM];
+//                    memcpy(iTmp, i->x, sizeof(i->x));
+//                    // DEBUG at first get print particle and it's cell number
+//                    std::cout << " compF(START): Cell[" << W.getCellNumber(i) << "]"
+//                              << ".particle["  <<  i->ID  << "]";
+//                    std::cout << "x -> ";
+//                    for (int d=0; d<DIM; d++) std::cout << i->x[d] << " ";
+//                    std::cout << "v -> ";
+//                    for (int d=0; d<DIM; d++) std::cout << i->v[d] << " ";
+//                    std::cout << "F -> ";
+//                    for (int d=0; d<DIM; d++) std::cout << i->F[d] << " ";
+//                    std::cout << std::endl;
+
 
                     // roll over every neighbour cell
                     for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
@@ -120,11 +134,23 @@ void VelocityVerletLC::compF()
                                                     dist += sqr(j->x[d] - i->x[d]);
                                             }
                                             // DEBUG
-                                            std::cout << "distance between i and j: " << dist << std::endl;
+//                                            std::cout << "distance between i and j: " << dist;
+
                                             // only particles which are closer than rcut
                                             if (dist <= W.cell_r_cut)
                                                 // computes the force between particle i and j and add it to our potential
                                                 W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+//                                                    std::cout << " lets TWIST" << std::endl;
+//                                                    std::cout << " no TWIST" << std::endl;
+//                                            std::cout << " compF(END): Cell[" << W.getCellNumber(i) << "]"
+//                                                      << ".particle["  <<  i->ID  << "]";
+//                                            std::cout << "x -> ";
+//                                            for (int d=0; d<DIM; d++) std::cout << i->x[d] << " ";
+//                                            std::cout << "v -> ";
+//                                            for (int d=0; d<DIM; d++) std::cout << i->v[d] << " ";
+//                                            std::cout << "F -> ";
+//                                            for (int d=0; d<DIM; d++) std::cout << i->F[d] << " ";
+//                                            std::cout << std::endl;
                                         }
                                     }
                                 }
@@ -148,6 +174,17 @@ void VelocityVerletLC::updateV()
         // foreach cell go through it's particles...
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
+//            // DEBUG at first print every particle and it's cell number
+//            std::cout << " UpdateV: Cell[" << W.getCellNumber(i) << "]"
+//                      << ".particle["  <<  i->ID  << "]";
+//            std::cout << "x -> ";
+//            for (int d=0; d<DIM; d++) std::cout << i->x[d] << " ";
+//            std::cout << "v -> ";
+//            for (int d=0; d<DIM; d++) std::cout << i->v[d] << " ";
+//            std::cout << "F -> ";
+//            for (int d=0; d<DIM; d++) std::cout << i->F[d] << " ";
+//            std::cout << std::endl;
+
             // ...and over every dimension of particle i
             for (unsigned int d=0; d<DIM; d++)
             {
@@ -179,17 +216,17 @@ void VelocityVerletLC::updateX()
         // foreach cell go through it's particles...
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
-            Particle &p = *i;
-            // DEBUG at first get out every particle and it's cell number
-            std::cout << " Cell[" << W.getCellNumber(i) << "]"
-                      << ".particle["  <<  i->ID  << "]";
-            std::cout << "x -> ";
-            for (int d=0; d<DIM; d++) std::cout << i->x[d] << " ";
-            std::cout << "v -> ";
-            for (int d=0; d<DIM; d++) std::cout << i->v[d] << " ";
-            std::cout << "F -> ";
-            for (int d=0; d<DIM; d++) std::cout << i->F[d] << " ";
-            std::cout << std::endl;
+//            Particle &p = *i;
+//            // DEBUG at first print particle and it's cell number
+//            std::cout << " UpdateX: Cell[" << W.getCellNumber(i) << "]"
+//                      << ".particle["  <<  i->ID  << "]";
+//            std::cout << "x -> ";
+//            for (int d=0; d<DIM; d++) std::cout << i->x[d] << " ";
+//            std::cout << "v -> ";
+//            for (int d=0; d<DIM; d++) std::cout << i->v[d] << " ";
+//            std::cout << "F -> ";
+//            for (int d=0; d<DIM; d++) std::cout << i->F[d] << " ";
+//            std::cout << std::endl;
 
 
             // if the flag is checked, push the particle in the last round into it's new position
