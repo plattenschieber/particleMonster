@@ -35,7 +35,7 @@ ObserverXYZ::~ObserverXYZ()
         coordinates.close();
         std::cout << "Closed coordinates" << std::endl;
     }
-
+  
     std::cout << "Everything closed properly" << std::endl;
 }
 
@@ -51,8 +51,8 @@ void ObserverXYZ::outputCoordinates()
             for (unsigned int d=0; d<DIM; d++)
                 // get it out, seperated with tabulars
                 coordinates << j->x[d] << "\t";
-    // end of line
-    coordinates << std::endl;
+     // end of line
+     coordinates << std::endl;
 
 }
 
@@ -64,8 +64,8 @@ void ObserverXYZ::outputXYZ()
     for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
     {
         for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
-        {
-            // each particle should be an H-atom. At least now...
+    	{
+            // each particle should be an H-atom. At least now... 
             xyz << "H\t";
             // particle j is located in a DIM-dimensional space
             for (unsigned int d=0; d<DIM; d++)
@@ -73,13 +73,13 @@ void ObserverXYZ::outputXYZ()
                 xyz << j->x[d] << "\t";
             // newline at end of each particle
             xyz << std::endl;
-        }
+	    }
     }
 }
 
 void ObserverXYZ::notify()
 {
-    // write statistics and coordinates
+    // write statistics and coordinates 
     Observer::notify();
     // write the xyz-format
     outputXYZ();

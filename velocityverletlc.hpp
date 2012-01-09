@@ -8,7 +8,7 @@
 
 /**
  * @brief Implementation of the Velocity Verlet Algorithm by means of our cell structure
- * Inheritance from VelocityVerlet, because we don't need to reimplement constructor, simulate, ...
+ * Inheritance from VelocityVerlet, because we don't need to reimplement constructor, simulate, ... 
  */
 class VelocityVerletLC : public VelocityVerlet {
 public:

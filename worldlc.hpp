@@ -43,16 +43,16 @@ public:
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
     enum Option { NAME, DELTA_T, T_END, LENGTH, UPPERBORDER, LOWERBORDER, EPSILON, SIGMA, CELLRCUT};
-    // Map to associate the strings with the enum values
-    std::map<std::string, WorldLC::Option> mapOptions;
-    /// cells
-    std::vector<Cell> cells;
-    /// Number of cells in every dimension
-    int cell_N[DIM];
-    /// length of cells
-    real cell_length[DIM];
-    /// r_cut used for calculation of the cell length
-    real cell_r_cut;
+    // Map to associate the strings with the enum values 
+    std::map<std::string, WorldLC::Option> mapOptions;  
+   /// cells
+   std::vector<Cell> cells;
+   /// Number of cells in every dimension
+   int cell_N[DIM];
+   /// length of cells
+   real cell_length[DIM];
+   /// r_cut used for calculation of the cell length
+   real cell_r_cut;
 };
 
 /**
