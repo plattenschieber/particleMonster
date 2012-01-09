@@ -36,7 +36,7 @@ void VelocityVerlet::timestep(real delta_t)
     // increase time
     W.t += delta_t;
 
-    std::cout << "STEP " << W.t;
+    std::cout << "STEP " << W.t << std::endl;
 
     // notify observer
     O.notify();
