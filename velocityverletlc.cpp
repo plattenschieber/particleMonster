@@ -2,15 +2,11 @@
 #include <math.h> 
 #include "defines.hpp"
 
-
-
-// another macro to expand - this time a for loop based on dimension DIM
-#
-
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,_Pot,_O), W(_W), Pot(_Pot) 
 {
-    // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
+// initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
 }
+
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,(*_Pot),_O), W(_W), Pot(*_Pot)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
@@ -30,7 +26,7 @@ void VelocityVerletLC::compF()
     {
         for (jCell[1]=0; jCell[1]<W.cell_N[1]; jCell[1]++)
         {
-        	for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
+            for (jCell[2]=0; jCell[2]<W.cell_N[2]; jCell[2]++)
             {
                 // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
                 // roll over every particle i in actual cell
@@ -41,40 +37,39 @@ void VelocityVerletLC::compF()
                     {
                         for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
                         {
-                           for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
-                           {
-                              bool leftWorld = false;
-                              bool periodic[DIM] = {false, false, false};
+                            for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
+                            {
+                                //
+                                bool leftWorld = false;
+                                bool periodic[DIM] = {false, false, false};
 
-                              int nbTmpCell[DIM];
-                              memcpy(nbTmpCell, nbCell, sizeof(nbCell));
-                              // don't forget to reset the distance
-                              //dist = 0.0;
-                              // set neighbour to its new place if world is periodic and observed cell is located at the border  
-                              for (int d=0; d<DIM; d++)
-                              {
-                                 // accumulate distance between particle and neighbour cell. 
-                                 // dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);
+                                // resolve neighbours real position, especially in periodic case
+                                int nbTmpCell[DIM];
+                                // copy therefor neighbour cells position to an temporay array
+                                memcpy(nbTmpCell, nbCell, sizeof(nbCell));
 
-                                 // PERIODIC
-                                 if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
-                                 {
-                                     nbTmpCell[d] = W.cell_N[d]-1;
-                                     periodic[d] = true;
-                                 }
-                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
-                                 {
-                                     nbTmpCell[d]=0;
-                                     periodic[d] = true;
-                                 }
-                                 // LEAVING
-                                 else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
-                                 else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
+                                // set neighbour to its new place if world is periodic and observed cell is located at the border
+                                // or ignore this neighbour cell (leftWorld = true)
+                                for (int d=0; d<DIM; d++)
+                                {
+                                    // accumulate distance between particle and neighbour cell.
+                                    // dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);
 
+                                    // PERIODIC
+                                    if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
+                                    {
+                                        nbTmpCell[d] = W.cell_N[d]-1;
+                                        periodic[d] = true;
+                                    }
+                                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
+                                    {
+                                        nbTmpCell[d]=0;
+                                        periodic[d] = true;
+                                    }
 
-                              }
-                              // If neighbour cell is too far away, no calc of inner (more far away) particles is needed!
-                              // if (dist <= W.cell_r_cut)
+                                    // LEAVING
+                                    else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
+                                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
 
                               // compute only if the neighbour cell is inside the world
                               if(!leftWorld)
@@ -119,20 +114,21 @@ void VelocityVerletLC::compF()
                                                     // add the distance from j to the left border
                                                     dist += sqr(j->x[d] - tmp);
                                                 }
-
-                                             }
-                                             // else cell is only cell in periodic case or we are in the world and the distance is calculated as usual
-                                             else
-                                                dist += sqr(j->x[d] - i->x[d]);
-                                         }
-                                         // only particles which are closer than rcut
-                                         if (dist <= W.cell_r_cut)
-                                             // computes the force between particle i and j and add it to our potential
-                                             W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                                // else cell is only cell in periodic case or we are in the world and the distance is calculated as usual
+                                                // TODO: case Periodic and 1 cell!! -> particle1 on the right, particle2 on the left -> dist periodic is shorter than normal dist
+                                                else
+                                                    dist += sqr(j->x[d] - i->x[d]);
+                                            }
+                                            // DEBUG
+                                            std::cout << "distance between i and j: " << dist << std::endl;
+                                            // only particles which are closer than rcut
+                                            if (dist <= W.cell_r_cut)
+                                                // computes the force between particle i and j and add it to our potential
+                                                W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                        }
                                     }
-                                 }
-                              }
-                           }
+                                }
+                            }
                         }
                     }
                 }
@@ -146,10 +142,10 @@ void VelocityVerletLC::updateV()
 {
     // there is no e_kin in the beginning
     W.e_kin = 0.0;
-	// roll over every cell	
+    // roll over every cell
     for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
-        // foreach cell go through it's particles... 
+        // foreach cell go through it's particles...
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
             // ...and over every dimension of particle i
@@ -176,19 +172,23 @@ void VelocityVerletLC::updateX()
     bool doIt = false;
     bool innerWorld = true;
 
-	// roll over every cell	
+    // roll over every cell
     real time = W.t;
-   	for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+    for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
     {
-  	    // foreach cell go through it's particles... 
+        // foreach cell go through it's particles...
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
             Particle &p = *i;
             // DEBUG at first get out every particle and it's cell number
-            std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
+            std::cout << " Cell[" << W.getCellNumber(i) << "]"
                       << ".particle["  <<  i->ID  << "]";
-            for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
-            for (int d=0; d<DIM; d++) std::cout << " -> " << i->v[d] << " ";
+            std::cout << "x -> ";
+            for (int d=0; d<DIM; d++) std::cout << i->x[d] << " ";
+            std::cout << "v -> ";
+            for (int d=0; d<DIM; d++) std::cout << i->v[d] << " ";
+            std::cout << "F -> ";
+            for (int d=0; d<DIM; d++) std::cout << i->F[d] << " ";
             std::cout << std::endl;
 
 
@@ -202,23 +202,22 @@ void VelocityVerletLC::updateX()
             int checkCell = W.getCellNumber(i);
             // 	..at first calc new position in every dimension
             for (unsigned int d=0; d<DIM; d++)
-		    {
+            {
                 // computing new location of the particle i if it's leaving the world, elsewise just call handleBorders (-lc version) in the end
 
                 i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
 
-//                std::cout << "Cell[" << W.getCellNumber(i) << "]"
-//                          << ".particle["  <<  i->ID  << "]"
 //                          << ".x[" << d << "]=" << i->x[d] << std::endl;
- 
+                //                std::cout << "Cell[" << W.getCellNumber(i) << "]"
+                //                          << ".particle["  <<  i->ID  << "]"
+                //                          << ".x[" << d << "]=" << i->x[d] << std::endl;
                 // save last force...
-		        i->F_old[d] = i->F[d];
                 // ... and don't forget to set the actual force to zero
                 i->F[d] = 0;
-		    }
+            }
             //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
-			//<< ".particle["  <<  i->ID  << "]" << std::endl;
+            //<< ".particle["  <<  i->ID  << "]" << std::endl;
             // then check if particle left its cell and handle moving issues (respective border issues)
             if (W.getCellNumber(i) != checkCell)
             {
