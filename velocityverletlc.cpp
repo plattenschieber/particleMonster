@@ -93,13 +93,6 @@ void VelocityVerletLC::compF()
                                              // IN PERIODIC:
                                              if (periodic[d] && W.cells.size() > 1)
                                              {
-                                                // if cell left upper border -> j.x[d] < i.x[d]
-                                                if (j->x[d] < i->x[d])
-                                                {
-                                                     // calc cell coordinate in which i lies
-                                                     int tmp = i->x[d] * W.cell_N[d] / W.length[d];
-                                                     // add the distance from i to the right border
-                                                     dist += (W.cell_length[d] - (i->x[d] - tmp));
 
                                                      // calc cell coordinate in which j lies
                                                      tmp = j->x[d] * W.cell_N[d] / W.length[d];
@@ -113,6 +106,12 @@ void VelocityVerletLC::compF()
                                                     int tmp = j->x[d] * W.cell_N[d] / W.length[d];
                                                     // add the distance from i to the right border
                                                     dist += sqr(W.cell_length[d] - (i->x[d] - tmp));
+                                                    // if nbCell left upper border -> j.x[d] < i.x[d]
+                                                    if (j->x[d] < i->x[d])
+                                                    {
+                                                        // add distance from i to upB and from lowB to j
+                                                        dist += sqr((W.length[d]-i->x[d]) + j->x[d]);
+                                                    }
 
                                                     // calc cell coordinate in which j lies
                                                     tmp = i->x[d] * W.cell_N[d] / W.length[d];
