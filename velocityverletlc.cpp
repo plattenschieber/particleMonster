@@ -14,8 +14,9 @@ VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& 
 
 void VelocityVerletLC::compF()
 {
+    // DEBUG
     real time = W.t;
-    // Cell and neighbour cell indices 
+    // Cell and neighbour cell indices
     int jCell[DIM], nbCell[DIM];
     // check the distance and throw out all that's more far away than rcut
     real dist = 0.0;
@@ -32,6 +33,10 @@ void VelocityVerletLC::compF()
                 // roll over every particle i in actual cell
                 for (std::list<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i != W.cells[J(jCell,W.cell_N)].particles.end(); i++)
                 {
+                    // DEBUG:
+                    real iTmp[DIM];
+                    memcpy(iTmp, i->x, sizeof(i->x));
+
                     // roll over every neighbour cell
                     for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
                     {
@@ -208,11 +213,12 @@ void VelocityVerletLC::updateX()
                 i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
 
 
-//                          << ".x[" << d << "]=" << i->x[d] << std::endl;
                 //                std::cout << "Cell[" << W.getCellNumber(i) << "]"
                 //                          << ".particle["  <<  i->ID  << "]"
                 //                          << ".x[" << d << "]=" << i->x[d] << std::endl;
+
                 // save last force...
+                i->F_old[d] = i->F[d];
                 // ... and don't forget to set the actual force to zero
                 i->F[d] = 0;
             }
