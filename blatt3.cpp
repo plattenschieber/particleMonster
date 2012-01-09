@@ -17,7 +17,7 @@ int main(int argc, const char *argv[]) {
     if (argc < 2) {
         std::cerr << "error: missing arguments" << std::endl;
         std::cerr << "usage: " << std::endl
-        << "\t" << argv[0] << " parameterfile particledatafile" << std::endl;
+                  << "\t" << argv[0] << " parameterfile particledatafile" << std::endl;
         return EXIT_FAILURE;
     }
     
@@ -41,8 +41,8 @@ int main(int argc, const char *argv[]) {
     // create the Observer
     ObserverXYZ O(W);
     
-    // instanciate timediscretization 
-    // remark: & is used to get the address of Pot // reremark: removed the & 
+    // instanciate timediscretization
+    // remark: & is used to get the address of Pot // reremark: removed the &
     VelocityVerletLC verletLC(W, LPot, O);
     std::cout << "WHAT THE FUCK" << std::endl;
     

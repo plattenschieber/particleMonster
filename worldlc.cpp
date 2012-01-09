@@ -15,7 +15,7 @@ WorldLC::WorldLC() : cell_r_cut(2.5) {
 
 void WorldLC::readParameter(const std::string &filename)
 {
-    // call the base function 
+    // call the base function
     World::readParameter(filename);
     // create input filestream
     std::ifstream parfile(filename.c_str());
@@ -38,9 +38,9 @@ void WorldLC::readParameter(const std::string &filename)
         // read option from stringstream
         strstr >> option;
         // TODO: Add eps and sigma!
-        // push next read value, with internal converter of string stream, into the propper place 
+        // push next read value, with internal converter of string stream, into the propper place
         if (mapOptions[option] == CELLRCUT)
-	    	strstr >> cell_r_cut;
+            strstr >> cell_r_cut;
     }
     // close file
     parfile.close();
@@ -49,7 +49,7 @@ void WorldLC::readParameter(const std::string &filename)
     // #of all cells
     int nCells = 1;
     // Calc #cells
-    for (int d=0; d<DIM; d++) 
+    for (int d=0; d<DIM; d++)
     {
         // #cells in dimension = floor(length per cell-cutlength)
         cell_N[d] = (int)(length[d]/cell_r_cut);
@@ -58,16 +58,16 @@ void WorldLC::readParameter(const std::string &filename)
 
         nCells *= cell_N[d];
         // DEBUG
-//        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
-//                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
+        //        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
+        //                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
     }
     
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
 
-     // DEBUG
-//    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
+    // DEBUG
+    //    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
 void WorldLC::readParticles(const std::string &filename)
@@ -94,25 +94,25 @@ void WorldLC::readParticles(const std::string &filename)
 int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 {
     int tmp[3] = {0,0,0};
-//    // DEBUG Table
-//    std::cout << "Cell coordinate: " ;
+    //    // DEBUG Table
+    //    std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
         if (i->x[d] < 0)
             return -1;
         tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
-	
-//      // DEBUG
-     // std::cout << tmp[d] << "\t";
+
+        //      // DEBUG
+        // std::cout << tmp[d] << "\t";
 
     }
 
-//    //DEBUG FOR-LOOP
-//    std::cout << std::endl;
-//    for (int d=0; d<DIM; d++)
-//        std::cout << "x[" << d << "]: " << i->x[d] << "\t";
+    //    //DEBUG FOR-LOOP
+    //    std::cout << std::endl;
+    //    for (int d=0; d<DIM; d++)
+    //        std::cout << "x[" << d << "]: " << i->x[d] << "\t";
 
-//    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
+    //    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
     return J(tmp,cell_N);
 
 }
@@ -131,7 +131,7 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
 {
     // Get out some information about the world
     os << W.name << " Dim=" << DIM << " t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
-       << " Number of Cells=" << W.cells.size() << " cell_r_cut=" << W.cell_r_cut << std::endl; 
+       << " Number of Cells=" << W.cells.size() << " cell_r_cut=" << W.cell_r_cut << std::endl;
     // roll over each Cell
     for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)
     {
@@ -145,7 +145,7 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
             {
                 // Particle Number
                 os <<  j->ID << ": ";
-                //  get out the particles location 
+                //  get out the particles location
                 for (unsigned int d=0; d<DIM; d++)
                     os << j->x[d] << "\t";
                 // tabulator after each particle
@@ -155,7 +155,7 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
             os << std::endl;
         }
         // else observe next cell
-        else continue;         
+        else continue;
     }
     return os;
 }

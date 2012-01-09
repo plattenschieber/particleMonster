@@ -4,7 +4,7 @@
 #include "potential.hpp"
 
 /**
- * @brief A pseudo Potential called Lennard-Jones        
+ * @brief A pseudo Potential called Lennard-Jones
  */
 class LJPotential : public Potential {
 public:

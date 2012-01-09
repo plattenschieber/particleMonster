@@ -30,19 +30,19 @@ public:
     /**
      * @brief notify the observer that the world has changed
      */
-    void notify(); 
+    void notify();
     
     /**
      * @brief generate a pymol readable file
      */
     void outputXYZ();
 
-    /** 
+    /**
      * @brief output coordinates of the particles
      */
     void outputCoordinates();
     
-  
+
 
 protected:
     /// The world we are observing

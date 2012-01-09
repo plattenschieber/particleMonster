@@ -29,19 +29,19 @@ public:
     /**
      * @brief notify the observer that the world has changed
      */
-    virtual void notify(); 
+    virtual void notify();
     
-    /** 
+    /**
      * @brief output statistics like kinetic, potential and total energy
      */
     void outputStatistics();
 
-    /** 
+    /**
      * @brief output coordinates of the particles
      */
     virtual void outputCoordinates();
     
-  
+
 
 protected:
     /// The world we are observing

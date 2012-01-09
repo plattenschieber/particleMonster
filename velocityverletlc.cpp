@@ -4,7 +4,7 @@
 
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,_Pot,_O), W(_W), Pot(_Pot) 
 {
-// initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
+    // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
 }
 
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,(*_Pot),_O), W(_W), Pot(*_Pot)
