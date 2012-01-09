@@ -45,7 +45,7 @@ void VelocityVerletLC::compF()
                             for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
                             {
                                 //
-                                bool leftWorld = false;
+                                bool leftWorld = false, twistForce = false;
                                 bool periodic[DIM] = {false, false, false};
 
                                 // resolve neighbours real position, especially in periodic case
@@ -81,8 +81,8 @@ void VelocityVerletLC::compF()
                                 if(!leftWorld)
                                 {
                                     // DEBUG
-                                    //int watchCell = J(nbCell, W.cell_N);
-                                    // foreach particle j in neighbourcell compute force
+                                    int watchCell = J(nbTmpCell, W.cell_N);
+                                    // foreach particle j in temporary! neighbourcell, compute force
                                     for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
                                     {
                                         // ...except of the computation with itself (i!=j)
