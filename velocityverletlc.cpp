@@ -108,6 +108,8 @@ void VelocityVerletLC::compF()
                                                 // IN PERIODIC:
                                                 if (periodic[d] && W.cells.size() > 1)
                                                 {
+                                                    if (i->x[d] > W.length[d] || j->x[d] > W.length[d]  || i->x[d] < 0 || j->x[d] < 0)
+                                                        std::cout << "Blubb" << std::endl;
                                                     // if nbCell left upper border -> j.x[d] < i.x[d]
                                                     if (j->x[d] < i->x[d])
                                                     {
