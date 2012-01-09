@@ -94,10 +94,6 @@ void VelocityVerletLC::compF()
                                              if (periodic[d] && W.cells.size() > 1)
                                              {
 
-                                                     // calc cell coordinate in which j lies
-                                                     tmp = j->x[d] * W.cell_N[d] / W.length[d];
-                                                     // add the distance from j to the left border
-                                                     dist += j->x[d] - tmp;
                                                 }
                                                 // else if cell left lower border -> j.x[d] > i.x[d]
                                                 else /*if (j->x[d] > i->x[d])*/
@@ -113,10 +109,6 @@ void VelocityVerletLC::compF()
                                                         dist += sqr((W.length[d]-i->x[d]) + j->x[d]);
                                                     }
 
-                                                    // calc cell coordinate in which j lies
-                                                    tmp = i->x[d] * W.cell_N[d] / W.length[d];
-                                                    // add the distance from j to the left border
-                                                    dist += sqr(j->x[d] - tmp);
                                                 }
                                                 // else cell is only cell in periodic case or we are in the world and the distance is calculated as usual
                                                 // TODO: case Periodic and 1 cell!! -> particle1 on the right, particle2 on the left -> dist periodic is shorter than normal dist
