@@ -75,38 +75,42 @@ void VelocityVerletLC::compF()
                                     // LEAVING
                                     else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
                                     else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
+                                }
 
-                              // compute only if the neighbour cell is inside the world
-                              if(!leftWorld)
-                              {
-                                  int watchCell = J(nbCell, W.cell_N);
-                                   // foreach particle j in neighbourcell compute force
-                                   for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
-                                   {
-                                   // ...except of the computation with itself (i!=j)
-                                     if (i!=j)
-                                     {
-                                         // don't forget to reset the distance
-                                         dist = 0.0;
-                                         for (int d=0; d<DIM; d++)
-                                         {
-                                             // IN PERIODIC:
-                                             if (periodic[d] && W.cells.size() > 1)
-                                             {
-
-                                                }
-                                                // else if cell left lower border -> j.x[d] > i.x[d]
-                                                else /*if (j->x[d] > i->x[d])*/
+                                // compute only if the neighbour cell is inside the world respectivly the world is periodic
+                                if(!leftWorld)
+                                {
+                                    // DEBUG
+                                    //int watchCell = J(nbCell, W.cell_N);
+                                    // foreach particle j in neighbourcell compute force
+                                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
+                                    {
+                                        // ...except of the computation with itself (i!=j)
+                                        if (i!=j)
+                                        {
+                                            // DEBUG:
+                                            // save i's and j's coordinates
+                                            real jTmp[DIM];
+                                            // copy coordinates
+                                            memcpy(jTmp, j->x, sizeof(j->x));
+                                            // don't forget to reset the distance
+                                            dist = 0.0;
+                                            for (int d=0; d<DIM; d++)
+                                            {
+                                                // IN PERIODIC:
+                                                if (periodic[d] && W.cells.size() > 1)
                                                 {
-                                                    // calc cell coordinate in which i lies
-                                                    int tmp = j->x[d] * W.cell_N[d] / W.length[d];
-                                                    // add the distance from i to the right border
-                                                    dist += sqr(W.cell_length[d] - (i->x[d] - tmp));
                                                     // if nbCell left upper border -> j.x[d] < i.x[d]
                                                     if (j->x[d] < i->x[d])
                                                     {
                                                         // add distance from i to upB and from lowB to j
                                                         dist += sqr((W.length[d]-i->x[d]) + j->x[d]);
+                                                    }
+                                                    // else nbCell left lower border -> j.x[d] > i.x[d]
+                                                    else
+                                                    {
+                                                        // add distance from lowB to i and from j to upB
+                                                        dist += sqr(i->x[d] + (W.length[d]-j->x[d]));
                                                     }
 
                                                 }
