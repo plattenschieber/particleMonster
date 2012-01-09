@@ -68,9 +68,6 @@ void VelocityVerletLC::compF()
                                 // or ignore this neighbour cell (leftWorld = true)
                                 for (int d=0; d<DIM; d++)
                                 {
-                                    // accumulate distance between particle and neighbour cell.
-                                    // dist += sqr(W.cell_length[d]*nbCell[d] - i->x[d]);
-
                                     // PERIODIC
                                     if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
                                     {
