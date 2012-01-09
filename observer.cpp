@@ -42,12 +42,20 @@ void Observer::outputStatistics()
 {
     // write statistics into the filestream, seperated with tabulars
     statistics
+<<<<<<< HEAD
             << W.t << "\t"
             << W.e_pot << "\t"
             << W.e_kin << "\t"
             << W.e_kin + W.e_pot << "\t" // observe conservation of energy
             << W.e_avg // observe energy conservation of last 100 steps
             << std::endl;
+=======
+        << W.t << "\t" 
+        << W.e_pot << "\t"
+        << W.e_kin << "\t"
+        << W.e_kin + W.e_pot // observe conservation of energy
+        << std::endl;
+>>>>>>> parent of 0a679d7... Revert 9c405afdfa97c3bcde5d29dbfef7d7b9ff9c8dd9^..HEAD
 }
 
 void Observer::outputCoordinates()
