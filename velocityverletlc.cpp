@@ -121,6 +121,8 @@ void VelocityVerletLC::compF()
                                                     {
                                                         // add distance from lowB to i and from j to upB
                                                         dist += sqr(i->x[d] + (W.length[d]-j->x[d]));
+                                                        // let's twist again, like we did it last summer...
+                                                        twistForce = true;
                                                     }
 
                                                 }
@@ -134,10 +136,24 @@ void VelocityVerletLC::compF()
 
                                             // only particles which are closer than rcut
                                             if (dist <= W.cell_r_cut)
-                                                // computes the force between particle i and j and add it to our potential
-                                                W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                            {
+
+                                                // if we are computing the force between two particles in a periodic case
+                                                // and i is at the lower border than twist the force, or we will miscalc it
+                                                if (twistForce)
+                                                {
 //                                                    std::cout << " lets TWIST" << std::endl;
+                                                    W.e_pot += Pot.force(*j, *i, dist, W.epsilon, W.sigma);
+                                                }
+                                                else
+                                                {
 //                                                    std::cout << " no TWIST" << std::endl;
+                                                    // computes the force between particle i and j and add it to our potential
+                                                    W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                                }
+                                                // reset flag
+                                                twistForce = false;
+                                            }
 //                                            // DEBUG print particle and it's cell number again
 //                                            std::cout << " compF(END): Cell[" << W.getCellNumber(i) << "]"
 //                                                      << ".particle["  <<  i->ID  << "]";
