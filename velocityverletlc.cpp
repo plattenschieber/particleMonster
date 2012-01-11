@@ -78,25 +78,43 @@ void VelocityVerletLC::compF()
                                    // ...except of the computation with itself (i!=j)
                                      if (i!=j)
                                      {
+                                         // check distance and drop all particle which are farther than rcut
+                                         real dist = 0.0;
+                                         // save a direction vector for the distance
+                                         real dirV[DIM] = {0,0,0};
+
+                                         // compute distance and directional vector of i and j
                                          for (int d=0; d<DIM; d++)
                                          {
                                              // IN PERIODIC:
                                              if (periodic[d] && W.cells.size() > 1)
                                              {
-                                                // if cell left upper border -> j.x[d] < i.x[d]
+                                                // if nbCell left upper border -> j.x[d] < i.x[d]
                                                 if (j->x[d] < i->x[d])
+                                                     // add distance from i to upB and from lowB to j
+                                                     dirV[d] = (W.length[d] - i->x[d]) + j->x[d];
 
                                                 // else nbCell left lower border -> j.x[d] > i.x[d]
                                                 else
                                                     // add distance from lowB to i and from j to upB (times -1, because of the over border handling)
                                                     dirV[d] = -1*(i->x[d] + (W.length[d] - j->x[d]));
                                              }
+                                             // IN NONPERIODIC: (or we have only one periodic cell)
                                              else
+                                             {
+                                                // and update direction vector
+                                             }
+
+                                             dist += sqr(dirV[d]);
                                          }
+
+                                         // ... and take the squareroot at last
+                                         dist = sqrt(dist);
+
                                          // only particles which are closer than rcut, flow into the computation
                                          if (dist <= W.cell_r_cut)
                                              // computes the force between particle i and j and add it to our potential
-                                             W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
+                                             W.e_pot += Pot.force(*i, *j, dist, dirV, W.epsilon, W.sigma);
                                     }
                                  }
                               }
