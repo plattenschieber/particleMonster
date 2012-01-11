@@ -58,7 +58,7 @@ public:
     /// Type of World Border
     enum borderType { unknown = 0, leaving = 1, periodic = 2 };
     /// Value-Defintions of the different option strings
-    // DEFAULT is needed to handle unknown options - otherwise a new option with value 0 is created and will map NAME 
+    // DEFAULT is needed to handle unknown options - otherwise a new option with value 0 is created and will map NAME
     enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPERBORDER=5, LOWERBORDER=6, EPSILON=7, SIGMA=8,
                   STARTTEMP=9, STEPINTERVAL=10, TARGETTEMP=11, RANDOMSEED=12 };
     /// Map to associate the strings with the enum values
@@ -92,7 +92,7 @@ public:
     int nParticles;
     /// List of particles
     std::list<Particle> particles;
-    /// upper borders 
+    /// upper borders
     borderType upper_border[DIM];
     /// lower borders
     borderType lower_border[DIM];

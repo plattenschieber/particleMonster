@@ -1,4 +1,4 @@
-    #include "ljpotential.hpp"
+#include "ljpotential.hpp"
 #include <cmath>
 #include <iostream>
 real LJPotential::force(Particle &p, Particle &q, real dist, real dirV[], real eps, real sigma)

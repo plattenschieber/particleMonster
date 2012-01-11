@@ -34,7 +34,7 @@ Observer::~Observer()
         coordinates.close();
         std::cout << "Closed coordinates" << std::endl;
     }
-  
+
     std::cout << "Everything closed properly" << std::endl;
 }
 
@@ -42,12 +42,12 @@ void Observer::outputStatistics()
 {
     // write statistics into the filestream, seperated with tabulars
     statistics
-        << W.t << "\t" 
-        << W.e_pot << "\t"
-        << W.e_kin << "\t"
-        << W.e_kin + W.e_pot << "\t" // observe conservation of energy
-        << W.e_avg // observe energy conservation of last 100 steps
-        << std::endl;
+            << W.t << "\t"
+            << W.e_pot << "\t"
+            << W.e_kin << "\t"
+            << W.e_kin + W.e_pot << "\t" // observe conservation of energy
+            << W.e_avg // observe energy conservation of last 100 steps
+            << std::endl;
 }
 
 void Observer::outputCoordinates()
@@ -66,7 +66,7 @@ void Observer::outputCoordinates()
 
 void Observer::notify()
 {
-    // write statistics 
+    // write statistics
     outputStatistics();
     // write the coordinates of our particles
     outputCoordinates();
