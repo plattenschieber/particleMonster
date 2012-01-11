@@ -171,13 +171,6 @@ void VelocityVerletLC::updateX()
   	    // foreach cell go through it's particles... 
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
         {
-            // DEBUG at first get out every particle and it's cell number
-            //std::cout << W.t << " Cell[" << W.getCellNumber(i) << "]"
-              //        << ".particle["  <<  i->ID  << "]";
-            //for (int d=0; d<DIM; d++) std::cout << " -> " << i->x[d] << " ";
-            //std::cout << std::endl;
-
-
             // if the flag is checked, push the particle in the last round into it's new position
             doIt = false;
             // if flag is not checked, particle is we are at the border
@@ -278,7 +271,6 @@ void VelocityVerletLC::updateX()
     // and now add the particles again to their belonging cells
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
     {
-        //W.cells[W.getCellNumber(i)].particles.push_back(cell->particles[i-cell->particles.begin()]);
         W.cells[W.getCellNumber(i)].particles.push_back(*i);
         i = W.particles.erase(i);
         i--;
