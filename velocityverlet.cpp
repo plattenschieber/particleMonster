@@ -77,7 +77,7 @@ void VelocityVerlet::updateV()
             // compute new velocity in dimension d
             i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
             // if we want to check the temperatur regulary
-            if (fmod(W.t,W.thermo_step_interval) == 0)
+            if (fmod(W.t,W.thermo_step_interval) == 0 && W.isThermoStartTemp)
                 // multiply velocity by beta
                 i->v[d] *= W.calcBeta(d);
             // add now the pro rata e_kin
