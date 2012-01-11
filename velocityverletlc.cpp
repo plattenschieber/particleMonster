@@ -38,16 +38,21 @@ void VelocityVerletLC::compF()
                         {
                            for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
                            {
+                              // mark that a neighbour is outside the world
                               bool leftWorld = false;
+                              // mark that a neighbour left the  world at a specific periodic border
                               bool periodic[DIM] = {false, false, false};
 
+                              // resolve neighbours real position, especially in periodic case
                               int nbTmpCell[DIM];
+                              //copy therefor neighbour cells position to an temporay array
                               memcpy(nbTmpCell, nbCell, sizeof(nbCell));
-                              // set neighbour to its new place if world is periodic and observed cell is located at the border  
+
+                              // set neighbour to its new place if world is periodic and observed cell is located at the border
+                              // or ignore this neighbour cell (leftWorld = true)
                               for (int d=0; d<DIM; d++)
                               {
-
-                                 // PERIODIC
+                                 // PERIODIC CASES:
                                  if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
                                  {
                                      nbTmpCell[d] = W.cell_N[d]-1;
@@ -58,7 +63,8 @@ void VelocityVerletLC::compF()
                                      nbTmpCell[d]=0;
                                      periodic[d] = true;
                                  }
-                                 // LEAVING
+
+                                 // LEAVING CASES:
                                  else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
                                  else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
                               }
@@ -66,7 +72,7 @@ void VelocityVerletLC::compF()
                               // compute only if the neighbour cell is inside the world
                               if(!leftWorld)
                               {
-                                   // foreach particle j in neighbourcell compute force
+                                   // foreach particle j in temporary! neighbourcell compute force
                                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
                                    {
                                    // ...except of the computation with itself (i!=j)
@@ -83,7 +89,7 @@ void VelocityVerletLC::compF()
                                              }
                                              else
                                          }
-                                         // only particles which are closer than rcut
+                                         // only particles which are closer than rcut, flow into the computation
                                          if (dist <= W.cell_r_cut)
                                              // computes the force between particle i and j and add it to our potential
                                              W.e_pot += Pot.force(*i, *j, dist, W.epsilon, W.sigma);
@@ -166,6 +172,8 @@ void VelocityVerletLC::updateX()
                 // ... and don't forget to set the actual force to zero
                 i->F[d] = 0;
 		    }
+
+            // if particle changed cell
             if (W.getCellNumber(i) != checkCell)
             {
                 // check it in every dimension
@@ -228,6 +236,8 @@ void VelocityVerletLC::updateX()
                         i--;
                         break;
                     }
+
+                    // if we are in the last step and particle wasn't periodic -> just changed cell in inner world
                     if (d==DIM-1 && doIt==false)
                     {
                         W.particles.push_back(*i);
