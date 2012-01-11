@@ -103,8 +103,11 @@ void VelocityVerletLC::compF()
                                              else
                                              {
                                                 // and update direction vector
+                                                dirV[d] = j->x[d] - i->x[d];
                                              }
 
+
+                                             // And now, accumulate the distance...
                                              dist += sqr(dirV[d]);
                                          }
 
