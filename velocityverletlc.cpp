@@ -86,6 +86,10 @@ void VelocityVerletLC::compF()
                                                 // if cell left upper border -> j.x[d] < i.x[d]
                                                 if (j->x[d] < i->x[d])
 
+                                                // else nbCell left lower border -> j.x[d] > i.x[d]
+                                                else
+                                                    // add distance from lowB to i and from j to upB (times -1, because of the over border handling)
+                                                    dirV[d] = -1*(i->x[d] + (W.length[d] - j->x[d]));
                                              }
                                              else
                                          }
