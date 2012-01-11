@@ -18,7 +18,7 @@ public:
      *
      * @return potential energy
      */
-    real force (Particle& p, Particle& q, real dist, real distV[], real eps, real sigma);
+    real force (Particle& p, Particle& q, real dist, real dirV[], real eps, real sigma);
 
 private:
     real force (Particle& p, Particle& q){return 0.0;};

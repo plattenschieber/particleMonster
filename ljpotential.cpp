@@ -1,7 +1,7 @@
-#include "ljpotential.hpp"
+    #include "ljpotential.hpp"
 #include <cmath>
 #include <iostream>
-real LJPotential::force(Particle &p, Particle &q, real dist, real distV[], real eps, real sigma)
+real LJPotential::force(Particle &p, Particle &q, real dist, real dirV[], real eps, real sigma)
 {
     // potential depth and zero breakthrough
     //real eps = 1.0, sigma = 1.0;
@@ -11,7 +11,7 @@ real LJPotential::force(Particle &p, Particle &q, real dist, real distV[], real 
     
     // force is transfered from q to p by means of ljpotential
     for (int d=0; d<DIM; d++) {
-        real force = 24*eps*(1/dist)*pow(sigma*sigma/dist,3)*(1-2*pow(sigma*sigma/dist,3))*(distV[d]);
+        real force = 24*eps*(1/dist)*pow(sigma*sigma/dist,3)*(1-2*pow(sigma*sigma/dist,3))*(dirV[d]);
         p.F[d] += force;
         // do we really can already pull it off? NO!
         q.F[d] -= force;
