@@ -12,19 +12,11 @@
 #include "velocityverlet.hpp"
 #include "velocityverletlc.hpp"
 #include "observerxyz.hpp"
+#include "subdomain.hpp"
 
-// const char not available for mpi
 int main(int argc, char *argv[]) {
-
-    int myrank, numprocs;
-
     // Initialize MPI.
      MPI::Init (argc, argv);
-
-     // Get the number of processes.
-     numprocs = MPI::COMM_WORLD.Get_size();
-     // Get the individual process ID.
-     myrank = MPI::COMM_WORLD.Get_rank();
 
     // check arguments
     if (argc < 2) {
