@@ -9,10 +9,10 @@
 MAIN = particleMonster
 
 # define the C source files hallo
-SRCS = blatt3.cpp world.cpp worldlc.cpp observer.cpp observerxyz.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp ljpotential.cpp
+SRCS = blatt5.cpp world.cpp worldlc.cpp observer.cpp observerxyz.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp ljpotential.cpp
 
 # define the C compiler to use
-CC = g++
+CC = mpic++
 
 # define any compile-time flags
 CFLAGS = -Wall -g
