@@ -57,17 +57,12 @@ void WorldLC::readParameter(const std::string &filename)
         cell_length[d] = length[d]/cell_N[d];
 
         nCells *= cell_N[d];
-        // DEBUG
-        //        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
-        //                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
     }
     
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
 
-    // DEBUG
-    //    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
 void WorldLC::readParticles(const std::string &filename)
@@ -80,8 +75,7 @@ void WorldLC::readParticles(const std::string &filename)
     {
         std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
         // add particle to right cell...
-        // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i: particles[i-particles.begin()]
-
+        // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i
         cells[getCellNumber(i)].particles.push_back(*i);
     }
     std::cout << "***************************************************" << std::endl
@@ -93,28 +87,18 @@ void WorldLC::readParticles(const std::string &filename)
 
 int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 {
+    // temporary array
     int tmp[3] = {0,0,0};
-    //    // DEBUG Table
-    //    std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
+        // handle particle outside the world failure
         if (i->x[d] < 0)
             return -1;
+        // calc cell real index
         tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
-
-        //      // DEBUG
-        // std::cout << tmp[d] << "\t";
-
     }
-
-    //    //DEBUG FOR-LOOP
-    //    std::cout << std::endl;
-    //    for (int d=0; d<DIM; d++)
-    //        std::cout << "x[" << d << "]: " << i->x[d] << "\t";
-
-    //    std::cout << std::endl << "Corresponding Index: " << J(tmp,cell_N) << std::endl << std::endl;
+    // return corresponding cell Number
     return J(tmp,cell_N);
-
 }
 
 real WorldLC::calcBeta(int dimension)
@@ -153,8 +137,6 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
             // newline after each cell
             os << std::endl;
         }
-        // else observe next cell
-        else continue;
     }
     return os;
 }
