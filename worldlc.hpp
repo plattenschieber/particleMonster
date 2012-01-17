@@ -5,13 +5,13 @@
 #include "cell.hpp"
 #include "defines.hpp"
 #include "particle.hpp"
+#include "subdomain.hpp"
 #include <vector>
 #include <list>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <map>
-
 /**
  * @brief the world class holds all information of the simulation environment
  */
@@ -53,6 +53,8 @@ public:
     real cell_length[DIM];
     /// r_cut used for calculation of the cell length
     real cell_r_cut;
+    /// world's subdomain
+    SubDomain s;
 };
 
 /**
