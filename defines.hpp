@@ -39,5 +39,16 @@ typedef double real;
 #define J(jCell,cell_N) ((jCell)[2] + (cell_N)[2]*((jCell[1] + (cell_N)[1]*(jCell)[0])))
 #endif
 
+// another macro, to get index of ip in our process grid (by means of rank(r) and the #processes(np)
+#if DIM == 2
+#define Jinv(r, np, ip) \
+    ((ip)[0]=(r)%(np)[0], (ip)[1]=(r)/(np)[0])
+#elif DIM == 3
+#define Jinv(r, np, ip) \
+    ( (ip)[0] = (r)%(np)[0], \
+      (ip)[1] = (r)/(np)[0]) % (np)[1], \
+      (ip)[2] = (r)/(np)[0] / (np)[1] )
+#endif
+
 #endif // _DEFINES_HPP
 // vim:set et sts=4 ts=4 sw=4 ai ci cin cino=g0,t0:
