@@ -6,6 +6,7 @@
 #include "defines.hpp"
 #include "particle.hpp"
 #include "subdomain.hpp"
+#include <mpi.h>
 #include <vector>
 #include <list>
 #include <string>
@@ -39,6 +40,17 @@ public:
     // retrieve Index of Cell by coordinates
     int getCellNumber(const std::list<Particle>::iterator i);
 
+    void sendReceive(Cell *grid, int *ic_number,
+                              int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
+                              int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
+
+    void construct_particle(MPI::Datatype& MPI_Particle);
+
+    void SetCommunication(SubDomain *s, int d,
+                                int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
+                                int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
+
+    void Communication (Cell *grid, SubDomain *s, bool isForward);
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
@@ -55,6 +67,8 @@ public:
     real cell_r_cut;
     /// world's subdomain
     SubDomain s;
+    /// a particle for MPI
+    MPI::Datatype MPI_Particle;
 };
 
 /**
