@@ -145,6 +145,28 @@ void WorldLC::SetCommunication(SubDomain *s, int dim,
     }
 
 }
+
+void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
+{
+    int lower_ic_start[DIM], lower_ic_stop[DIM],
+        upper_ic_start[DIM], upper_ic_stop[DIM],
+        lower_ic_startreceive[DIM], lower_ic_stopreceive[DIM],
+        upper_ic_startreceive[DIM], upper_ic_stopreceive[DIM];
+
+    for (int d=(isForward)?DIM-1:0; (isForward)?d<DIM:d>=0; (isForward)?d--:d++)
+    {
+        if(isForward)
+            SetCommunication(s, d, lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
+                              upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
+        else if(!isForward)
+            SetCommunication(s, d, lower_ic_startreceive, lower_ic_stopreceive, lower_ic_start, lower_ic_stop,
+                            upper_ic_startreceive, upper_ic_stopreceive, upper_ic_start, upper_ic_stop);
+
+        sendReceive (grid, s->ic_number, s->ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
+                                        s->ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
+
+    }
+}
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
     // Get out some information about the world
