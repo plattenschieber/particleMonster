@@ -110,6 +110,41 @@ real WorldLC::calcBeta(int dimension)
     return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
 }
 
+void WorldLC::SetCommunication(SubDomain *s, int dim,
+                            int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
+                            int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
+{
+    for (int d=0; d<DIM; d++)
+    {
+        // only bordure
+        if (d==dim)
+        {
+            lower_ic_start[d] = s->ic_start[d];
+            lower_ic_stop[d] = 2*lower_ic_start[d];
+            lower_ic_startreceive[d] = 0;
+            lower_ic_stopreceive[d] = lower_ic_start[d];
+
+            upper_ic_stop[d] = s->ic_stop[d];
+            upper_ic_start[d] = s->ic_stop[d] - s->ic_start[d];
+            upper_ic_stopreceive[d] = s->ic_start[d] + s->ic_stop[d];
+            upper_ic_startreceive[d] = s->ic_stop[d];
+        }
+        // bordure inclusive
+        else if (d>dim)
+        {
+            lower_ic_startreceive[d] = lower_ic_start[d] = upper_ic_startreceive[d] = upper_ic_start[d] = 0;
+            lower_ic_stopreceive[d] = lower_ic_stop[d] = upper_ic_stopreceive[d] = upper_ic_stop[d] = s->ic_start[d] + s->ic_stop[d];
+        }
+        // w/o bordure
+        else
+        {
+            lower_ic_start[d] = lower_ic_startreceive[d] = upper_ic_start[d] = upper_ic_startreceive[d] = s->ic_start[d];
+            lower_ic_stop[d] = lower_ic_stopreceive[d] = upper_ic_stop[d] = upper_ic_stopreceive[d] = s->ic_stop[d];
+        }
+
+    }
+
+}
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
     // Get out some information about the world
