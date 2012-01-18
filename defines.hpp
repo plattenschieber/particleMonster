@@ -45,8 +45,8 @@ typedef double real;
     ((ip)[0]=(r)%(np)[0], (ip)[1]=(r)/(np)[0])
 #elif DIM == 3
 #define Jinv(r, np, ip) \
-    ( (ip)[0] = (r)%(np)[0], \
-      (ip)[1] = (r)/(np)[0]) % (np)[1], \
+    ((ip)[0] = (r)%(np)[0], \
+      (ip)[1] = (r)/(np)[0] % (np)[1], \
       (ip)[2] = (r)/(np)[0] / (np)[1] )
 #endif
 
