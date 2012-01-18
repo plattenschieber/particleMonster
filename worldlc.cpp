@@ -1,4 +1,5 @@
 #include "worldlc.hpp"
+#include <mpi.h>
 #include "world.hpp"
 #include "cell.hpp"
 #include <stdexcept>
@@ -10,6 +11,8 @@
 WorldLC::WorldLC() : cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
+    // construct it, so we can use it!
+    construct_particle(MPI_Particle);
 }
 
 
@@ -58,8 +61,57 @@ void WorldLC::readParameter(const std::string &filename)
 
         nCells *= cell_N[d];
     }
-    
-    // insert empty cells
+
+    // do some parallel stuff
+
+    // Get the number of processes.
+    s.numprocs = MPI::COMM_WORLD.Get_size();
+    // Get the individual process ID.
+    s.myrank = MPI::COMM_WORLD.Get_rank();
+
+    s.N_p[0] = s.N_p[1] = 1; s.N_p[2] = 1;
+
+    // compute cell number of inner domain in dth dimension
+    for (int d=0; d<DIM; d++)
+    {
+        s.N_c[d] = cell_N[d];
+        for(int i=0; i<s.ip[d];i++)
+            s.N_c[d] -= round(s.N_c[d]/(s.N_p[d]-i));
+    }
+
+
+    // temporary placeholder for resolving coordinates of neighbours
+    int ipTmp[DIM];
+    // get position of actual process in the grid
+    Jinv(s.myrank, s.N_p, s.ip);
+
+    // save current coordinates in grid to ipTmp
+    memcpy(ipTmp, s.ip, sizeof(s.ip));
+
+    for (int d=0; d<DIM; d++)
+    {
+        // lower neighbour in dimension d
+        ipTmp[d] = (s.ip[d] - 1) % s.N_p[d];
+        // get according number of process
+        s.ip_lower[d] = J(ipTmp, s.N_p);
+        // upper neigbour in dimension d
+        ipTmp[d] = (s.ip[d] + 1) % s.N_p[d];
+        // get according number of process
+        s.ip_upper[d] = J(ipTmp, s.N_p);
+
+        // the cell length is domain length per #cells in domain
+        s.cellh[d] = s.L[d] / s.N_c[d];
+        // our bordure ends at ic_start
+        s.ic_start[d] = (int) ceil(cell_r_cut / s.cellh[d]);
+        // the cell ends at
+        s.ic_stop[d] = s.ic_start[d] + (s.N_c[d] / s.N_p[d]);
+        s.ic_number[d] = (s.ic_stop[d] - s.ic_start[d]) + 2*s.ic_start[d]; // dist + bordure
+        s.ic_lower_global[d] = s.ip[d] * (s.N_c[d] / s.N_p[d]);
+    }
+
+
+
+    // insert empty cells only
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
 
