@@ -167,6 +167,65 @@ void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
 
     }
 }
+
+void WorldLC::sendReceive(Cell *grid, int *ic_number,
+                              int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
+                              int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
+{
+    MPI::Status status;
+    int sum_lengthsend = 0, sum_lengthreceive = 0;
+    int k = 0, kreceive = 0, ncs = 1;
+    int *ic_lengthsend = NULL, *ic_lengthreceive = NULL, ic[DIM];
+    Particle *ip_particlesend = NULL, *ip_particlereceive = NULL;
+
+    // send and receive to/from lowerproc
+    for (int d=0; d<DIM; d++)
+        ncs *= lower_ic_stop[d] - lower_ic_start[d];
+    ic_lengthsend = (int*)malloc(ncs*sizeof(*ic_lengthreceive));
+
+    //iterate over
+    for (int i=0; i<DIM; i++)
+    {
+        ic_lengthsend[k] = grid[J(ic,ic_number)].particles.size ();
+        sum_lengthsend += ic_lengthsend[k++];
+    }
+    MPI::COMM_WORLD.Isend (ic_lengthsend, ncs, MPI_INT, lower_proc, 1);
+    MPI::COMM_WORLD.Recv (ic_lengthreceive, ncs, MPI::INT, upper_proc, 1, status);
+    //MPI::Request::Wait();
+    //status
+    free(ic_lengthsend);
+    for (k=0; k<ncs; k++)
+        sum_lengthreceive += ic_lengthreceive[k];
+    sum_lengthsend *= sizeof(*ip_particlesend);
+    ip_particlesend = (Particle*)malloc(sum_lengthsend);
+    sum_lengthreceive *= sizeof(*ip_particlereceive);
+    ip_particlereceive = (Particle*)malloc (sum_lengthreceive);
+    k=0;
+    //iterate()
+    //for (int i=0; i<DIM; i++)
+        //for (std::vector<Cell>::iterator i = grid[J(ic,ic_number)]; i!= grid[J(ic,ic_number)]particles.end (); i++)
+            //ip_particlesend[k++] = *i;
+    MPI::COMM_WORLD.Isend (ip_particlesend, sum_lengthsend, MPI::CHAR, lower_proc, 2);
+    MPI::COMM_WORLD.Recv (ip_particlereceive, sum_lengthreceive, MPI::CHAR, upper_proc, 2, status);
+    //MPI::Request::Wait();
+    free (ip_particlesend);
+    kreceive = k = 0;
+
+    for (int d=0; d<DIM; d++)
+    {
+        for (int icp=0; icp<ic_lengthreceive[kreceive]; icp++)
+        {
+            std::vector<Particle> i;
+            i.push_back (ip_particlereceive[k++]);
+        }
+        kreceive++;
+    }
+
+    free (ic_lengthreceive);
+    free (ip_particlereceive);
+
+}
+
 void WorldLC::construct_particle(MPI::Datatype& MPI_Particle)
 {
 // Initialize Particle
