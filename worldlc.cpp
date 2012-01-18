@@ -167,6 +167,39 @@ void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
 
     }
 }
+void WorldLC::construct_particle(MPI::Datatype& MPI_Particle)
+{
+// Initialize Particle
+  Particle p;
+  p.ID = 0;
+  p.m = 0.0;
+  p.x[0] = p.x[1] = p.x[2] = 0.0;
+  p.v[0] = p.v[1] = p.v[2] = 0.0;
+  p.F[0] = p.F[1] = p.F[2] = 0.0;
+  p.F_old[0] = p.F_old[1] = p.F_old[2] = 0.0;
+
+  // build new mpi datatype
+  MPI::Datatype type[6] = {MPI::INT, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE};
+  int blocklen[6] = {1,1,DIM,DIM,DIM,DIM};
+  MPI::Aint disp[6]; // displacements
+  MPI::Aint base;
+
+  /* compute displacements */
+  disp[0] = MPI::Get_address(&p);
+  disp[1] = MPI::Get_address(&p.m);
+  disp[2] = MPI::Get_address(&p.x);
+  disp[3] = MPI::Get_address(&p.v);
+  disp[4] = MPI::Get_address(&p.F);
+  disp[5] = MPI::Get_address(&p.F_old);
+
+  base = disp[0];
+  for (unsigned i=0; i<6; i++) disp[i] -= base;
+
+  MPI_Particle = MPI::Datatype::Create_struct(6, blocklen, disp, type);
+  MPI_Particle.Commit();
+}
+
+
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
     // Get out some information about the world
