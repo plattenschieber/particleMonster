@@ -213,8 +213,8 @@ void VelocityVerletLC::updateX()
                         // DEBUG:
                         std::cout << "New position (unten Raus Obenwiederrein)" << std::endl;
 
-                        // new position is end of world minus overhead that x left the world
-                        i->x[d] =  W.length[d] - fabs(fmod(i->x[d], W.length[d]));
+                        // new position is displaced by worlds length
+                        i->x[d] +=  W.length[d];
                         // there is a particle which left the world at one of its sides
                         doIt = true;
                     }
