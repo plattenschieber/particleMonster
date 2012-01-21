@@ -51,7 +51,7 @@ public:
     /**
      * @brief calculate the new beta
      */
-    virtual real calcBeta(int dimension);
+    virtual real calcBeta();
 
 
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world and periodic will let the particles enter on the opposite side

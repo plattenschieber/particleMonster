@@ -194,12 +194,9 @@ void World::readParticles(const std::string &filename)
 }
 
 
-real World::calcBeta(int dimension)
+real World::calcBeta()
 {
-    real tmp = 0.0;
-    for (std::list<Particle>::iterator i = particles.begin (); i != particles.end (); i++)
-        tmp += sqr(i->v[dimension]);
-    return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
+    return sqrt(thermo_target_temp * (nParticles-1) / (48*e_kin));
 }
 
 

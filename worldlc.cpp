@@ -199,6 +199,7 @@ void WorldLC::SetCommunication(SubDomain *s, int dim,
 }
 
 void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
+real WorldLC::calcBeta()
 {
     int lower_ic_start[DIM], lower_ic_stop[DIM],
         upper_ic_start[DIM], upper_ic_stop[DIM],
@@ -218,6 +219,7 @@ void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
                                         s->ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
 
     }
+    return sqrt(thermo_target_temp * (nParticles-1) / (48*e_kin));
 }
 
 void WorldLC::sendReceive(Cell *grid, int *ic_number,
