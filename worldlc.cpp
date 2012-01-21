@@ -60,6 +60,9 @@ void WorldLC::readParameter(const std::string &filename)
         cell_length[d] = length[d]/cell_N[d];
 
         nCells *= cell_N[d];
+        // DEBUG
+        //        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
+        //                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
     }
 
     // do some parallel stuff
@@ -146,8 +149,7 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
         // handle particle outside the world failure
         if (i->x[d] < 0)
             return -1;
-        // calc cell real index
-        tmp[d] = (int) floor(i->x[d] * cell_N[d] / length[d]) % cell_N[d];
+        tmp[d] = (int) floor(i->x[d] / cell_length[d]) % cell_N[d];
     }
     // return corresponding cell Number
     return J(tmp,cell_N);
