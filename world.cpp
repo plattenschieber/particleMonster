@@ -5,8 +5,8 @@
 // intializing via intializer list - order is set by definings in .hpp;
 World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0.0),e_tot(0.0),e_avg(0.0),
     sigma(1.0),epsilon(1.0), nParticles(0),
-    thermo_start_temp(0),isThermoStartTemp(false),
-    thermo_step_interval(0),thermo_target_temp(0)
+    thermo_start_temp(0.0),isThermoStartTemp(false),
+    thermo_step_interval(0.0),thermo_target_temp(0.0)
 {
     //setting map mapOptions for switchcase
     mapOptions["name"] = NAME;
@@ -18,7 +18,7 @@ World::World() : name("unknown"),t(0),delta_t(0.0),t_end(0.0),e_kin(0.0),e_pot(0
     mapOptions["sigma"] = SIGMA;
     mapOptions["epsilon"] = EPSILON;
     mapOptions["set_start_temperature"] = STARTTEMP;
-    mapOptions["thermostat_step_intervall"] = STEPINTERVAL;
+    mapOptions["thermostat_step_interval"] = STEPINTERVAL;
     mapOptions["thermostat_target_temperature"] = TARGETTEMP;
     mapOptions["random_seed"] = RANDOMSEED;
 }
