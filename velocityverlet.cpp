@@ -79,7 +79,7 @@ void VelocityVerlet::updateV()
             // if we want to check the temperatur regulary
             if (fmod(W.t,W.thermo_step_interval) == 0 && W.isThermoStartTemp)
                 // multiply velocity by beta
-                i->v[d] *= W.calcBeta(d);
+                i->v[d] *= W.calcBeta();
             // add now the pro rata e_kin
             W.e_kin += .5*i->m*sqr(i->v[d]);
         }
