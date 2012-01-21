@@ -176,6 +176,7 @@ void World::readParticles(const std::string &filename)
             // set new velocity according to Maxwell-Boltzmann
             for (int d=0; d<DIM; d++)
                 tmpparticle.v[d] = u[d]*sqrt(r);
+            tmpparticle.v[2] = 0;
         }
 
         // assure integrity of the force of our tmpparticle
