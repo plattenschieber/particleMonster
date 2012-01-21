@@ -111,11 +111,10 @@ void VelocityVerletLC::compF()
                                                 dist += sqr(dirV[d]);
                                             }
 
-                                            // ... and take the squareroot at last
-                                            dist = sqrt(dist);
+
 
                                             // only particles which are closer than rcut, flow into the computation
-                                            if (dist <= W.cell_r_cut)
+                                            if (dist <= sqr(W.cell_r_cut))
                                                 // computes the force between particle i and j and add it to our potential
                                                 W.e_pot += Pot.force(*i, *j, dist, dirV, W.epsilon, W.sigma);
                                         }
