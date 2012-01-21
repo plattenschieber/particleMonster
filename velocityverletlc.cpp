@@ -244,18 +244,9 @@ void VelocityVerletLC::updateX()
                         break;
                     }
 
-                    // calc the position in all dimension and THEN push it into the right cell
-                    if (d==DIM-1 && doIt==true)
-                    {
-                        // Add particle i to its corresponding cell
-                        W.cells[W.getCellNumber(i)].particles.push_back(*i);
-                        i = cell->particles.erase(i);
-                        i--;
-                        break;
-                    }
 
-                    // if we are in the last step and particle wasn't periodic -> just changed cell in inner world
-                    if (d==DIM-1 && doIt==false)
+                    // if we are in the last step and particle was periodic or changed cell in the inner world
+                    if (d==DIM-1)
                     {
                         W.particles.push_back(*i);
                         i = cell->particles.erase(i);
