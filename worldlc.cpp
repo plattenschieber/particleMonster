@@ -114,10 +114,13 @@ void WorldLC::readParameter(const std::string &filename)
 
 
 
-    // insert empty cells only
+    
+    // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
 
+    // DEBUG
+    //    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
 void WorldLC::readParticles(const std::string &filename)
@@ -144,6 +147,8 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
 {
     // temporary array
     int tmp[3] = {0,0,0};
+    //    // DEBUG Table
+    //    std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
         // handle particle outside the world failure
