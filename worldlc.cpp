@@ -100,6 +100,10 @@ void WorldLC::readParameter(const std::string &filename)
 
         // save last left over and continue further down
         int tmp = s.N_c[d];
+
+        // the last calculation equals the number of cells for our process
+        s.N_c[d] = round(s.N_c[d]/(s.N_p[d]-s.ip[d]));
+
         // now compute remaining displacements
         for (int i=s.ip[d]; i<s.N_p[d]; i++)
         {
