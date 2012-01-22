@@ -128,9 +128,9 @@ void WorldLC::readParameter(const std::string &filename)
         // get according number of process
         s.ip_upper[d] = J(ipTmp, s.N_p);
 
-        // our bordure ends at ic_start
         // the cells edge length is worlds edge length per #cells
         s.cellh[d] = length[d] / cell_N[d];
+        // bordure width - equals the first cell inside subdomain
         s.ic_start[d] = (int) ceil(cell_r_cut / s.cellh[d]);
         // the cell ends at
         s.ic_stop[d] = s.ic_start[d] + (s.N_c[d] / s.N_p[d]);
