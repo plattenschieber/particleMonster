@@ -132,13 +132,14 @@ void WorldLC::readParameter(const std::string &filename)
         s.cellh[d] = length[d] / cell_N[d];
         // bordure width - equals the first cell inside subdomain
         s.ic_start[d] = (int) ceil(cell_r_cut / s.cellh[d]);
-        s.ic_lower_global[d] = s.ip[d] * (s.N_c[d] / s.N_p[d]);
         // first cell in upper bordure, so you can use it as for i=s.ic_start; i<s.ic_stop
         s.ic_stop[d] = s.ic_start[d] + s.N_c[d];
 
         // number of cells in dth dim incl. bordure
         // (s.ic_stop[d] - s.ic_start[d]) + 2*s.ic_start[d] is the same as:
         s.ic_number[d] = s.ic_stop[d] + s.ic_start[d];
+        // the lower global Index of the first cell, is the dth displacement of the corresponding process
+        s.ic_lower_global[d] = displ[d][s.ip[d]];
     }
 
 
