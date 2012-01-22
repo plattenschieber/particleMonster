@@ -74,6 +74,8 @@ void WorldLC::readParameter(const std::string &filename)
 
     s.N_p[0] = s.N_p[1] = 1; s.N_p[2] = 1;
 
+    // get position of actual process in the grid
+    Jinv(s.myrank, s.N_p, s.ip);
 
     // save the global cell displacement of every process
     int *displ[DIM];
@@ -102,9 +104,6 @@ void WorldLC::readParameter(const std::string &filename)
 
     // temporary placeholder for resolving coordinates of neighbours
     int ipTmp[DIM];
-    // get position of actual process in the grid
-    Jinv(s.myrank, s.N_p, s.ip);
-
     // save current coordinates in grid to ipTmp
     memcpy(ipTmp, s.ip, sizeof(s.ip));
 
