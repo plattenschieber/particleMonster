@@ -72,6 +72,7 @@ void WorldLC::readParameter(const std::string &filename)
     // Get the individual process ID.
     s.myrank = MPI::COMM_WORLD.Get_rank();
 
+    // #procs in dim
     s.N_p[0] = s.N_p[1] = 1; s.N_p[2] = 1;
 
     // get position of actual process in the grid
@@ -85,12 +86,17 @@ void WorldLC::readParameter(const std::string &filename)
     {
         // we need #procs place for displacements
         displ[d] = (int*)malloc (s.N_p[d] * sizeof(int));
+        // s.N_c which needs to be divided to procs
         s.N_c[d] = cell_N[d];
+
+        // calc until you reach your process position
         for(int i=0; i<s.ip[d];i++)
+        {
             // save the left over cells as displacement for ith process
             displ[d][i] = cell_N[d] - s.N_c[d];
+            // and compute the left over for the next step
             s.N_c[d] -= round(s.N_c[d]/(s.N_p[d]-i));
-    }
+        }
 
         // save last left over and continue further down
         int tmp = s.N_c[d];
