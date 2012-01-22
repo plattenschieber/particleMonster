@@ -47,10 +47,8 @@ void WorldLC::readParameter(const std::string &filename)
     }
     // close file
     parfile.close();
-    
 
-    // #of all cells
-    int nCells = 1;
+
     // Calc #cells
     for (int d=0; d<DIM; d++)
     {
@@ -59,7 +57,6 @@ void WorldLC::readParameter(const std::string &filename)
         // cell length = world length per #cells
         cell_length[d] = length[d]/cell_N[d];
 
-        nCells *= cell_N[d];
         // DEBUG
         //        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
         //                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
@@ -142,7 +139,10 @@ void WorldLC::readParameter(const std::string &filename)
         s.ic_lower_global[d] = displ[d][s.ip[d]];
     }
 
-
+    // #of all cells incl. bordures
+    int nCells = 1;
+    for (int d=0; d<DIM; d++)
+        nCells *= s.ic_number[d];
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
