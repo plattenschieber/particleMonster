@@ -113,8 +113,6 @@ void WorldLC::readParameter(const std::string &filename)
     }
 
 
-
-    
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
@@ -160,13 +158,9 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
     return J(tmp,cell_N);
 }
 
-real WorldLC::calcBeta(int dimension)
+real WorldLC::calcBeta()
 {
-    real tmp = 0.0;
-    for (std::vector<Cell>::iterator cell = cells.begin(); cell != cells.end (); cell++)
-        for (std::list<Particle>::iterator i = cell->particles.begin (); i != cell->particles.end (); i++)
-            tmp += sqr(i->v[dimension]);
-    return sqrt(thermo_target_temp * (nParticles-1) / (24*tmp));
+    return sqrt(thermo_target_temp * (nParticles-1) / (48*e_kin));
 }
 
 void WorldLC::SetCommunication(SubDomain *s, int dim,
@@ -206,7 +200,6 @@ void WorldLC::SetCommunication(SubDomain *s, int dim,
 }
 
 void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
-real WorldLC::calcBeta()
 {
     int lower_ic_start[DIM], lower_ic_stop[DIM],
         upper_ic_start[DIM], upper_ic_stop[DIM],
@@ -226,7 +219,6 @@ real WorldLC::calcBeta()
                                         s->ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
 
     }
-    return sqrt(thermo_target_temp * (nParticles-1) / (48*e_kin));
 }
 
 void WorldLC::sendReceive(Cell *grid, int *ic_number,
