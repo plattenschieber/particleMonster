@@ -74,14 +74,31 @@ void WorldLC::readParameter(const std::string &filename)
 
     s.N_p[0] = s.N_p[1] = 1; s.N_p[2] = 1;
 
+
+    // save the global cell displacement of every process
+    int *displ[DIM];
+
     // compute cell number of inner domain in dth dimension
     for (int d=0; d<DIM; d++)
     {
+        // we need #procs place for displacements
+        displ[d] = (int*)malloc (s.N_p[d] * sizeof(int));
         s.N_c[d] = cell_N[d];
         for(int i=0; i<s.ip[d];i++)
+            // save the left over cells as displacement for ith process
+            displ[d][i] = cell_N[d] - s.N_c[d];
             s.N_c[d] -= round(s.N_c[d]/(s.N_p[d]-i));
     }
 
+        // save last left over and continue further down
+        int tmp = s.N_c[d];
+        // now compute remaining displacements
+        for (int i=s.ip[d]; i<s.N_p[d]; i++)
+        {
+            displ[d][i] = cell_N[d] - tmp;
+            tmp -= round(tmp/(s.N_p[d]-i));
+        }
+    }
 
     // temporary placeholder for resolving coordinates of neighbours
     int ipTmp[DIM];
