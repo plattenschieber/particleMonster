@@ -139,7 +139,7 @@ void WorldLC::readParameter(const std::string &filename)
         s.ic_lower_global[d] = displ[d][s.ip[d]];
     }
 
-    // #of all cells incl. bordures
+    // calc #of all cells incl. bordures
     int nCells = 1;
     for (int d=0; d<DIM; d++)
         nCells *= s.ic_number[d];
