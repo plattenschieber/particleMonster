@@ -32,13 +32,6 @@ public:
     void readParameter(const std::string &filename);
     // TODO: Add some comment here
     void readParticles(const std::string &filename);
-    /**
-     * @brief calculate the new beta
-     */
-    virtual real calcBeta();
-
-    // retrieve Index of Cell by coordinates
-    int getCellNumber(const std::list<Particle>::iterator i);
 
     void sendReceive(Cell *grid, int *ic_number,
                               int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
@@ -65,8 +58,6 @@ public:
     real cell_length[DIM];
     /// r_cut used for calculation of the cell length
     real cell_r_cut;
-    /// world's subdomain
-    SubDomain s;
     /// a particle for MPI
     MPI::Datatype MPI_Particle;
 };

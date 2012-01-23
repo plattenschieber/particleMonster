@@ -3,6 +3,7 @@
 
 #include "defines.hpp"
 #include "particle.hpp"
+#include "subdomain.hpp"
 #include <vector>
 #include <list>
 #include <string>
@@ -106,6 +107,8 @@ public:
     real thermo_step_interval;
     real thermo_target_temp;
 
+    /// world's subdomain
+    SubDomain s;
 };
 
 /**

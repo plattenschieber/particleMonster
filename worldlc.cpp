@@ -188,10 +188,6 @@ int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
     return J(tmp,cell_N);
 }
 
-real WorldLC::calcBeta()
-{
-    return sqrt(thermo_target_temp * (nParticles-1) / (48*e_kin));
-}
 
 void WorldLC::SetCommunication(SubDomain *s, int dim,
                             int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
