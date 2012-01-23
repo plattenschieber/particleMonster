@@ -48,7 +48,6 @@ void WorldLC::readParameter(const std::string &filename)
     // close file
     parfile.close();
 
-
     // Calc #cells
     for (int d=0; d<DIM; d++)
     {
@@ -56,10 +55,6 @@ void WorldLC::readParameter(const std::string &filename)
         cell_N[d] = (int)(length[d]/cell_r_cut);
         // cell length = world length per #cells
         cell_length[d] = length[d]/cell_N[d];
-
-        // DEBUG
-        //        std::cout << "World.length[" << d << "]=" << length[d] << "\tcell_r_cut=" << cell_r_cut
-        //                  << "\t#Cells=" << cell_N[d] << "\tCelllength=" << cell_length[d] << std::endl;
     }
 
     // do some parallel stuff
@@ -146,9 +141,6 @@ void WorldLC::readParameter(const std::string &filename)
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
-
-    // DEBUG
-    //    std::cout << "#Cells: " << nCells << "\t" << cells.size() <<std::endl << std::endl;
 }
 
 void WorldLC::readParticles(const std::string &filename)

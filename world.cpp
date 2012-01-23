@@ -147,6 +147,9 @@ void World::readParticles(const std::string &filename)
         // push dim read values into tmpparticles position
         for(int i=0; i<DIM; i++)
             strstr >> tmpparticle.x[i];
+
+        //World.get
+
         // push dim read values into tmpparticles velocity
         for(int d=0; d<DIM; d++)
             strstr >> tmpparticle.v[d];
