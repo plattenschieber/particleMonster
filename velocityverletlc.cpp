@@ -21,12 +21,8 @@ void VelocityVerletLC::compF()
     W.e_pot = 0.0;
 
     // roll over each cell
-    for (jCell[0]=W.s.ic_start[0]; jCell[0]<W.s.ic_stop[0]; jCell[0]++)
+    Iterate(jCell, W.s.ic_start, W.s.ic_stop)
     {
-        for (jCell[1]=W.s.ic_start[1]; jCell[1]<W.s.ic_stop[1]; jCell[1]++)
-        {
-            for (jCell[2]=W.s.ic_start[2]; jCell[2]<W.s.ic_stop[2]; jCell[2]++)
-            {
                 // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
                 // roll over every particle i in actual cell
                 for (std::list<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i != W.cells[J(jCell,W.cell_N)].particles.end(); i++)
