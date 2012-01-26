@@ -232,27 +232,27 @@ void WorldLC::SetCommunication(SubDomain *s, int dim,
         // only bordure
         if (d==dim)
         {
-            lower_ic_start[d] = s->ic_start[d];
+            lower_ic_start[d] = s.ic_start[d];
             lower_ic_stop[d] = 2*lower_ic_start[d];
             lower_ic_startreceive[d] = 0;
             lower_ic_stopreceive[d] = lower_ic_start[d];
 
-            upper_ic_stop[d] = s->ic_stop[d];
-            upper_ic_start[d] = s->ic_stop[d] - s->ic_start[d];
-            upper_ic_stopreceive[d] = s->ic_start[d] + s->ic_stop[d];
-            upper_ic_startreceive[d] = s->ic_stop[d];
+            upper_ic_stop[d] = s.ic_stop[d];
+            upper_ic_start[d] = s.ic_stop[d] - s.ic_start[d];
+            upper_ic_stopreceive[d] = s.ic_start[d] + s.ic_stop[d];
+            upper_ic_startreceive[d] = s.ic_stop[d];
         }
         // bordure inclusive
         else if (d>dim)
         {
             lower_ic_startreceive[d] = lower_ic_start[d] = upper_ic_startreceive[d] = upper_ic_start[d] = 0;
-            lower_ic_stopreceive[d] = lower_ic_stop[d] = upper_ic_stopreceive[d] = upper_ic_stop[d] = s->ic_start[d] + s->ic_stop[d];
+            lower_ic_stopreceive[d] = lower_ic_stop[d] = upper_ic_stopreceive[d] = upper_ic_stop[d] = s.ic_start[d] + s.ic_stop[d];
         }
         // w/o bordure
         else
         {
-            lower_ic_start[d] = lower_ic_startreceive[d] = upper_ic_start[d] = upper_ic_startreceive[d] = s->ic_start[d];
-            lower_ic_stop[d] = lower_ic_stopreceive[d] = upper_ic_stop[d] = upper_ic_stopreceive[d] = s->ic_stop[d];
+            lower_ic_start[d] = lower_ic_startreceive[d] = upper_ic_start[d] = upper_ic_startreceive[d] = s.ic_start[d];
+            lower_ic_stop[d] = lower_ic_stopreceive[d] = upper_ic_stop[d] = upper_ic_stopreceive[d] = s.ic_stop[d];
         }
 
     }
