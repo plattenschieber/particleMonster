@@ -182,6 +182,9 @@ void WorldLC::readParameter(const std::string &filename)
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
+
+    std::cout << "END OF readParameter()" << std::endl << this;
+  //  std::cin >> s.myrank;
 }
 
 void WorldLC::readParticles(const std::string &filename)
@@ -208,8 +211,6 @@ int WorldLC::getCellNumber(const Particle &p)
 {
     // temporary array
     int tmp[3] = {0,0,0};
-    //    // DEBUG Table
-    //    std::cout << "Cell coordinate: " ;
     for (int d=0; d<DIM; d++)
     {
         // handle particle outside the world failure
@@ -348,7 +349,6 @@ void WorldLC::construct_particle(MPI::Datatype& MPI_Particle)
   p.v[0] = p.v[1] = p.v[2] = 0.0;
   p.F[0] = p.F[1] = p.F[2] = 0.0;
   p.F_old[0] = p.F_old[1] = p.F_old[2] = 0.0;
-
   // build new mpi datatype
   MPI::Datatype type[6] = {MPI::INT, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE};
   int blocklen[6] = {1,1,DIM,DIM,DIM,DIM};
