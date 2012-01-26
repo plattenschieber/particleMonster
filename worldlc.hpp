@@ -39,6 +39,7 @@ public:
     int getCellNumber (const Particle &p);
 
 
+    void deleteBorderParticles ();
     void construct_particle (MPI::Datatype& MPI_Particle);
 
     void setCommunication ( int d,
