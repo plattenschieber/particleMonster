@@ -41,10 +41,11 @@ public:
 
     void construct_particle (MPI::Datatype& MPI_Particle);
 
-    void Communication (Cell *grid, SubDomain *s, bool isForward);
     void setCommunication ( int d,
                             int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
                             int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
+
+    void communicate (bool isForward);
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
