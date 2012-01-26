@@ -204,7 +204,7 @@ void WorldLC::readParticles(const std::string &filename)
     particles.clear();
 }
 
-int WorldLC::getCellNumber(const std::list<Particle>::iterator i)
+int WorldLC::getCellNumber(const Particle &p)
 {
     // temporary array
     int tmp[3] = {0,0,0};

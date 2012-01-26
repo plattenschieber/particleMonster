@@ -36,6 +36,7 @@ public:
     void sendReceive(Cell *grid, int *ic_number,
                               int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
                               int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
+    int getCellNumber (const Particle &p);
 
     void construct_particle(MPI::Datatype& MPI_Particle);
 
