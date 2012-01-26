@@ -65,7 +65,38 @@ void WorldLC::readParameter(const std::string &filename)
     s.myrank = MPI::COMM_WORLD.Get_rank();
 
     // #procs in dim
-    s.N_p[0] = s.N_p[1] = 1; s.N_p[2] = 1;
+    switch(s.numprocs)
+    {
+        case 1:
+            s.N_p[0] = 1;
+            s.N_p[1] = 1;
+            s.N_p[2] = 1;
+            break;
+        case 2:
+            s.N_p[0] = 2;
+            s.N_p[1] = 1;
+            s.N_p[2] = 1;
+            break;
+        case 4:
+            s.N_p[0] = 2;
+            s.N_p[1] = 2;
+            s.N_p[2] = 1;
+            break;
+        case 6:
+            s.N_p[0] = 3;
+            s.N_p[1] = 2;
+            s.N_p[2] = 1;
+            break;
+        case 8:
+            s.N_p[0] = 2;
+            s.N_p[1] = 2;
+            s.N_p[2] = 2;
+            break;
+        default:
+            std::cerr << "FAILURE" << std::endl
+                      << "You choosed more than 8 processes to work with. Please contact programmer";
+            exit(EXIT_FAILURE);
+    }
 
     // get position of actual process in the grid
     Jinv(s.myrank, s.N_p, s.ip);
