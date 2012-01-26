@@ -142,8 +142,13 @@ void WorldLC::readParameter(const std::string &filename)
 
     for (int d=0; d<DIM; d++)
     {
-        // lower neighbour in dimension d (plus s.N_p[d], cause of modulo disability to calc negatives)
-        ipTmp[d] = (s.ip[d] - 1 + s.N_p[d]) % s.N_p[d];
+        // if there is no periodic border and we are at it
+        if (ipTmp[d] == 0 && lower_border[d] != periodic)
+            ipTmp[d] = NO_NEIGHBOUR;
+        // else we are in the periodic case or in the inner domain
+        else
+            // lower neighbour in dimension d (plus s.N_p[d], cause of modulo disability to calc negatives)
+            ipTmp[d] = (s.ip[d] - 1 + s.N_p[d]) % s.N_p[d];
         // get according number of process
         s.ip_lower[d] = J(ipTmp, s.N_p);
         // upper neigbour in dimension d
