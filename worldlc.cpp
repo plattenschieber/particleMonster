@@ -151,8 +151,13 @@ void WorldLC::readParameter(const std::string &filename)
             ipTmp[d] = (s.ip[d] - 1 + s.N_p[d]) % s.N_p[d];
         // get according number of process
         s.ip_lower[d] = J(ipTmp, s.N_p);
-        // upper neigbour in dimension d
-        ipTmp[d] = (s.ip[d] + 1) % s.N_p[d];
+
+        // same procedure here for lower borders
+        if (ipTmp[d] == s.N_p[d] && upper_border[d] != periodic)
+            ipTmp[d] = NO_NEIGHBOUR;
+        else
+            // upper neigbour in dimension d
+            ipTmp[d] = (s.ip[d] + 1) % s.N_p[d];
         // get according number of process
         s.ip_upper[d] = J(ipTmp, s.N_p);
 
