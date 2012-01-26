@@ -173,7 +173,7 @@ void VelocityVerletLC::updateX()
 
 
             // compare Cell Numbers of (maybe) moved particle i
-            int checkCell = W.getCellNumber(i);
+            int checkCell = W.getCellNumber(*i);
             // 	..at first calc new position in every dimension
             for (unsigned int d=0; d<DIM; d++)
             {
@@ -187,7 +187,7 @@ void VelocityVerletLC::updateX()
             }
 
             // if particle changed cell
-            if (W.getCellNumber(i) != checkCell)
+            if (W.getCellNumber(*i) != checkCell)
             {
                 // check it in every dimension
                 for (unsigned int d = 0; d<DIM; d++)
@@ -257,7 +257,7 @@ void VelocityVerletLC::updateX()
     // and now add the particles again to their belonging cells
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
     {
-        W.cells[W.getCellNumber(i)].particles.push_back(*i);
+        W.cells[W.getCellNumber(*i)].particles.push_back(*i);
         i = W.particles.erase(i);
         i--;
     }
