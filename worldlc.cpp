@@ -218,7 +218,7 @@ int WorldLC::getCellNumber(const Particle &p)
         tmp[d] = (int) floor(i->x[d] / cell_length[d]) % cell_N[d];
     }
     // return corresponding cell Number
-    return J(tmp,cell_N);
+    return J(tmp,s.ic_number);
 }
 
 
