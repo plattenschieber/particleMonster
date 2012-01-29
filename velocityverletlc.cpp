@@ -246,6 +246,20 @@ void VelocityVerletLC::updateX()
                         W.nParticles--;
                         break;
                     }
+                    // unknown - it just bumps out
+                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
+                    {
+                        std::cerr << "<------- FAILURE ------->" << std::endl;
+                        std::cerr << "Please specify lower border in Dimension: " << d+1;
+                        exit(EXIT_FAILURE);
+                    }
+                    // unknown - it just bumps out
+                    else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
+                    {
+                        std::cerr << "<------- FAILURE ------->" << std::endl;
+                        std::cerr << "Please specify lower border in Dimension: " << d+1;
+                        exit(EXIT_FAILURE);
+                    }
 
 
                     // if we are in the last step and particle was periodic or changed cell in the inner world
