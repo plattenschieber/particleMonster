@@ -84,6 +84,8 @@ void VelocityVerletLC::compF()
 
                                 // compute only if the neighbour cell is inside the world
                                 if(!leftWorld)
+                                // PERIODIC 1 cell:
+                                else if (periodic[d] && W.cells.size () == 1)
                                 {
                                     // foreach particle j in temporary! neighbourcell compute force
                                     for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
@@ -132,6 +134,11 @@ void VelocityVerletLC::compF()
                                                 W.e_pot += Pot.force(*i, *j, dist, dirV, W.epsilon, W.sigma);
                                         }
                                     }
+                                    if( (j->x[d] - i->x[d]) > 0.5*W.s.cellh[d])
+                                        // and update direction vector
+                                        dirV[d] = i->x[d] - j->x[d];
+                                    else
+                                        dirV[d] = j->x[d] - i->x[d];
                                 }
                             }
                         }
