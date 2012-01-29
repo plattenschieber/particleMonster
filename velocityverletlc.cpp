@@ -14,6 +14,9 @@ VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& 
 
 void VelocityVerletLC::compF()
 {
+    // fill bordure with particles
+    W.communicate (true);
+
     // Cell and neighbour cell indices
     int jCell[DIM], nbCell[DIM];
 
@@ -125,6 +128,8 @@ void VelocityVerletLC::compF()
             }
         }
     }
+    // and delete the bordure again
+    W.deleteBorderParticles ();
     
 }
 
@@ -263,6 +268,11 @@ void VelocityVerletLC::updateX()
         i = W.particles.erase(i);
         i--;
     }
+
+    // backward direction - send bordure to procs
+    W.communicate (false);
+    // and delete them
+    W.deleteBorderParticles ();
 
 }
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
