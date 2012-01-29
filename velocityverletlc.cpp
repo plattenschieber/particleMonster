@@ -81,6 +81,10 @@ void VelocityVerletLC::compF()
                             {
                                 {
                                 }
+                                    // if nbCell left upper border -> j.x[d] < i.x[d]
+                                    if (j->x[d] < i->x[d])
+                                        // add distance from i to upB and from lowB to j
+                                        dirV[d] = (W.length[d] - i->x[d]) + j->x[d];
 
                                 // compute only if the neighbour cell is inside the world
                                 if(!leftWorld)
@@ -109,11 +113,6 @@ void VelocityVerletLC::compF()
                                                 // IN PERIODIC:
                                                 if (periodic[d] && W.cells.size() > 1)
                                                 {
-                                                    // if nbCell left upper border -> j.x[d] < i.x[d]
-                                                    if (j->x[d] < i->x[d])
-                                                        // add distance from i to upB and from lowB to j
-                                                        dirV[d] = (W.length[d] - i->x[d]) + j->x[d];
-
                                     if( (j->x[d] - i->x[d]) > 0.5*W.s.cellh[d])
                                         // and update direction vector
                                         dirV[d] = i->x[d] - j->x[d];
