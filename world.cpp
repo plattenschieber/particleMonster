@@ -197,8 +197,6 @@ void World::readParticles(const std::string &filename)
         particles.push_back(tmpparticle);
         // update particle size
         nParticles++;
-        // resets tmpparticle for next
-        tmpparticle.clear();
     }
     // close file
     parfile.close();
