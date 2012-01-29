@@ -19,8 +19,9 @@ int main(int argc, char *argv[]) {
      MPI::Init (argc, argv);
 
     // check arguments
-    if (argc < 2) {
-        std::cerr << "error: missing arguments" << std::endl;
+    if (argc != 2) {
+        if(argc < 2) std::cerr << "error: missing arguments" << std::endl;
+        else if (argc > 4) std::cerr << "error: too many arguments" << std::endl;
         std::cerr << "usage: " << std::endl
                   << "\t" << argv[0] << " parameterfile particledatafile" << std::endl;
         return EXIT_FAILURE;
@@ -49,7 +50,6 @@ int main(int argc, char *argv[]) {
     // instanciate timediscretization
     // remark: & is used to get the address of Pot // reremark: removed the &
     VelocityVerletLC verletLC(W, LPot, O);
-    std::cout << "WHAT THE FUCK" << std::endl;
 
     // run the simulation
     verletLC.simulate();
