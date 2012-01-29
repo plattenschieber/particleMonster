@@ -153,12 +153,12 @@ void WorldLC::readParameter(const std::string &filename)
         s.ip_lower[d] = J(ipTmp, s.N_p);
 
         // same procedure here for lower borders
-        if (ipTmp[d] == s.N_p[d] && upper_border[d] != periodic)
-            ipTmp[d] = NO_NEIGHBOUR;
+        if (ipTmp[d] < s.N_p[d] - 1)
+            ipTmp[d]++;
+        else if (upper_border[d] == periodic)
+            ipTmp[d] = 0;
         else
-            // upper neigbour in dimension d
-            ipTmp[d] = (s.ip[d] + 1) % s.N_p[d];
-        // get according number of process
+            ipTmp[d] = NO_NEIGHBOUR;
         s.ip_upper[d] = J(ipTmp, s.N_p);
 
         // the cells edge length is worlds edge length per #cells
