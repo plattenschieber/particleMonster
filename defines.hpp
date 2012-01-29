@@ -26,7 +26,7 @@
 #define _DEFINES_HPP
 
 // define the dimension of the particles
-#define DIM 3
+#define DIM 2
 // No neighbour for parallel
 #define NO_NEIGHBOUR -1
 // reals in double precision
