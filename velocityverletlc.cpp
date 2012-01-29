@@ -30,39 +30,41 @@ void VelocityVerletLC::compF()
             // roll over every neighbour cell
             Iterate (nbCell, jCell -1, jCell +1)
             {
+                // mark that a neighbour is outside the world
+                bool leftWorld = false;
+                // mark that a neighbour left the  world at a specific periodic border
+                bool periodic[DIM];
+                for (int d=0; d<DIM; d++)
+                    periodic[d] = false;
+
+                // resolve neighbours real position, especially in periodic case
+                int nbTmpCell[DIM];
+                //copy therefor neighbour cells position to an temporay array
+                memcpy(nbTmpCell, nbCell, sizeof(nbCell));
+
+                // set neighbour to its new place if world is periodic and observed cell is located at the border
+                // or ignore this neighbour cell (leftWorld = true)
+                for (int d=0; d<DIM; d++)
                 {
+                    // PERIODIC CASES:
+                    if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
+                    {
+                        nbTmpCell[d] = W.cell_N[d]-1;
+                        periodic[d] = true;
+                    }
+                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
+                    {
+                        nbTmpCell[d]=0;
+                        periodic[d] = true;
+                    }
+
+                    // LEAVING CASES:
+                    else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
+                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
                     {
                         {
                             {
-                                // mark that a neighbour is outside the world
-                                bool leftWorld = false;
-                                // mark that a neighbour left the  world at a specific periodic border
-                                bool periodic[DIM] = {false, false, false};
-
-                                // resolve neighbours real position, especially in periodic case
-                                int nbTmpCell[DIM];
-                                //copy therefor neighbour cells position to an temporay array
-                                memcpy(nbTmpCell, nbCell, sizeof(nbCell));
-
-                                // set neighbour to its new place if world is periodic and observed cell is located at the border
-                                // or ignore this neighbour cell (leftWorld = true)
-                                for (int d=0; d<DIM; d++)
                                 {
-                                    // PERIODIC CASES:
-                                    if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
-                                    {
-                                        nbTmpCell[d] = W.cell_N[d]-1;
-                                        periodic[d] = true;
-                                    }
-                                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
-                                    {
-                                        nbTmpCell[d]=0;
-                                        periodic[d] = true;
-                                    }
-
-                                    // LEAVING CASES:
-                                    else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
-                                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
                                 }
 
                                 // compute only if the neighbour cell is inside the world
