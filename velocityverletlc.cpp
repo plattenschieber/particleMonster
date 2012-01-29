@@ -114,12 +114,6 @@ void VelocityVerletLC::compF()
                                                         // add distance from lowB to i and from j to upB (times -1, because of the over border handling)
                                                         dirV[d] = -1*(i->x[d] + (W.length[d] - j->x[d]));
                                                 }
-                                            // only particles which are closer than rcut, flow into the computation
-                                            if (dist <= sqr(W.cell_r_cut))
-                                                // computes the force between particle i and j and add it to our potential
-                                                W.e_pot += Pot.force(*i, *j, dist, dirV, W.epsilon, W.sigma);
-                                        }
-                                    }
                                     if( (j->x[d] - i->x[d]) > 0.5*W.s.cellh[d])
                                         // and update direction vector
                                         dirV[d] = i->x[d] - j->x[d];
@@ -136,6 +130,11 @@ void VelocityVerletLC::compF()
                                 // And now, accumulate the distance...
                                 dist += sqr(dirV[d]);
                             }
+
+                            // only particles which are closer than rcut, flow into the computation
+                            if (dist <= sqr(W.cell_r_cut))
+                                // computes the force between particle i and j and add it to our potential
+                                W.e_pot += Pot.force(*i, *j, dist, dirV, W.epsilon, W.sigma);
                         }
                     }
                 } // end if (inside world)
