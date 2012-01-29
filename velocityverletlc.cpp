@@ -124,10 +124,11 @@ void VelocityVerletLC::compF()
                             }
                         }
                     }
-                }
-            }
-        }
-    }
+                } // end if (inside world)
+            } //end neighbour cell Iterate
+        } //end iterator over all particles i
+    } //end Iterate(jCell)
+
     // and delete the bordure again
     W.deleteBorderParticles ();
     
