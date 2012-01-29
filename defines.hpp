@@ -27,6 +27,8 @@
 
 // define the dimension of the particles
 #define DIM 3
+// No neighbour for parallel
+#define NO_NEIGHBOUR -1
 // reals in double precision
 typedef double real;
 // squre define
