@@ -12,7 +12,7 @@ MAIN = particleMonster
 SRCS = blatt5.cpp world.cpp worldlc.cpp observer.cpp observerxyz.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp ljpotential.cpp
 
 # define the C compiler to use
-CC = /opt/local/bin/mpic++
+CC = /opt/openmpi/bin/mpic++
 
 # define any compile-time flags
 CFLAGS = -Wall -g
