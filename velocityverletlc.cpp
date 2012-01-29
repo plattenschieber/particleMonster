@@ -114,20 +114,6 @@ void VelocityVerletLC::compF()
                                                         // add distance from lowB to i and from j to upB (times -1, because of the over border handling)
                                                         dirV[d] = -1*(i->x[d] + (W.length[d] - j->x[d]));
                                                 }
-                                                // IN NONPERIODIC: (or we have only one periodic cell)
-                                                else
-                                                {
-                                                    // and update direction vector
-                                                    dirV[d] = j->x[d] - i->x[d];
-                                                }
-
-
-                                                // And now, accumulate the distance...
-                                                dist += sqr(dirV[d]);
-                                            }
-
-
-
                                             // only particles which are closer than rcut, flow into the computation
                                             if (dist <= sqr(W.cell_r_cut))
                                                 // computes the force between particle i and j and add it to our potential
@@ -140,6 +126,15 @@ void VelocityVerletLC::compF()
                                     else
                                         dirV[d] = j->x[d] - i->x[d];
                                 }
+                                // IN NONPERIODIC:
+                                else
+                                {
+                                    // and update direction vector
+                                    dirV[d] = j->x[d] - i->x[d];
+                                }
+
+                                // And now, accumulate the distance...
+                                dist += sqr(dirV[d]);
                             }
                         }
                     }
