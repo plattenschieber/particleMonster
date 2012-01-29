@@ -64,7 +64,19 @@ void VelocityVerletLC::compF()
                     // LEAVING CASES:
                     else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
                     else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
+                    else if (nbCell[d]<0 && W.lower_border[d]==W.unknown)
                     {
+                        std::cerr << "<------- FAILURE ------->" << std::endl;
+                        std::cerr << "Please specify lower border in Dimension: " << d+1;
+                        exit(EXIT_FAILURE);
+                    }
+                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.unknown)
+                    {
+                        std::cerr << "<------- FAILURE ------->" << std::endl;
+                        std::cerr << "Please specify upper border in Dimension: " << d+1;
+                        exit(EXIT_FAILURE);
+                    }
+                }
                         {
                             {
                                 {
