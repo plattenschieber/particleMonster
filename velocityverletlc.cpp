@@ -77,17 +77,34 @@ void VelocityVerletLC::compF()
                         exit(EXIT_FAILURE);
                     }
                 }
+
+                // compute only if the neighbour cell is inside the world
+                if(!leftWorld)
+                {
+                    // foreach particle j in temporary! neighbourcell compute force
+                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.s.ic_number)].particles.begin(); j != W.cells[J(nbTmpCell,W.s.ic_number)].particles.end(); j++)
+                    {
+                        // ...except of the computation with itself (i!=j)
+                        if (i!=j)
                         {
+                            // check distance and drop all particle which are farther than rcut
+                            real dist = 0.0;
+                            // save a direction vector for the distance
+                            real dirV[DIM];
+                            for (int d=0; d<DIM; d++)
+                                dirV[d] = 0.0;
+
+                            // compute distance and directional vector of i and j
+                            for (int d=0; d<DIM; d++)
                             {
+                                // IN PERIODIC:
+                                if (periodic[d] && W.cells.size() > 1)
                                 {
-                                }
                                     // if nbCell left upper border -> j.x[d] < i.x[d]
                                     if (j->x[d] < i->x[d])
                                         // add distance from i to upB and from lowB to j
                                         dirV[d] = (W.length[d] - i->x[d]) + j->x[d];
 
-                                // compute only if the neighbour cell is inside the world
-                                if(!leftWorld)
                                     // else nbCell left lower border -> j.x[d] > i.x[d]
                                     else
                                         // add distance from lowB to i and from j to upB (times -1, because of the over border handling)
@@ -96,23 +113,6 @@ void VelocityVerletLC::compF()
                                 // PERIODIC 1 cell:
                                 else if (periodic[d] && W.cells.size () == 1)
                                 {
-                                    // foreach particle j in temporary! neighbourcell compute force
-                                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.cell_N)].particles.begin(); j != W.cells[J(nbTmpCell,W.cell_N)].particles.end(); j++)
-                                    {
-                                        // ...except of the computation with itself (i!=j)
-                                        if (i!=j)
-                                        {
-                                            // check distance and drop all particle which are farther than rcut
-                                            real dist = 0.0;
-                                            // save a direction vector for the distance
-                                            real dirV[DIM] = {0,0,0};
-
-                                            // compute distance and directional vector of i and j
-                                            for (int d=0; d<DIM; d++)
-                                            {
-                                                // IN PERIODIC:
-                                                if (periodic[d] && W.cells.size() > 1)
-                                                {
                                     if( (j->x[d] - i->x[d]) > 0.5*W.s.cellh[d])
                                         // and update direction vector
                                         dirV[d] = i->x[d] - j->x[d];
