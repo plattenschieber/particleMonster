@@ -155,7 +155,7 @@ void World::readParticles(const std::string &filename)
                 exit (EXIT_FAILURE);
             }
 
-        //World.get
+        }
 
         // push dim read values into tmpparticles velocity
         for(int d=0; d<DIM; d++)
