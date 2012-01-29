@@ -50,5 +50,17 @@ typedef double real;
       (ip)[2] = (r)/(np)[0] / (np)[1] )
 #endif
 
+
+#if DIM == 3
+#define Iterate(ic,minnc,maxnc) \
+for( (ic)[0]=(minnc)[0]; (ic)[0]<(maxnc)[0]; (ic)[0]++ ) \
+for( (ic)[1]=(minnc)[1]; (ic)[1]<(maxnc)[1]; (ic)[1]++ ) \
+for( (ic)[2]=(minnc)[2]; (ic)[2]<(maxnc)[2]; (ic)[2]++ )
+#elif DIM == 2
+#define Iterate(ic,minnc,maxnc) \
+for( (ic)[0]=(minnc)[0]; (ic)[0]<(maxnc)[0]; (ic)[0]++ ) \
+for( (ic)[1]=(minnc)[1]; (ic)[1]<(maxnc)[1]; (ic)[1]++ )
+#endif
+
 #endif // _DEFINES_HPP
 // vim:set et sts=4 ts=4 sw=4 ai ci cin cino=g0,t0:
