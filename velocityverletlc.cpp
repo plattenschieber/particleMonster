@@ -21,18 +21,18 @@ void VelocityVerletLC::compF()
     W.e_pot = 0.0;
 
     // roll over each cell
-    Iterate(jCell, W.s.ic_start, W.s.ic_stop)
+    Iterate (jCell, W.s.ic_start, W.s.ic_stop)
     {
-                // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
-                // roll over every particle i in actual cell
-                for (std::list<Particle>::iterator i = W.cells[J(jCell,W.cell_N)].particles.begin(); i != W.cells[J(jCell,W.cell_N)].particles.end(); i++)
+        // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
+        // roll over every particle i in actual cell
+        for (std::list<Particle>::iterator i = W.cells[J(jCell,W.s.ic_number)].particles.begin(); i != W.cells[J(jCell,W.s.ic_number)].particles.end(); i++)
+        {
+            // roll over every neighbour cell
+            Iterate (nbCell, jCell -1, jCell +1)
+            {
                 {
-                    // roll over every neighbour cell
-                    for (nbCell[0]=jCell[0]-1; nbCell[0]<=jCell[0]+1; nbCell[0]++)
                     {
-                        for (nbCell[1]=jCell[1]-1; nbCell[1]<=jCell[1]+1; nbCell[1]++)
                         {
-                            for (nbCell[2]=jCell[2]-1; nbCell[2]<=jCell[2]+1; nbCell[2]++)
                             {
                                 // mark that a neighbour is outside the world
                                 bool leftWorld = false;
@@ -159,12 +159,12 @@ void VelocityVerletLC::updateX()
     // if the flag is checked, push the particle in the last round into it's new position
     bool doIt = false;
     bool innerWorld = true;
-
+    int jCell[DIM];
     // roll over every cell
-    for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+    Iterate(jCell, W.s.ic_start, W.s.ic_stop)
     {
         // foreach cell go through it's particles...
-        for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
+        for (std::list<Particle>::iterator i = W.cells[J(jCell, W.s.ic_number)].particles.begin(); i != W.cells[J(jCell, W.s.ic_number)].particles.end(); i++)
         {
             // if the flag is checked, push the particle in the last round into it's new position
             doIt = false;
@@ -221,7 +221,7 @@ void VelocityVerletLC::updateX()
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
 
                         // regardless in which dimension, just erase
-                        i = cell->particles.erase(i);
+                        i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
                         i--;
                         W.nParticles--;
                         // don't forget to set dimension to DIM  or you will handle another particle in the wrong dimension
@@ -234,7 +234,7 @@ void VelocityVerletLC::updateX()
                         std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
 
                         // regardless in which dimension, just erase
-                        i = cell->particles.erase(i);
+                        i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
                         i--;
                         W.nParticles--;
                         break;
@@ -245,7 +245,7 @@ void VelocityVerletLC::updateX()
                     if (d==DIM-1)
                     {
                         W.particles.push_back(*i);
-                        i = cell->particles.erase(i);
+                        i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
                         i--;
                         break;
                     }
