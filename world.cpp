@@ -193,10 +193,26 @@ void World::readParticles(const std::string &filename)
         for(int d=0; d<DIM; d++)
             tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
 
-        // add the new particle to our worlds' particles
-        particles.push_back(tmpparticle);
-        // update particle size
-        nParticles++;
+        // calc according cell
+        int cell[DIM];
+        // is particle in our Subdomain
+        bool isInSubdomain = true;
+        // check if particle doesn't belong to our subdomain
+        for (int d=0; d<DIM; d++)
+        {
+            // calc cell number and offset
+            cell[d] = (int)floor( tmpparticle.x[d]/s.cellh[d] ) - s.ic_lower_global[d] + s.ic_start[d];
+            if( cell[d] < s.ic_start[d] || cell[d] >= s.ic_stop[d] )
+                isInSubdomain = false;
+        }
+
+        if (isInSubdomain)
+        {
+            // add the new particle to our worlds' particles
+            particles.push_back(tmpparticle);
+            // update particle size
+            nParticles++;
+        }
     }
     // close file
     parfile.close();
