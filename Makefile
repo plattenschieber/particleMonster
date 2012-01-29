@@ -15,7 +15,7 @@ SRCS = blatt5.cpp world.cpp worldlc.cpp observer.cpp observerxyz.cpp timediscret
 CC = /opt/openmpi/bin/mpic++
 
 # define any compile-time flags
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -O0
 
 # define any directories containing header files other than /usr/include
 #
