@@ -144,9 +144,16 @@ void World::readParticles(const std::string &filename)
         strstr >> tmpparticle.ID;
         // save the particles mass
         strstr >> tmpparticle.m;
-        // push dim read values into tmpparticles position
-        for(int i=0; i<DIM; i++)
-            strstr >> tmpparticle.x[i];
+        // push dim read values into tmpparticles position and check wether particle is inside the world, or not
+        for(int d=0; d<DIM; d++)
+        {
+            strstr >> tmpparticle.x[d];
+            if (tmpparticle.x[d] < 0 || tmpparticle.x[d] > length[d])
+            {
+                std::cerr << "<------- FAILURE ------->" << std::endl;
+                std::cerr << "There is a particle outside the world. Please check input file." << std::endl;
+                exit (EXIT_FAILURE);
+            }
 
         //World.get
 
