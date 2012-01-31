@@ -292,9 +292,8 @@ void WorldLC::communicate (bool isForward)
     }
 }
 
-void WorldLC::sendReceive(Cell *grid, int *ic_number,
-                              int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
-                              int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
+void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
+                           int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
 {
     MPI::Status status;
     int sum_lengthsend = 0, sum_lengthreceive = 0;
