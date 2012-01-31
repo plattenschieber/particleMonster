@@ -273,7 +273,7 @@ void WorldLC::communicate (bool isForward)
         lower_ic_startreceive[DIM], lower_ic_stopreceive[DIM],
         upper_ic_startreceive[DIM], upper_ic_stopreceive[DIM];
 
-    for (int d=(isForward)?DIM-1:0; (isForward)?d<DIM:d>=0; (isForward)?d--:d++)
+    for (int d=(isForward)?DIM-1:0; (isForward)?d>=0:d<DIM; (isForward)?d--:d++)
     {
         if(isForward)
             SetCommunication(s, d, lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
