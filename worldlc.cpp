@@ -306,8 +306,14 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         ncs *= lower_ic_stop[d] - lower_ic_start[d];
     ic_lengthsend = (int*)malloc(ncs*sizeof(*ic_lengthreceive));
 
-    //iterate over
-    for (int i=0; i<DIM; i++)
+        Iterate(itCell, lower_ic_start, lower_ic_stop)
+        {
+            for (int d=0; d<DIM; d++)
+            {
+                ic_lengthsend[d] = cells[J(itCell,s.ic_number)].particles.size ();
+                sum_lengthsend += ic_lengthsend[d++];
+            }
+        }
     {
         ic_lengthsend[k] = grid[J(ic,ic_number)].particles.size ();
         sum_lengthsend += ic_lengthsend[k++];
