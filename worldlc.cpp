@@ -225,7 +225,7 @@ int WorldLC::getCellNumber(const Particle &p)
 }
 
 
-void WorldLC::SetCommunication(SubDomain *s, int dim,
+void WorldLC::setCommunication(int dim,
                             int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
                             int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
 {
@@ -261,7 +261,7 @@ void WorldLC::SetCommunication(SubDomain *s, int dim,
 
 }
 
-void WorldLC::Communication (Cell *grid, SubDomain *s, bool isForward)
+void WorldLC::communicate (bool isForward)
 {
     int lower_ic_start[DIM], lower_ic_stop[DIM],
         upper_ic_start[DIM], upper_ic_stop[DIM],
