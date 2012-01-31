@@ -360,8 +360,35 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
             }
         }
     }
+    // lower neighbour is missing
+    else if (upper_proc != NO_NEIGHBOUR )
+        // calc number of cells to receive
+        for (int d=0; d<DIM; d++)
+            ncs *= lower_ic_stop[d] - lower_ic_start[d];
+        ic_lengthreceive.resize (ncs);
 
     for (int d=0; d<DIM; d++)
+        // receive displacement
+        MPI::COMM_WORLD.Recv (&(ic_lengthreceive.front ()), ncs, MPI::INT, upper_proc, 1);
+        for (int i=0; i<ncs; i++)
+            sum_lengthreceive += ic_lengthreceive[i];
+        ip_particlereceive.resize (sum_lengthreceive);
+
+        // receive particles
+        MPI::COMM_WORLD.Recv( &(ip_particlereceive.front ()), sum_lengthreceive, MPI_Particle, upper_proc, 2, status );
+        Iterate (itCell, upper_ic_startreceive, upper_ic_stopreceive)
+        {
+            for (int icp=0, k=0; icp<ic_lengthreceive[kreceive]; icp++, k++)
+            {
+                Particle *p = new Particle;
+                *p = ip_particlereceive[k];
+                cells[J(itCell,s.ic_number)].particles.push_back(*p);
+            }
+            ++kreceive;
+        }
+       ic_lengthreceive.clear ();
+       ip_particlereceive.clear ();
+    }
     {
         for (int icp=0; icp<ic_lengthreceive[kreceive]; icp++)
         {
