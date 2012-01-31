@@ -296,6 +296,8 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
                            int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
 {
     MPI::Status status;
+    MPI::Request request;
+    // number of particles to be send/received
     int sum_lengthsend = 0, sum_lengthreceive = 0;
     int k = 0, kreceive = 0, ncs = 1;
     int itCell[DIM];
@@ -322,6 +324,7 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
     {
         ic_lengthsend[k] = grid[J(ic,ic_number)].particles.size ();
         sum_lengthsend += ic_lengthsend[k++];
+        request.Wait(status);
     }
     MPI::COMM_WORLD.Isend (ic_lengthsend, ncs, MPI_INT, lower_proc, 1);
     MPI::COMM_WORLD.Recv (ic_lengthreceive, ncs, MPI::INT, upper_proc, 1, status);
