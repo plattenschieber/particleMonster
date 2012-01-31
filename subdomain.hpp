@@ -39,6 +39,8 @@ public:
     real cellh[DIM];
     /// global index of first cell in sub field
     int ic_lower_global[DIM];
+    /// global index of last cell in sub field
+    int ic_upper_global[DIM];
 };
 
 #endif // SUBDOMAIN_HPP
