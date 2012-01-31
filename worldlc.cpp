@@ -216,9 +216,14 @@ int WorldLC::getCellNumber(const Particle &p)
     for (int d=0; d<DIM; d++)
     {
         // handle particle outside the world failure
-        if (i->x[d] < 0)
-            return -1;
-        tmp[d] = (int) floor(i->x[d] / cell_length[d]) % cell_N[d];
+        if (p.x[d] < 0 || p.x[d] > length[d])
+        {
+            std::cerr << "<------- FAILURE ------->" << std::endl;
+            std::cerr << "Particle left faulty the lower/upper border - in getCellNumber() -> x["
+                      << d << "] = " << p.x[d] << std::endl;
+            return EXIT_FAILURE;
+        }
+        tmp[d] = (int) floor(p.x[d] / s.cellh[d]) % s.ic_number[d];
     }
     // return corresponding cell Number
     return J(tmp,s.ic_number);
