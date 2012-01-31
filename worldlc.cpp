@@ -137,12 +137,12 @@ void WorldLC::readParameter(const std::string &filename)
 
     // temporary placeholder for resolving coordinates of neighbours
     int ipTmp[DIM];
-    // save current coordinates in grid to ipTmp
-    memcpy(ipTmp, s.ip, sizeof(s.ip));
 
     for (int d=0; d<DIM; d++)
     {
         // if we aren't at the border
+        // reset ipTmp
+        memcpy(ipTmp, s.ip, sizeof(s.ip));
         if (ipTmp[d] > 0)
             ipTmp[d]--;
         // now at lower border and periodic
@@ -154,6 +154,8 @@ void WorldLC::readParameter(const std::string &filename)
         // get according number of process
         s.ip_lower[d] = J(ipTmp, s.N_p);
 
+        // do the same stuff for upper border
+        memcpy(ipTmp, s.ip, sizeof(s.ip));
         // same procedure here for lower borders
         if (ipTmp[d] < s.N_p[d] - 1)
             ipTmp[d]++;
