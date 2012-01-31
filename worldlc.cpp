@@ -389,13 +389,41 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
        ic_lengthreceive.clear ();
        ip_particlereceive.clear ();
     }
+    // upper neighbour is missing
+    else if (lower_proc != NO_NEIGHBOUR)
     {
         for (int icp=0; icp<ic_lengthreceive[kreceive]; icp++)
+        // compute the number of cells in each dim
+        for (int d=0; d<DIM; d++)
+            ncs *= lower_ic_stop[d] - lower_ic_start[d];
+        ic_lengthsend.resize (ncs);
+        // and save number of particles (sum_lengthsend) for each to be sended cell into ic_length
+        k=0;
+        Iterate( itCell, lower_ic_start, lower_ic_stop )
         {
             std::vector<Particle> i;
             i.push_back (ip_particlereceive[k++]);
+            ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size();
+            sum_lengthsend += ic_lengthsend[k++];
         }
         kreceive++;
+
+        // send displacement of arriving particles
+        MPI::COMM_WORLD.Isend (&(ic_lengthsend.front ()), ncs, MPI::INT, lower_proc, 1);
+        // and clear it
+        ic_lengthsend.clear ();
+
+        // save to be send particles into ip_particlesend
+        ip_particlesend.resize (sum_lengthsend);
+        k = 0;
+        Iterate (itCell, lower_ic_start, lower_ic_stop )
+                for (std::list<Particle>::iterator p = cells[J(itCell,s.ic_number)].particles.begin(); p != cells[J(itCell,s.ic_number)].particles.end(); p++)
+                ip_particlesend[k++] = *p;
+        // and send them to the lower process
+        MPI::COMM_WORLD.Isend (&(ip_particlesend.front ()), sum_lengthsend, MPI_Particle, lower_proc, 2);
+        ip_particlesend.clear ();
+    }
+}
     }
 
     free (ic_lengthreceive);
