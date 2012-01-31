@@ -175,6 +175,8 @@ void WorldLC::readParameter(const std::string &filename)
         s.ic_number[d] = s.ic_stop[d] + s.ic_start[d];
         // the lower global Index of the first cell, is the dth displacement of the corresponding process
         s.ic_lower_global[d] = displ[d][s.ip[d]];
+        s.ic_upper_global[d] = s.ic_lower_global[d] - 1  + s.ic_number[d] - 2*s.ic_start[d] ;
+
     }
 
     // calc #of all cells incl. bordures
