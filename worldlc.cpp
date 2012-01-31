@@ -298,13 +298,18 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
     MPI::Status status;
     int sum_lengthsend = 0, sum_lengthreceive = 0;
     int k = 0, kreceive = 0, ncs = 1;
-    int *ic_lengthsend = NULL, *ic_lengthreceive = NULL, ic[DIM];
-    Particle *ip_particlesend = NULL, *ip_particlereceive = NULL;
+    int itCell[DIM];
+    std::vector<int> ic_lengthsend, ic_lengthreceive;
+    std::vector<Particle> ip_particlesend, ip_particlereceive;
 
-    // send and receive to/from lowerproc
-    for (int d=0; d<DIM; d++)
-        ncs *= lower_ic_stop[d] - lower_ic_start[d];
-    ic_lengthsend = (int*)malloc(ncs*sizeof(*ic_lengthreceive));
+    // both neighbours are there
+    if( lower_proc != NO_NEIGHBOUR && upper_proc != NO_NEIGHBOUR )
+    {
+        // send and receive to/from lowerproc
+        for (int d=0; d<DIM; d++)
+            ncs *= lower_ic_stop[d] - lower_ic_start[d];
+        ic_lengthsend.resize (ncs);
+        ic_lengthreceive.resize (ncs);
 
         Iterate(itCell, lower_ic_start, lower_ic_stop)
         {
