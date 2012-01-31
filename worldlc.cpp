@@ -424,6 +424,32 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         ip_particlesend.clear ();
     }
 }
+void WorldLC::deleteBorderParticles ()
+{
+    int n[DIM], lower[DIM], upper[DIM];
+    for (int i=0; i<DIM; i++)
+    {
+        lower[i] = 0;
+        upper[i] = s.ic_start[i];
+        for (int j=0; j<DIM; j++)
+            if (i != j)
+            {
+                lower[j] = 0;
+                upper[j] = s.ic_number[j];
+            }
+        Iterate (n, lower, upper)
+                cells[J(n, s.ic_number)].particles.clear();
+
+        lower[i] = s.ic_stop[i];
+        upper[i] = s.ic_number[i];
+        for (int j=0; j<DIM; j++ )
+            if (i != j)
+            {
+                lower[j] = 0;
+                upper[j] = s.ic_number[j];
+            }
+        Iterate (n, lower, upper)
+                cells[J(n, s.ic_number)].particles.clear();
     }
 
     free (ic_lengthreceive);
