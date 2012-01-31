@@ -140,15 +140,15 @@ void WorldLC::readParameter(const std::string &filename)
 
     for (int d=0; d<DIM; d++)
     {
-        // if we aren't at the border
         // reset ipTmp
         memcpy(ipTmp, s.ip, sizeof(s.ip));
+        // proc isn't at the border
         if (ipTmp[d] > 0)
             ipTmp[d]--;
-        // now at lower border and periodic
         else if (lower_border[d] == periodic)
             ipTmp[d] = s.N_p[d] - 1;
         // at lower border but not periodic
+        // proc is at the border
         else
             ipTmp[d] = NO_NEIGHBOUR;
         // get according number of process
