@@ -275,16 +275,20 @@ void WorldLC::communicate (bool isForward)
 
     for (int d=(isForward)?DIM-1:0; (isForward)?d>=0:d<DIM; (isForward)?d--:d++)
     {
-        if(isForward)
-            SetCommunication(s, d, lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
-                              upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
-        else if(!isForward)
-            SetCommunication(s, d, lower_ic_startreceive, lower_ic_stopreceive, lower_ic_start, lower_ic_stop,
-                            upper_ic_startreceive, upper_ic_stopreceive, upper_ic_start, upper_ic_stop);
+        if (isForward)
+            setCommunication(d,
+                             lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
+                             upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
+        else if (!isForward)
+            setCommunication(d,
+                             lower_ic_startreceive, lower_ic_stopreceive, lower_ic_start, lower_ic_stop,
+                             upper_ic_startreceive, upper_ic_stopreceive, upper_ic_start, upper_ic_stop);
 
-        sendReceive (grid, s->ic_number, s->ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
-                                        s->ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
+        sendReceive (   s.ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
+                        s.ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
 
+        sendReceive (   s.ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive,
+                        s.ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive);
     }
 }
 
