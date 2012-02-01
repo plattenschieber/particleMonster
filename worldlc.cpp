@@ -12,7 +12,7 @@ WorldLC::WorldLC() : cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
     // construct it, so we can use it!
-    construct_particle(MPI_Particle);
+    constructParticle(MPI_Particle);
 }
 
 
