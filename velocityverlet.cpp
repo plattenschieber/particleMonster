@@ -22,6 +22,12 @@ void VelocityVerlet::simulate()
 // a timestep is a timestep is a timestep. It doesn't matter, when it happens. Our model stays consistent!
 void VelocityVerlet::timestep(real delta_t)
 {
+    // increase time
+    W.t += delta_t;
+    if (W.s.myrank == 0)
+        std::cout << "STEP " << W.t << std::endl;
+    // count steps
+    W.step++;
     // first of all, we have to update our positions by means of their actual position, pace and force
     updateX();
     // then we update their new force, based on the potential and the new world situation
