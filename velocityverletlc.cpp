@@ -1,6 +1,7 @@
 #include "velocityverletlc.hpp"
 #include <math.h> 
 #include "defines.hpp"
+#include <sstream>
 
 
 VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,_Pot,_O), W(_W), Pot(_Pot)
