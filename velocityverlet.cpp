@@ -83,12 +83,19 @@ void VelocityVerlet::updateV()
         {
             // compute new velocity in dimension d
             i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
-            // if we want to check the temperatur regulary
-            if (fmod(W.t,W.thermo_step_interval) == 0 && W.isThermoStartTemp)
-                // multiply velocity by beta
-                i->v[d] *= W.calcBeta();
             // add now the pro rata e_kin
             W.e_kin += .5*i->m*sqr(i->v[d]);
+
+            // VELOTCITY SCALING
+            if (W.isThermoStartTemp && (W.step % W.T_Step == 0) && (fabs(W.T_D - W.T) > 10e-6) )
+            {
+                beta = sqrt(W.T_D * (W.nParticles-1) / (48*W.e_kin));
+                std::cout << "VELOTCITY SCALING" << std::endl;
+                // multiply velocity by beta
+                i->v[d] *= beta;
+                // and scale kinetc energy
+                W.e_kin *= beta;
+            }
         }
     // compute total energy
     W.e_tot = W.e_kin + W.e_pot;
