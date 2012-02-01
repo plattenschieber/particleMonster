@@ -274,6 +274,8 @@ void WorldLC::setCommunication(int dim,
 
 }
 
+
+
 void WorldLC::communicate (bool isForward)
 {
     int lower_ic_start[DIM], lower_ic_stop[DIM],
@@ -309,7 +311,7 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
     // number of particles to be send/received
     int sum_lengthsend = 0, sum_lengthreceive = 0;
     // iterator
-    int k = 0, kreceive = 0, ncs = 1;
+    int nCellsSend = 1, k = 0;
     int itCell[DIM];
     std::vector<int> ic_lengthsend, ic_lengthreceive;
     std::vector<Particle> ip_particlesend, ip_particlereceive;
@@ -319,10 +321,12 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
     {
         // send and receive to/from lowerproc
         for (int d=0; d<DIM; d++)
-            ncs *= lower_ic_stop[d] - lower_ic_start[d];
-        ic_lengthsend.resize (ncs);
-        ic_lengthreceive.resize (ncs);
+            nCellsSend *= lower_ic_stop[d] - lower_ic_start[d];
+        ic_lengthsend.resize (nCellsSend);
+        ic_lengthreceive.resize (nCellsSend);
 
+        k=0;
+        int debug;
         Iterate(itCell, lower_ic_start, lower_ic_stop)
         {
             for (int d=0; d<DIM; d++)
