@@ -214,7 +214,8 @@ void VelocityVerletLC::updateX()
     // if the flag is checked, push the particle in the last round into it's new position
     bool doIt = false;
     bool innerWorld = true;
-    int jCell[DIM];
+    int jCell[DIM], tmpCell[DIM];
+    std::vector<int> kInsert;
     // roll over every cell
     Iterate(jCell, W.s.ic_start, W.s.ic_stop)
     {
@@ -225,8 +226,6 @@ void VelocityVerletLC::updateX()
             doIt = false;
             // if flag is not checked, particle is we are at the border
             innerWorld = true;
-
-
             // compare Cell Numbers of (maybe) moved particle i
             int checkCell = W.getCellNumber(*i);
             // 	..at first calc new position in every dimension
@@ -234,7 +233,6 @@ void VelocityVerletLC::updateX()
             {
                 // computing new location of the particle i if it's leaving the world, elsewise just call handleBorders (-lc version) in the end
                 i->x[d] += W.delta_t*i->v[d] + (.5*i->F[d]*sqr(W.delta_t)) / i->m;
-
                 // save last force...
                 i->F_old[d] = i->F[d];
                 // ... and don't forget to set the actual force to zero
