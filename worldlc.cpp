@@ -413,8 +413,17 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
                 Particle *p = new Particle;
                 *p = ip_particlereceive[i];
                 cells[J(itCell,s.ic_number)].particles.push_back(*p);
+                // if belonging cell is inside world (that means, a particle moved from bordure into world)
+                int tmp=0;
+                for (int d=0; d<DIM; d++)
+                {
+                    if (itCell[d] > s.ic_start[d] && itCell[d] < s.ic_stop[d])
+                        tmp++;
+                    else // cell is on bordure, we are in compF case
+                        break;
+                }
             }
-            ++kreceive;
+            k++;
         }
        ic_lengthreceive.clear ();
        ip_particlereceive.clear ();
@@ -426,9 +435,10 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         for (int d=0; d<DIM; d++)
             nCellsSend *= lower_ic_stop[d] - lower_ic_start[d];
         ic_lengthsend.resize (nCellsSend);
+
+        k = 0;
         // and save number of particles (sum_lengthsend) for each to be sended cell into ic_length
-        k=0;
-        Iterate( itCell, lower_ic_start, lower_ic_stop )
+        Iterate (itCell, lower_ic_start, lower_ic_stop)
         {
             ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size();
             sum_lengthsend += ic_lengthsend[k++];
