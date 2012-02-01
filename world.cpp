@@ -219,12 +219,6 @@ void World::readParticles(const std::string &filename)
 }
 
 
-real World::calcBeta()
-{
-    return sqrt(thermo_target_temp * (nParticles-1) / (48*e_kin));
-}
-
-
 std::ostream& operator << (std::ostream& os, World& W) {
     os << "t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
        << " Number of Particles=" << W.particles.size();
