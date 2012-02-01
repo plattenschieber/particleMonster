@@ -230,7 +230,8 @@ int WorldLC::getCellNumber(const Particle &p)
                       << d << "] = " << p.x[d] << std::endl;
             exit(EXIT_FAILURE);
         }
-        tmp[d] = (int) floor(p.x[d] / s.cellh[d]) % s.ic_number[d];
+        // compute cell number, AND DON'T FORGET TO ADD IC_START (for the displacement in world)
+        tmp[d] = (int) floor(p.x[d] / s.cellh[d]) % s.N_c[d] + s.ic_start[d];
     }
     // return corresponding cell Number
     return J(tmp,s.ic_number);
