@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <cmath>
+#include <mpi.h>
 
 /**
  * @brief the world class holds all information of the simulation environment
@@ -103,12 +104,13 @@ public:
 
     // Thermostat
     /// if set, the start velocity of all particles is set to it
-    real thermo_start_temp;
-    ///
-    bool isThermoStartTemp;
+    real T;
+    /// Targettemperature
+    real T_D;
     /// every
-    real thermo_step_interval;
-    real thermo_target_temp;
+    int T_Step;
+    /// Flag to enable or disable velocity scaling
+    bool isThermoStartTemp;
 
     /// world's subdomain
     SubDomain s;
