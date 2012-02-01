@@ -21,10 +21,13 @@ int main(int argc, char *argv[]) {
     // check arguments
     if (argc != 2) {
         if(argc < 2) std::cerr << "error: missing arguments" << std::endl;
-        else if (argc > 4) std::cerr << "error: too many arguments" << std::endl;
-        std::cerr << "usage: " << std::endl
-                  << "\t" << argv[0] << " parameterfile particledatafile" << std::endl;
-        return EXIT_FAILURE;
+        else if (argc > 3)
+        {
+            std::cerr << "error: too many arguments" << std::endl
+                      <<  "usage: " << std::endl
+                      << "\t" << argv[0] << " parameterfile particledatafile" << std::endl;
+            return EXIT_FAILURE;
+        }
     }
 
     // instanciate Potentials
