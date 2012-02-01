@@ -54,6 +54,9 @@ int main(int argc, char *argv[]) {
     // run the simulation
     verletLC.simulate();
 
+    // terminate MPI
+    MPI::Finalize();
+
     return EXIT_SUCCESS;
 }
 
