@@ -45,10 +45,8 @@ void ObserverXYZ::outputCoordinates ()
 
 void ObserverXYZ::notify()
 {
-    // write statistics and coordinates
-    Observer::notify();
-    // write the xyz-format
-    outputXYZ();
+    outputCoordinates ();
+    outputStatistics ();
 }
 
 
