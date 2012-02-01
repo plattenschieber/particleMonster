@@ -49,12 +49,6 @@ public:
      */
     virtual void readParticles(const std::string &filename);
 
-    /**
-     * @brief calculate the new beta
-     */
-    virtual real calcBeta();
-
-
     // unknown marks, that there is no treatment of the boarder, leaving indicates, that particles can escape of our world and periodic will let the particles enter on the opposite side
     /// Type of World Border
     enum borderType { unknown = 0, leaving = 1, periodic = 2 };
