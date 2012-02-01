@@ -63,6 +63,8 @@ public:
     std::string name;
     /// Current time
     real t;
+    /// Current step
+    int step;
     /// Timestep
     real delta_t;
     /// End of simulation
@@ -74,9 +76,16 @@ public:
     /// total energy
     real e_tot;
     /// average total energy for max the last 100 values (if more are inserted, the first bumps out)
-    std::list<real> e_avglist;
-    /// the sum over the last 100 total energys
-    real e_avg;
+    std::list<real> ekin_list;
+    std::list<real> epot_list;
+    /// the sum over the last 100 kin
+    real ekin_sum;
+    /// the sum over the last 100 pot
+    real epot_sum;
+    /// the avg over the last 100 kin
+    real ekin_avg;
+    /// the avg over the last 100 pot
+    real epot_avg;
     /// the axis lengths of our world
     real length[DIM];
     /// zero breakthrough
