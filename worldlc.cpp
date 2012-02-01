@@ -200,7 +200,7 @@ void WorldLC::readParticles(const std::string &filename)
 {
     // call the base function
     World::readParticles(filename);
-    //nParticles = particles.size();
+    nParticles = particles.size();
     // Write every particle into it's belonging cell
     for (std::list<Particle>::iterator i = particles.begin(); i != particles.end(); i++)
     {
