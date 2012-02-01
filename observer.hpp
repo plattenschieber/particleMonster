@@ -29,7 +29,7 @@ public:
     /**
      * @brief notify the observer that the world has changed
      */
-    virtual void notify();
+   virtual void notify();
     
     /**
      * @brief output statistics like kinetic, potential and total energy

@@ -26,29 +26,21 @@ public:
      * closes the files written during the obervation
      */
     ~ObserverXYZ();
-    
-    /**
-     * @brief notify the observer that the world has changed
-     */
-    void notify();
-    
-    /**
-     * @brief generate a pymol readable file
-     */
-    void outputXYZ();
+
+    /*
+    * @brief notify the observer that the world has changed
+    */
+    void notify ();
+
 
     /**
-     * @brief output coordinates of the particles
+     * @brief output coordinates of the particles in XYZ Format
      */
     void outputCoordinates();
     
-
-
 protected:
     /// The world we are observing
     WorldLC &W;
-    /// filestream for xyz data
-    std::ofstream xyz;
     /// coordiantes filestream
     std::ofstream coordinates;
 
