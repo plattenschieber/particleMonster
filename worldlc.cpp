@@ -393,10 +393,10 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         k = 0;
         Iterate (itCell, upper_ic_startreceive, upper_ic_stopreceive)
         {
-            for (int icp=0, k=0; icp<ic_lengthreceive[kreceive]; icp++, k++)
+            for (int i=0; i<ic_lengthreceive[k]; i++)
             {
                 Particle *p = new Particle;
-                *p = ip_particlereceive[k];
+                *p = ip_particlereceive[i];
                 cells[J(itCell,s.ic_number)].particles.push_back(*p);
             }
             ++kreceive;
@@ -448,24 +448,22 @@ void WorldLC::deleteBorderParticles ()
                 upper[j] = s.ic_number[j];
             }
         Iterate (n, lower, upper)
-                cells[J(n, s.ic_number)].particles.clear();
+            cells[J(n, s.ic_number)].particles.clear();
 
         lower[i] = s.ic_stop[i];
         upper[i] = s.ic_number[i];
-        for (int j=0; j<DIM; j++ )
+        for (int j=0; j<DIM; j++)
             if (i != j)
             {
                 lower[j] = 0;
                 upper[j] = s.ic_number[j];
             }
         Iterate (n, lower, upper)
-                cells[J(n, s.ic_number)].particles.clear();
+            cells[J(n, s.ic_number)].particles.clear();
     }
-
-
 }
 
-void WorldLC::construct_particle(MPI::Datatype& MPI_Particle)
+void WorldLC::constructParticle(MPI::Datatype& MPI_Particle)
 {
 // Initialize Particle
   Particle p;
@@ -506,12 +504,12 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
     for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)
     {
         // if there are some particles in this cell, show it off
-        if (W.cells[i-W.cells.begin()].particles.size() > 0)
+        if (i->particles.size() > 0)
         {
             // we are now in cell# x
             os << "cell[" << i-W.cells.begin() << "] = " ;
             // get out every particle in this cell
-            for (std::list<Particle>::iterator j = W.cells[i-W.cells.begin()].particles.begin();j != W.cells[i-W.cells.begin()].particles.end(); j++)
+            for (std::list<Particle>::iterator j = i->particles.begin(); j != i->particles.end(); j++)
             {
                 // Particle Number
                 os <<  j->ID << ": ";
