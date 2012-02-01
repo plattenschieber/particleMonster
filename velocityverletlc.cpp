@@ -248,22 +248,16 @@ void VelocityVerletLC::updateX()
                     // leaving - it just bumps out
                     if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
                     {
-                        // DEBUG:
-                        std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
-
                         // regardless in which dimension, just erase
                         i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
                         i--;
                         W.nParticles--;
-                        // don't forget to set dimension to DIM  or you will handle another particle in the wrong dimension
+                        // don't forget to break, or you will handle another particle in the wrong dimension
                         break;
                     }
                     // leaving - it just bumps out
                     else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
                     {
-                        // DEBUG:
-                        std::cout << "New position (unten raus Wegvomfenster): " << std::endl;
-
                         // regardless in which dimension, just erase
                         i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
                         i--;
@@ -271,17 +265,17 @@ void VelocityVerletLC::updateX()
                         break;
                     }
                     // unknown - it just bumps out
-                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
+                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.unknown)
                     {
                         std::cerr << "<------- FAILURE ------->" << std::endl;
-                        std::cerr << "Please specify lower border in Dimension: " << d+1;
+                        std::cerr << "Please specify upper border in Dimension: " << d;
                         exit(EXIT_FAILURE);
                     }
                     // unknown - it just bumps out
-                    else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
+                    else if (i->x[d] < 0  && W.lower_border[d] == W.unknown)
                     {
                         std::cerr << "<------- FAILURE ------->" << std::endl;
-                        std::cerr << "Please specify lower border in Dimension: " << d+1;
+                        std::cerr << "Please specify lower border in Dimension: " << d;
                         exit(EXIT_FAILURE);
                     }
 
