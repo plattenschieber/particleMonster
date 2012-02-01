@@ -1,0 +1,7 @@
+name blatt2_example4
+cell_r_cut 2.5
+delta_t 0.01
+t_end 10.0
+length 20.0 10.0
+upper_border periodic periodic
+lower_border periodic periodic
