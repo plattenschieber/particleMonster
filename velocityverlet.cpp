@@ -40,16 +40,10 @@ void VelocityVerlet::timestep(real delta_t)
     MPI_Allreduce(&W.e_tot, &W.e_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     // compute new energy average
     updateAverage();
-    
-    // if they left the world, no other treatment of the particles is neaded
-    //handleBorders();
-    // increase time
-    W.t += delta_t;
-
-    std::cout << "STEP " << W.t << std::endl;
-
     // notify observer
     O.notify();
+
+
 }
 
 void VelocityVerlet::compF()
