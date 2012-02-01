@@ -25,6 +25,20 @@ void VelocityVerletLC::simulate ()
     O.~ObserverXYZ ();
 }
 
+void VelocityVerletLC::initF()
+{
+    for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
+        if (!cell->particles.empty())
+            // foreach cell go through it's particles...
+            for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
+                for (int d=0; d<DIM; d++)
+                {
+                    i->F_old[d] = i->F[d];
+                    i->F[d] = 0;
+                }
+    W.e_pot = 0;
+}
+
 void VelocityVerletLC::compF()
 {
     // fill bordure with particles
