@@ -329,11 +329,9 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         int debug;
         Iterate(itCell, lower_ic_start, lower_ic_stop)
         {
-            for (int d=0; d<DIM; d++)
-            {
-                ic_lengthsend[d] = cells[J(itCell,s.ic_number)].particles.size ();
-                sum_lengthsend += ic_lengthsend[d++];
-            }
+            debug = J(itCell,s.ic_number);
+            ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size ();
+            sum_lengthsend += ic_lengthsend[k++];
         }
         request = MPI::COMM_WORLD.Isend (&(ic_lengthsend.front ()), nCellsSend, MPI::INT, lower_proc, 1);
         MPI::COMM_WORLD.Recv (&(ic_lengthreceive.front ()), nCellsSend, MPI::INT, upper_proc, 1, status);
