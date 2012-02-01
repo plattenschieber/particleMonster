@@ -175,30 +175,38 @@ void VelocityVerletLC::compF()
 
 void VelocityVerletLC::updateV()
 {
+
     // there is no e_kin in the beginning
     W.e_kin = 0.0;
+    // velocity scaling
+    real beta = 1.0;
     // roll over every cell
     for (std::vector<Cell>::iterator cell =  W.cells.begin(); cell < W.cells.end(); cell++)
-    {
         // foreach cell go through it's particles...
         for (std::list<Particle>::iterator i = cell->particles.begin(); i != cell->particles.end(); i++)
-        {
             // ...and over every dimension of particle i
             for (unsigned int d=0; d<DIM; d++)
             {
                 // compute new velocity in dimension d
                 i->v[d] += .5*(i->F_old[d] + i->F[d])*W.delta_t/i->m;
-                // if we want to check the temperatur regulary
-                if (fmod(W.t,W.thermo_step_interval) == 0 && W.isThermoStartTemp)
-                    // multiply velocity by beta
-                    i->v[d] *= W.calcBeta();
                 // add now the pro rata e_kin
                 W.e_kin += .5*i->m*sqr(i->v[d]);
-            }
-        }
-    }
 
-
+                // VELOCITY SCALING
+                if (W.isThermoStartTemp && (W.step % W.T_Step == 0) && (fabs(W.T_D - W.T) > 10e-6) )
+                {
+                    beta = sqrt(W.T_D * (W.nParticles-1) / (48*W.e_kin));
+                    std::cout << "VELOTCITY SCALING" << std::endl;
+                    // multiply velocity by beta
+                    i->v[d] *= beta;
+                    // and scale kinetc energy
+                    W.e_kin *= beta;
+                }
+            } // END d<DIM loop
+    // compute total energy
+    W.e_tot = W.e_kin + W.e_pot;
+    // set new temperature
+    W.T *= sqr(beta);
 }
 
 void VelocityVerletLC::updateX()
