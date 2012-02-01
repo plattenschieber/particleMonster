@@ -228,7 +228,7 @@ int WorldLC::getCellNumber(const Particle &p)
             std::cerr << "<------- FAILURE ------->" << std::endl;
             std::cerr << "Particle left faulty the lower/upper border - in getCellNumber() -> x["
                       << d << "] = " << p.x[d] << std::endl;
-            return EXIT_FAILURE;
+            exit(EXIT_FAILURE);
         }
         tmp[d] = (int) floor(p.x[d] / s.cellh[d]) % s.ic_number[d];
     }
