@@ -2,13 +2,16 @@
 
 Observer::Observer(World &_W) : W(_W)
 {
-    // open statistics file
-    std::string statistics_filename = "log/" + W.name + ".statistics";
-    // open file, overwrite existing files, take no prisioners
-    statistics.open(statistics_filename.c_str());
-    if ( statistics.is_open() )
-        // and tell the world
-        std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
+    if (W.s.myrank == 0)
+    {
+        // open statistics file
+        std::string statistics_filename = "log/" + W.name + ".statistics";
+        // open file, overwrite existing files, take no prisioners
+        statistics.open(statistics_filename.c_str());
+        if ( statistics.is_open() )
+            // and tell the world
+            std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
+    }
     
     // open coordinates file
     std::string coordinates_filename = "log/" + W.name + ".coordinates";
