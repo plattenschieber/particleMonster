@@ -72,7 +72,8 @@ void Observer::outputCoordinates()
 void Observer::notify()
 {
     // write statistics
-    outputStatistics();
+    if (W.s.myrank == 0)
+        outputStatistics();
     // write the coordinates of our particles
     outputCoordinates();
 }
