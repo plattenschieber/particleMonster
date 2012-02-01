@@ -89,14 +89,14 @@ void World::readParameter(const std::string &filename)
             break;
 
         case STARTTEMP:
-            strstr >> thermo_start_temp;
+            strstr >> T;
             isThermoStartTemp = true;
             break;
         case STEPINTERVAL:
-            strstr >> thermo_step_interval;
+            strstr >> T_Step;
             break;
         case TARGETTEMP:
-            strstr >> thermo_target_temp;
+            strstr >> T_D;
             break;
         case RANDOMSEED:
             double tmp2;
@@ -194,7 +194,7 @@ void World::readParticles(const std::string &filename)
             tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
 
         // calc according cell
-        int cell[DIM];
+        int inCell[DIM];
         // is particle in our Subdomain
         bool isInSubdomain = true;
         // check if particle doesn't belong to our subdomain
