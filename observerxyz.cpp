@@ -17,39 +17,12 @@ ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
 ObserverXYZ::~ObserverXYZ()
 {
     // close the coordinates file
-    if ( xyz.is_open() )
-    {
-        xyz.close();
-        std::cout << "Closed xyz" << std::endl;
-    }
-    // close the coordinates file
     if ( coordinates.is_open() )
-    {
         coordinates.close();
-        std::cout << "Closed coordinates" << std::endl;
-    }
-
     std::cout << "Everything closed properly" << std::endl;
 }
 
-void ObserverXYZ::outputCoordinates()
-{
-    // write updating time
-    coordinates << ((WorldLC)W).t << "\t";
-    // run over each particle,...
-    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
-        // each cell...
-        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end();	j++)
-            // ...and each of it's dimensions
-            for (unsigned int d=0; d<DIM; d++)
-                // get it out, seperated with tabulars
-                coordinates << j->x[d] << "\t";
-    // end of line
-    coordinates << std::endl;
-
-}
-
-void ObserverXYZ::outputXYZ()
+void ObserverXYZ::outputCoordinates ()
 {
     // write size and actual time of our world W
     xyz << W.nParticles << std::endl << "Time: " << W.t << std::endl;
