@@ -12,6 +12,18 @@ VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& 
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
 }
 
+void VelocityVerletLC::simulate ()
+{
+    // initialize forces
+    //initF();
+    // watch out for data in before first step
+    //O.notify ();
+    // call base class method
+    VelocityVerlet::simulate ();
+    // call the destructor explicitly
+    O.~ObserverXYZ ();
+}
+
 void VelocityVerletLC::compF()
 {
     // fill bordure with particles

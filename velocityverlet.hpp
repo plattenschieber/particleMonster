@@ -39,7 +39,7 @@ public:
     /**
      * @brief run the simulation
      */
-    void simulate();
+    virtual void simulate();
     
     /**
      * @brief calculates the forces affecting the particles at the current time
