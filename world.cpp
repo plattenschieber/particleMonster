@@ -201,8 +201,8 @@ void World::readParticles(const std::string &filename)
         for (int d=0; d<DIM; d++)
         {
             // calc cell number and offset
-            cell[d] = (int)floor( tmpparticle.x[d]/s.cellh[d] ) - s.ic_lower_global[d] + s.ic_start[d];
-            if( cell[d] < s.ic_start[d] || cell[d] >= s.ic_stop[d] )
+            inCell[d] = (int)floor( tmpparticle.x[d]/s.cellh[d] );
+            if( inCell[d] < s.ic_lower_global[d] || inCell[d] > s.ic_upper_global[d] )
                 isInSubdomain = false;
         }
 
