@@ -245,28 +245,6 @@ void VelocityVerletLC::updateX()
                 // check it in every dimension
                 for (unsigned int d = 0; d<DIM; d++)
                 {
-                    // periodic - position = position % worldlength
-                    if (i->x[d] > W.length[d] && W.upper_border[d] == W.periodic)
-                    {
-                        // DEBUG:
-                        std::cout << "New position (oben Raus Untenwiederrein)" << std::endl;
-
-                        // new position is at the beginning of world plus the overhead that x left the world
-                        i->x[d] = fmod(i->x[d], W.length[d]);
-                        // there is a particle which left the world at one of its sides
-                        doIt = true;
-                    }
-                    // periodic - position = position % worldlength
-                    else if (i->x[d] < 0 && W.lower_border[d] == W.periodic)
-                    {
-                        // DEBUG:
-                        std::cout << "New position (unten Raus Obenwiederrein)" << std::endl;
-
-                        // new position is displaced by worlds length
-                        i->x[d] +=  W.length[d];
-                        // there is a particle which left the world at one of its sides
-                        doIt = true;
-                    }
                     // leaving - it just bumps out
                     else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
                     {
