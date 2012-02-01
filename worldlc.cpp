@@ -525,9 +525,26 @@ void WorldLC::constructParticle(MPI::Datatype& MPI_Particle)
 
 std::ostream& operator << (std::ostream& os, WorldLC& W) 
 {
-    // Get out some information about the world
-    os << W.name << " Dim=" << DIM << " t=" << W.t << " delta_t=" << W.delta_t << " t_end=" << W.t_end
-       << " Number of Cells=" << W.cells.size() << " cell_r_cut=" << W.cell_r_cut << std::endl;
+    // Get out some information about the world and it's SubDomain
+    os << W.name << " Dim: " << DIM << " t: " << W.t << " delta_t: " << W.delta_t << " t_end: " << W.t_end
+       << " cell_r_cut: " << W.cell_r_cut << std::endl;
+    os << "Length: ";
+    for (int d=0; d<DIM; d++)
+        os << W.length[d] << " ";
+    os << std::endl << "Upper borders: ";
+    for (int d=0; d<DIM; d++)
+        os << W.upper_border[d] << " ";
+
+    os << std::endl << "Lower borders: ";
+    for (int d=0; d<DIM; d++)
+        os << W.lower_border[d] << " ";
+    os << std::endl << "Border types: 0 - leaving, 1 - periodic, 2 - unknown" << std::endl;
+
+    os << std::endl << "Present particles in all " << W.cells.size()
+       << " Cells. (#Cells with bordure in " ;
+    for (int d=0; d<DIM; d++) os <<  "  dim " << d << ": " << W.s.ic_number[d];
+    os << ")" << std::endl;
+
     // roll over each Cell
     for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)
     {
