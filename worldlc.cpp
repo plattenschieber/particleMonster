@@ -361,10 +361,10 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
 
         Iterate( itCell, upper_ic_startreceive, upper_ic_stopreceive )
         {
-            for (int icp=0, kreceive=0; icp<ic_lengthreceive[kreceive]; icp++, kreceive++)
+            for (int i=0; i<ic_lengthreceive[k]; i++)
             {
                 Particle *p = new Particle;
-                *p = ip_particlereceive[icp];
+                *p = ip_particlereceive[i];
                 cells[J(itCell,s.ic_number)].particles.push_back(*p);
             }
         }
