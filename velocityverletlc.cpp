@@ -246,7 +246,7 @@ void VelocityVerletLC::updateX()
                 for (unsigned int d = 0; d<DIM; d++)
                 {
                     // leaving - it just bumps out
-                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
+                    if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
                     {
                         // DEBUG:
                         std::cout << "New position (oben raus Wegvomfenster): " << std::endl;
