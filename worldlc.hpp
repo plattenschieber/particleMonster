@@ -39,11 +39,12 @@ public:
                       int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
 
     void deleteBorderParticles ();
-    void construct_particle (MPI::Datatype& MPI_Particle);
+    void constructParticle (MPI::Datatype& MPI_Particle);
 
     void setCommunication ( int d,
                             int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
                             int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
+
 
     void communicate (bool isForward);
 
