@@ -290,9 +290,28 @@ void VelocityVerletLC::updateX()
 
         }
     }
-    // and now add the particles again to their belonging cells
+
+    // calc according cell
+    int inCell[DIM];
+    // is particle still in our Subdomain?
+    bool isInSubdomain = true;
+    // add particles to new cells. If went onto bordure, decrease nParticles
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
     {
+
+        // check if particle doesn't belong to our subdomain
+        for (int d=0; d<DIM; d++)
+        {
+            // calc global cell number and compare to global indices of subdomain
+            inCell[d] = (int)floor( i->x[d]/W.s.cellh[d] );
+            if( inCell[d] < W.s.ic_lower_global[d] || inCell[d] > W.s.ic_upper_global[d] )
+                isInSubdomain = false;
+        }
+        // when not in inner SubDomain, there was a particle gone
+        if (!isInSubdomain)
+           W.nParticles--;
+        int debug = W.getCellNumber (*i);
+        debug = J(inCell, W.s.ic_upper_global);
         W.cells[W.getCellNumber(*i)].particles.push_back(*i);
         i = W.particles.erase(i);
         i--;
@@ -304,4 +323,6 @@ void VelocityVerletLC::updateX()
     W.deleteBorderParticles ();
 
 }
+
+
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
