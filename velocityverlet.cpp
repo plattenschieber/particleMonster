@@ -135,18 +135,23 @@ void VelocityVerlet::handleBorders()
 
 void VelocityVerlet::updateAverage()
 {
-    // add a new total energy to our average list
-    W.e_avglist.push_back (W.e_pot+W.e_kin);
-    // if there are more than 100 measurements, pop the oldest (the first)
-    if (W.t/W.delta_t > 100)
-        W.e_avglist.pop_front ();
-    // reset average
-    W.e_avg = 0.0;
-    // resum the average
-    for (std::list<real>::iterator i = W.e_avglist.begin (); i != W.e_avglist.end (); i++)
-        W.e_avg += *i;
+    // add new energy to our average list
+    W.ekin_list.push_back (W.e_kin);
+    W.epot_list.push_back (W.e_pot);
+    // if there are more than 100 measurements, pop the oldest (the first) and update sums
+    if (W.step > 100)
+    {
+        W.ekin_sum -= W.ekin_list.front ();
+        W.epot_sum -= W.epot_list.front ();
+        W.ekin_list.pop_front ();
+        W.epot_list.pop_front ();
+    }
+    W.ekin_sum += W.e_kin;
+    W.epot_sum += W.e_pot;
     // Divide by number of elements in list or at most 100
-    W.e_avg /= (((W.t/W.delta_t)<100)?(W.t/W.delta_t):100);
+    W.ekin_avg = W.ekin_sum / ((W.step<100)?W.step:100);
+    W.epot_avg = W.epot_sum / ((W.step<100)?W.step:100);
+
 }
 
 
