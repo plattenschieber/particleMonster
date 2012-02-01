@@ -525,6 +525,21 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
             os << std::endl;
         }
     }
+    os << std::endl << "My Rank: " << W.s.myrank << ", position in process Matrix: ";
+    for (int d=0; d<DIM; d++) os << W.s.ip[d] << " ";
+
+    os << std::endl << "My lower neighbours (ID's in dth dim): ";
+    for (int d=0; d<DIM; d++) os << W.s.ip_lower[d] << " ";
+
+    os << std::endl << "My upper neighbours (ID's in dth dim): ";
+    for (int d=0; d<DIM; d++) os << W.s.ip_upper[d] << " ";
+
+    os << std::endl << "My lower global position (of cell): ";
+    for (int d=0; d<DIM; d++) os << W.s.ic_lower_global[d] << " ";
+
+    os << std::endl << "My upper global position (of cell): ";
+    for (int d=0; d<DIM; d++) os << W.s.ic_upper_global[d] << " ";
+
     return os;
 }
 
