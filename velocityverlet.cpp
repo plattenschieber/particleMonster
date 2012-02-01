@@ -90,6 +90,10 @@ void VelocityVerlet::updateV()
             // add now the pro rata e_kin
             W.e_kin += .5*i->m*sqr(i->v[d]);
         }
+    // compute total energy
+    W.e_tot = W.e_kin + W.e_pot;
+    // set new temperature
+    W.T *= sqr(beta);
 }
 
 void VelocityVerlet::updateX()
