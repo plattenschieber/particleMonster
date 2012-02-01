@@ -5,7 +5,6 @@
 #include "velocityverlet.hpp"
 #include "ljpotential.hpp"
 #include "observerxyz.hpp"
-
 /**
  * @brief Implementation of the Velocity Verlet Algorithm by means of our cell structure
  * Inheritance from VelocityVerlet, because we don't need to reimplement constructor, simulate, ...
@@ -36,6 +35,16 @@ public:
     WorldLC& W;
     LJPotential& Pot;
     
+    /**
+     * @brief calculates the forces affecting the particles at the current time
+     */
+    void simulate ();
+
+    /**
+     * @brief calculates the forces affecting the particles at the current time
+     */
+    void initF ();
+
     /**
      * @brief calculates the forces affecting the particles at the current time
      */
