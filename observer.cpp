@@ -13,8 +13,10 @@ Observer::Observer(World &_W) : W(_W)
             std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
     }
     
+    std::ostringstream procID;
+    procID << W.s.myrank;
     // open coordinates file
-    std::string coordinates_filename = "log/" + W.name + ".coordinates";
+    std::string coordinates_filename = "log/" + W.name + "_pid" + procID.str () + ".coordinates";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordinates_filename.c_str());
     if ( coordinates.is_open() )
