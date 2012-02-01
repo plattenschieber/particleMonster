@@ -278,17 +278,14 @@ void VelocityVerletLC::updateX()
                         std::cerr << "Please specify lower border in Dimension: " << d;
                         exit(EXIT_FAILURE);
                     }
-
-
-                    // if we are in the last step and particle was periodic or changed cell in the inner world
-                    if (d==DIM-1)
-                    {
-                        W.particles.push_back(*i);
-                        i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
-                        i--;
-                        break;
-                    }
                 }
+                // push particles into waiting pot
+                int debug = W.getCellNumber (*i);
+                debug = J(jCell, W.s.ic_number);
+                W.particles.push_back(*i);
+                i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
+                i--;
+                break;
             }
 
         }
