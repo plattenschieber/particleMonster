@@ -422,6 +422,9 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
                     else // cell is on bordure, we are in compF case
                         break;
                 }
+                // don't forget to update particle size
+                if (tmp==DIM)
+                    nParticles++; // don't forget to update particle size
             }
             k++;
         }
