@@ -73,6 +73,9 @@ void VelocityVerlet::updateV()
 {
     // there is no e_kin in the beginning
     W.e_kin = 0.0;
+    // velocity scaling
+    real beta = 1.0;
+
     // roll over every particle i...
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
         // ...and every of it's dimensions
