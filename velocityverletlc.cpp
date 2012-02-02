@@ -303,8 +303,8 @@ void VelocityVerletLC::updateX()
         for (int d=0; d<DIM; d++)
         {
             // calc global cell number and compare to global indices of subdomain
-            inCell[d] = (int)floor( i->x[d]/W.s.cellh[d] );
-            if( inCell[d] < W.s.ic_lower_global[d] || inCell[d] > W.s.ic_upper_global[d] )
+            inCell[d] = (int)floor( i->x[d]/W.s.cellh[d] ) - W.s.ic_lower_global[d] + W.s.ic_start[d];
+            if( inCell[d] < W.s.ic_start[d] || inCell[d] > W.s.ic_stop[d] )
                 isInSubdomain = false;
         }
         // when not in inner SubDomain, there was a particle gone
