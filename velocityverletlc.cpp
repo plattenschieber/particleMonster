@@ -302,7 +302,7 @@ void VelocityVerletLC::updateX()
         // check if particle doesn't belong to our subdomain
         for (int d=0; d<DIM; d++)
         {
-            // calc global cell number and compare to global indices of subdomain
+            // calc local cell number and compare to local indices of subdomain
             inCell[d] = (int)floor( i->x[d]/W.s.cellh[d] ) - W.s.ic_lower_global[d] + W.s.ic_start[d];
             if( inCell[d] < W.s.ic_start[d] || inCell[d] > W.s.ic_stop[d] )
                 isInSubdomain = false;
@@ -310,9 +310,6 @@ void VelocityVerletLC::updateX()
         // when not in inner SubDomain, there was a particle gone
         if (!isInSubdomain)
            W.nParticles--;
-        int debug = W.getCellNumber (*i);
-        debug = J(inCell, W.s.ic_upper_global);
-        W.cells[W.getCellNumber(*i)].particles.push_back(*i);
         i = W.particles.erase(i);
         i--;
     }
