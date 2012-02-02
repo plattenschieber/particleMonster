@@ -310,6 +310,7 @@ void VelocityVerletLC::updateX()
         // when not in inner SubDomain, there was a particle gone
         if (!isInSubdomain)
            W.nParticles--;
+        W.cells[J(inCell, W.s.ic_number)].particles.push_back(*i);
         i = W.particles.erase(i);
         i--;
     }
