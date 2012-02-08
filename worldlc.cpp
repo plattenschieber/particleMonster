@@ -184,11 +184,11 @@ void WorldLC::readParameter(const std::string &filename)
     }
 
     // calc #of all cells incl. bordures
-    int nCells = 1;
+    int numCells = 1;
     for (int d=0; d<DIM; d++)
-        nCells *= s.ic_number[d];
+        numCells *= cellLength[d];
     // insert empty cells
-    for (int i=0; i<nCells; i++)
+    for (int i=0; i<numCells; i++)
         cells.push_back(Cell());
 
     std::cout << "END OF readParameter()" << std::endl << this;
@@ -229,8 +229,8 @@ int WorldLC::getCellNumber(const Particle &p)
                       << d << "] = " << p.x[d] << std::endl;
             exit(EXIT_FAILURE);
         }
-        // compute cell number, AND DON'T FORGET TO ADD IC_START (for the displacement in world)
-        tmp[d] = (int) floor(p.x[d] / s.cellh[d]) % s.N_c[d] + s.ic_start[d];
+        // compute global cell number
+        tmp[d] = (int) floor(p.x[d] / cellLength[d]) % nCells[d];
     }
     // return corresponding cell Number
     return J(tmp,s.ic_number);
