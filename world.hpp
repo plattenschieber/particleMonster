@@ -13,13 +13,10 @@
 #include <stdexcept>
 #include <sstream>
 #include <cmath>
-#include <mpi.h>
 
 /**
  * @brief the world class holds all information of the simulation environment
  */
-
-
 class World {
 public:
     World();
@@ -111,9 +108,6 @@ public:
     int T_Step;
     /// Flag to enable or disable velocity scaling
     bool isThermoStartTemp;
-
-    /// world's subdomain
-    SubDomain s;
 };
 
 /**
