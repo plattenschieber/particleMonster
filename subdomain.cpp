@@ -284,8 +284,8 @@ void SubDomain::readParticles(const std::string &filename)
 
         if (isInSubdomain)
         {
-            // add the new particle to our worlds' particles
-            particles.push_back(tmpparticle);
+            // add the new particle to according cell in SubDomain
+            cells[getCellNumber(tmpparticle)].particles.push_back(tmpparticle);
             // update particle size
             nParticles++;
         }
@@ -294,26 +294,6 @@ void SubDomain::readParticles(const std::string &filename)
     parfile.close();
 }
 
-
-void SubDomain::readParticles(const std::string &filename)
-{
-    // call the base function
-    World::readParticles(filename);
-    nParticles = particles.size();
-    // Write every particle into it's belonging cell
-    for (std::list<Particle>::iterator i = particles.begin(); i != particles.end(); i++)
-    {
-        std::cout << "Push and erase particles[" << i->ID << "] " << std::endl;
-        // add particle to right cell...
-        // getCellNumber(i) gives belonging cellnumber, push into this cell our actual particle i
-        cells[getCellNumber(*i)].particles.push_back(*i);
-    }
-    std::cout << "***************************************************" << std::endl
-              << "FINISHED READING PARTICLES - NOW CLEAR PARTICLES" << std::endl
-              << "*************************************************** \n" << std::endl;
-    // Clear all particles in our World Vector
-    particles.clear();
-}
 
 int SubDomain::getCellNumber(const Particle &p)
 {
