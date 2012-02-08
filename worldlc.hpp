@@ -58,7 +58,7 @@ public:
     /// Number of cells in every dimension
     int nCells[DIM];
     /// length of cells
-    real cell_length[DIM];
+    real cellLength[DIM];
     /// r_cut used for calculation of the cell length
     real cell_r_cut;
     /// a particle for MPI
