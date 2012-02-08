@@ -55,7 +55,7 @@ public:
     void communicate (bool isForward);
 
     /// edge length of domain
-    real L[DIM];
+    real domainLength[DIM];
     /// number of cells in the whole domain
     int N_c[DIM];
 
