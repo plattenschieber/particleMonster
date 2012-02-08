@@ -127,7 +127,7 @@ void VelocityVerlet::handleBorders()
         for (unsigned int d=0; d<DIM; d++)
         {
             // is leaving AND above zero AND outer space
-            if ( (W.upper_border[d] == W.leaving) & (i->x[d]>0) & (i->x[d] > W.length[d]) )
+            if ( (W.upper_border[d] == W.leaving) & (i->x[d]>0) & (i->x[d] > W.worldLength[d]) )
             {
                 W.particles.erase(i);
                 i--;

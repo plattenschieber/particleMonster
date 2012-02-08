@@ -130,12 +130,12 @@ void VelocityVerletLC::compF()
                                     // if nbCell left upper border -> j.x[d] < i.x[d]
                                     if (j->x[d] < i->x[d])
                                         // add distance from i to upB and from lowB to j
-                                        dirV[d] = (W.length[d] - i->x[d]) + j->x[d];
+                                        dirV[d] = (W.worldLength[d] - i->x[d]) + j->x[d];
 
                                     // else nbCell left lower border -> j.x[d] > i.x[d]
                                     else
                                         // add distance from lowB to i and from j to upB (times -1, because of the over border handling)
-                                        dirV[d] = -1*(i->x[d] + (W.length[d] - j->x[d]));
+                                        dirV[d] = -1*(i->x[d] + (W.worldLength[d] - j->x[d]));
                                 }
                                 // PERIODIC 1 cell:
                                 else if (periodic[d] && W.cells.size () == 1)
@@ -246,7 +246,7 @@ void VelocityVerletLC::updateX()
                 for (unsigned int d = 0; d<DIM; d++)
                 {
                     // leaving - it just bumps out
-                    if (i->x[d] > W.length[d] && W.upper_border[d] == W.leaving)
+                    if (i->x[d] > W.worldLength[d] && W.upper_border[d] == W.leaving)
                     {
                         // regardless in which dimension, just erase
                         i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
@@ -265,7 +265,7 @@ void VelocityVerletLC::updateX()
                         break;
                     }
                     // unknown - it just bumps out
-                    else if (i->x[d] > W.length[d] && W.upper_border[d] == W.unknown)
+                    else if (i->x[d] > W.worldLength[d] && W.upper_border[d] == W.unknown)
                     {
                         std::cerr << "<------- FAILURE ------->" << std::endl;
                         std::cerr << "Please specify upper border in Dimension: " << d;
