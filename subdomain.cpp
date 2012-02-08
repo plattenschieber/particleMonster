@@ -6,16 +6,14 @@
 #include <map>
 #include <cmath>
 
-// ctor, which calls World::World()   
-WorldLC::WorldLC() : cell_r_cut(2.5) {
-    // we do need another mapOption
-    mapOptions["cell_r_cut"] = CELLRCUT;
+// ctor, which calls WorldLC::WorldLC()
+SubDomain::SubDomain() : myrank(-1), numprocs(-1) {
     // construct it, so we can use it!
     constructParticle(MPI_Particle);
 }
 
 
-void WorldLC::readParameter(const std::string &filename)
+void SubDomain::readParameter(const std::string &filename)
 {
     // call the base function
     World::readParameter(filename);
@@ -24,10 +22,10 @@ void WorldLC::readParameter(const std::string &filename)
     // check if file is open
     if (!parfile.is_open())
         throw std::runtime_error("readParameter(): Can't open file '" + filename + "' for reading.");
-    
+
     // helper strings
     std::string line, option;
-    
+
     // read file till eof
     while (parfile.good())
     {
@@ -59,37 +57,37 @@ void WorldLC::readParameter(const std::string &filename)
     // do some parallel stuff
 
     // Get the number of processes.
-    s.numprocs = MPI::COMM_WORLD.Get_size();
+    numprocs = MPI::COMM_WORLD.Get_size();
     // Get the individual process ID.
-    s.myrank = MPI::COMM_WORLD.Get_rank();
+    myrank = MPI::COMM_WORLD.Get_rank();
 
     // #procs in dim
-    switch(s.numprocs)
+    switch(numprocs)
     {
         case 1:
-            s.N_p[0] = 1;
-            s.N_p[1] = 1;
-            s.N_p[2] = 1;
+            N_p[0] = 1;
+            N_p[1] = 1;
+            N_p[2] = 1;
             break;
         case 2:
-            s.N_p[0] = 2;
-            s.N_p[1] = 1;
-            s.N_p[2] = 1;
+            N_p[0] = 2;
+            N_p[1] = 1;
+            N_p[2] = 1;
             break;
         case 4:
-            s.N_p[0] = 2;
-            s.N_p[1] = 2;
-            s.N_p[2] = 1;
+            N_p[0] = 2;
+            N_p[1] = 2;
+            N_p[2] = 1;
             break;
         case 6:
-            s.N_p[0] = 3;
-            s.N_p[1] = 2;
-            s.N_p[2] = 1;
+            N_p[0] = 3;
+            N_p[1] = 2;
+            N_p[2] = 1;
             break;
         case 8:
-            s.N_p[0] = 2;
-            s.N_p[1] = 2;
-            s.N_p[2] = 2;
+            N_p[0] = 2;
+            N_p[1] = 2;
+            N_p[2] = 2;
             break;
         default:
             std::cerr << "FAILURE" << std::endl
@@ -98,7 +96,7 @@ void WorldLC::readParameter(const std::string &filename)
     }
 
     // get position of actual process in the grid
-    Jinv(s.myrank, s.N_p, s.ip);
+    Jinv(myrank, N_p, ip);
 
     // save the global cell displacement of every process
     int *displ[DIM];
@@ -107,30 +105,30 @@ void WorldLC::readParameter(const std::string &filename)
     for (int d=0; d<DIM; d++)
     {
         // we need #procs place for displacements
-        displ[d] = (int*)malloc (s.N_p[d] * sizeof(int));
-        // s.N_c which needs to be divided to procs
-        s.N_c[d] = nCells[d];
+        displ[d] = (int*)malloc (N_p[d] * sizeof(int));
+        // N_c which needs to be divided to procs
+        N_c[d] = nCells[d];
 
         // calc until you reach your process position
-        for(int i=0; i<s.ip[d];i++)
+        for(int i=0; i<ip[d];i++)
         {
             // save the left over cells as displacement for ith process
-            displ[d][i] = nCells[d] - s.N_c[d];
+            displ[d][i] = nCells[d] - N_c[d];
             // and compute the left over for the next step
-            s.N_c[d] -= round(s.N_c[d]/(s.N_p[d]-i));
+            N_c[d] -= round(N_c[d]/(N_p[d]-i));
         }
 
         // save last left over and continue further down
-        int tmp = s.N_c[d];
+        int tmp = N_c[d];
 
         // the last calculation equals the number of cells for our process
-        s.N_c[d] = round(s.N_c[d]/(s.N_p[d]-s.ip[d]));
+        N_c[d] = round(N_c[d]/(N_p[d]-ip[d]));
 
         // now compute remaining displacements
-        for (int i=s.ip[d]; i<s.N_p[d]; i++)
+        for (int i=ip[d]; i<N_p[d]; i++)
         {
             displ[d][i] = nCells[d] - tmp;
-            tmp -= round(tmp/(s.N_p[d]-i));
+            tmp -= round(tmp/(N_p[d]-i));
         }
     }
 
@@ -140,7 +138,7 @@ void WorldLC::readParameter(const std::string &filename)
     for (int d=0; d<DIM; d++)
     {
         // reset ipTmp
-        memcpy(ipTmp, s.ip, sizeof(s.ip));
+        memcpy(ipTmp, ip, sizeof(ip));
         // proc isn't at the border
         if (ipTmp[d] > 0)
             ipTmp[d]--;
@@ -149,15 +147,15 @@ void WorldLC::readParameter(const std::string &filename)
         {
             ipTmp[d] = NO_NEIGHBOUR;
             if (lower_border[d] == periodic)
-                ipTmp[d] = s.N_p[d] - 1;
+                ipTmp[d] = N_p[d] - 1;
         }
         // get according number of process
-        s.ip_lower[d] = J(ipTmp, s.N_p);
+        ip_lower[d] = J(ipTmp, N_p);
 
         // do the same stuff for upper border
-        memcpy(ipTmp, s.ip, sizeof(s.ip));
+        memcpy(ipTmp, ip, sizeof(ip));
         // same procedure here for lower borders
-        if (ipTmp[d] < s.N_p[d] - 1)
+        if (ipTmp[d] < N_p[d] - 1)
             ipTmp[d]++;
         else
         {
@@ -165,37 +163,139 @@ void WorldLC::readParameter(const std::string &filename)
             if (upper_border[d] == periodic)
                 ipTmp[d] = 0;
         }
-        s.ip_upper[d] = J(ipTmp, s.N_p);
+        ip_upper[d] = J(ipTmp, N_p);
 
         // the cells edge length is worlds edge length per #cells
-        s.cellh[d] = worldLength[d] / nCells[d];
+        cellh[d] = worldLength[d] / nCells[d];
         // bordure width - equals the first cell inside subdomain
-        s.ic_start[d] = (int) ceil(cell_r_cut / s.cellh[d]);
-        // first cell in upper bordure, so you can use it as for i=s.ic_start; i<s.ic_stop
-        s.ic_stop[d] = s.ic_start[d] + s.N_c[d];
+        ic_start[d] = (int) ceil(cell_r_cut / cellh[d]);
+        // first cell in upper bordure, so you can use it as for i=ic_start; i<ic_stop
+        ic_stop[d] = ic_start[d] + N_c[d];
 
         // number of cells in dth dim incl. bordure
-        // (s.ic_stop[d] - s.ic_start[d]) + 2*s.ic_start[d] is the same as:
-        s.ic_number[d] = s.ic_stop[d] + s.ic_start[d];
+        // (ic_stop[d] - ic_start[d]) + 2*ic_start[d] is the same as:
+        ic_number[d] = ic_stop[d] + ic_start[d];
         // the lower global Index of the first cell, is the dth displacement of the corresponding process
-        s.ic_lower_global[d] = displ[d][s.ip[d]];
-        s.ic_upper_global[d] = s.ic_lower_global[d] - 1  + s.ic_number[d] - 2*s.ic_start[d] ;
+        ic_lower_global[d] = displ[d][ip[d]];
+        ic_upper_global[d] = ic_lower_global[d] - 1  + ic_number[d] - 2*ic_start[d] ;
 
     }
 
     // calc #of all cells incl. bordures
     int nCells = 1;
     for (int d=0; d<DIM; d++)
-        nCells *= s.ic_number[d];
+        nCells *= ic_number[d];
     // insert empty cells
     for (int i=0; i<nCells; i++)
         cells.push_back(Cell());
 
     std::cout << "END OF readParameter()" << std::endl << this;
-  //  std::cin >> s.myrank;
+  //  std::cin >> myrank;
+}
+void SubDomain::readParticles(const std::string &filename)
+{
+    // create input filestream
+    std::ifstream parfile(filename.c_str());
+    // check if file is open
+    if (!parfile.is_open())
+        throw std::runtime_error("readParticles(): Can't open file '" + filename + "' for reading.");
+
+    // helper strings
+    std::string line;
+    Particle tmpparticle;
+
+    // read file till eof
+    while (parfile.good())
+    {
+        // read line from file
+        getline(parfile,line);
+        // break if there is a blank line, e.g. a newline at the eof
+        if (line=="")
+            break;
+        // create a string stream
+        std::stringstream strstr;
+        // push line into string stream
+        strstr << line;
+        // grab ID:
+        strstr >> tmpparticle.ID;
+        // save the particles mass
+        strstr >> tmpparticle.m;
+        // push dim read values into tmpparticles position and check wether particle is inside the world, or not
+        for(int d=0; d<DIM; d++)
+        {
+            strstr >> tmpparticle.x[d];
+            if (tmpparticle.x[d] < 0 || tmpparticle.x[d] > worldLength[d])
+            {
+                std::cerr << "<------- FAILURE ------->" << std::endl;
+                std::cerr << "There is a particle outside the world. Please check input file." << std::endl;
+                exit (EXIT_FAILURE);
+            }
+
+        }
+
+        // push dim read values into tmpparticles velocity
+        for(int d=0; d<DIM; d++)
+            strstr >> tmpparticle.v[d];
+        // set start velocity of particle by means of Maxwell Boltzmann
+        if (isThermoStartTemp)
+        {
+            // number crunchers for Maxwell-Boltzmann
+            real s, r, u[DIM], tmp;
+            do
+            {
+                // reset
+                tmp = 0.0;
+                for (int d=0; d<DIM; d++)
+                {
+                    // get out a number between 0.0 and 1.0 inclusively
+                    u[d] = (double(rand()) / RAND_MAX);
+                    // scaling
+                    u[d] = 2.0*u[d]-1.0;
+                    tmp += sqr(u[d]);
+                }
+                s = tmp;
+
+                // are we inside the R^DIM ball? sin^2 + cos^2 = 1
+            } while (s>1.0);
+            // i don't know how it's working exactly
+            r = -2.0*log(s)/s;
+            // set new velocity according to Maxwell-Boltzmann
+            for (int d=0; d<DIM; d++)
+                tmpparticle.v[d] = u[d]*sqrt(r);
+            tmpparticle.v[2] = 0;
+        }
+
+        // assure integrity of the force of our tmpparticle
+        for(int d=0; d<DIM; d++)
+            tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
+
+        // calc according cell
+        int inCell[DIM];
+        // is particle in our Subdomain
+        bool isInSubdomain = true;
+        // check if particle doesn't belong to our subdomain
+        for (int d=0; d<DIM; d++)
+        {
+            // calc cell number and offset
+            inCell[d] = (int)floor( tmpparticle.x[d]/cellh[d] );
+            if( inCell[d] < ic_lower_global[d] || inCell[d] > ic_upper_global[d] )
+                isInSubdomain = false;
+        }
+
+        if (isInSubdomain)
+        {
+            // add the new particle to our worlds' particles
+            particles.push_back(tmpparticle);
+            // update particle size
+            nParticles++;
+        }
+    }
+    // close file
+    parfile.close();
 }
 
-void WorldLC::readParticles(const std::string &filename)
+
+void SubDomain::readParticles(const std::string &filename)
 {
     // call the base function
     World::readParticles(filename);
@@ -215,7 +315,7 @@ void WorldLC::readParticles(const std::string &filename)
     particles.clear();
 }
 
-int WorldLC::getCellNumber(const Particle &p)
+int SubDomain::getCellNumber(const Particle &p)
 {
     // temporary array
     int tmp[3] = {0,0,0};
@@ -230,14 +330,14 @@ int WorldLC::getCellNumber(const Particle &p)
             exit(EXIT_FAILURE);
         }
         // compute cell number, AND DON'T FORGET TO ADD IC_START (for the displacement in world)
-        tmp[d] = (int) floor(p.x[d] / s.cellh[d]) % s.N_c[d] + s.ic_start[d];
+        tmp[d] = (int) floor(p.x[d] / cellh[d]) % N_c[d] + ic_start[d];
     }
     // return corresponding cell Number
-    return J(tmp,s.ic_number);
+    return J(tmp,ic_number);
 }
 
 
-void WorldLC::setCommunication(int dim,
+void SubDomain::setCommunication(int dim,
                             int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
                             int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
 {
@@ -246,27 +346,27 @@ void WorldLC::setCommunication(int dim,
         // only bordure
         if (d==dim)
         {
-            lower_ic_start[d] = s.ic_start[d];
+            lower_ic_start[d] = ic_start[d];
             lower_ic_stop[d] = 2*lower_ic_start[d];
             lower_ic_startreceive[d] = 0;
             lower_ic_stopreceive[d] = lower_ic_start[d];
 
-            upper_ic_stop[d] = s.ic_stop[d];
-            upper_ic_start[d] = s.ic_stop[d] - s.ic_start[d];
-            upper_ic_stopreceive[d] = s.ic_start[d] + s.ic_stop[d];
-            upper_ic_startreceive[d] = s.ic_stop[d];
+            upper_ic_stop[d] = ic_stop[d];
+            upper_ic_start[d] = ic_stop[d] - ic_start[d];
+            upper_ic_stopreceive[d] = ic_start[d] + ic_stop[d];
+            upper_ic_startreceive[d] = ic_stop[d];
         }
         // bordure inclusive
         else if (d>dim)
         {
             lower_ic_startreceive[d] = lower_ic_start[d] = upper_ic_startreceive[d] = upper_ic_start[d] = 0;
-            lower_ic_stopreceive[d] = lower_ic_stop[d] = upper_ic_stopreceive[d] = upper_ic_stop[d] = s.ic_start[d] + s.ic_stop[d];
+            lower_ic_stopreceive[d] = lower_ic_stop[d] = upper_ic_stopreceive[d] = upper_ic_stop[d] = ic_start[d] + ic_stop[d];
         }
         // w/o bordure
         else
         {
-            lower_ic_start[d] = lower_ic_startreceive[d] = upper_ic_start[d] = upper_ic_startreceive[d] = s.ic_start[d];
-            lower_ic_stop[d] = lower_ic_stopreceive[d] = upper_ic_stop[d] = upper_ic_stopreceive[d] = s.ic_stop[d];
+            lower_ic_start[d] = lower_ic_startreceive[d] = upper_ic_start[d] = upper_ic_startreceive[d] = ic_start[d];
+            lower_ic_stop[d] = lower_ic_stopreceive[d] = upper_ic_stop[d] = upper_ic_stopreceive[d] = ic_stop[d];
         }
 
     }
@@ -275,7 +375,7 @@ void WorldLC::setCommunication(int dim,
 
 
 
-void WorldLC::communicate (bool isForward)
+void SubDomain::communicate (bool isForward)
 {
     int lower_ic_start[DIM], lower_ic_stop[DIM],
         upper_ic_start[DIM], upper_ic_stop[DIM],
@@ -293,15 +393,15 @@ void WorldLC::communicate (bool isForward)
                              lower_ic_startreceive, lower_ic_stopreceive, lower_ic_start, lower_ic_stop,
                              upper_ic_startreceive, upper_ic_stopreceive, upper_ic_start, upper_ic_stop);
 
-        sendReceive (   s.ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
-                        s.ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
+        sendReceive (   ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
+                        ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
 
-        sendReceive (   s.ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive,
-                        s.ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive);
+        sendReceive (   ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive,
+                        ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive);
     }
 }
 
-void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
+void SubDomain::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
                            int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
 {
     // send and receive infos
@@ -328,8 +428,8 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         int debug;
         Iterate(itCell, lower_ic_start, lower_ic_stop)
         {
-            debug = J(itCell,s.ic_number);
-            ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size ();
+            debug = J(itCell,ic_number);
+            ic_lengthsend[k] = cells[J(itCell,ic_number)].particles.size ();
             sum_lengthsend += ic_lengthsend[k++];
         }
         request = MPI::COMM_WORLD.Isend (&(ic_lengthsend.front ()), nCellsSend, MPI::INT, lower_proc, 1);
@@ -347,7 +447,7 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         k = 0;
         Iterate(itCell, lower_ic_start, lower_ic_stop)
         {
-            for (std::list<Particle>::iterator p = cells[J(itCell,s.ic_number)].particles.begin(); p != cells[J(itCell, s.ic_number)].particles.end(); p++)
+            for (std::list<Particle>::iterator p = cells[J(itCell,ic_number)].particles.begin(); p != cells[J(itCell, ic_number)].particles.end(); p++)
                 ip_particlesend[k++] = *p;
         }
 
@@ -367,13 +467,13 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
             {
                 Particle *p = new Particle;
                 *p = ip_particlereceive[i];
-                cells[J(itCell,s.ic_number)].particles.push_back(*p);
+                cells[J(itCell,ic_number)].particles.push_back(*p);
 
                 // if belonging cell is inside world (that means, a particle moved from bordure into world)
                 int tmp=0;
                 for (int d=0; d<DIM; d++)
                 {
-                    if (itCell[d] > s.ic_start[d] && itCell[d] < s.ic_stop[d])
+                    if (itCell[d] > ic_start[d] && itCell[d] < ic_stop[d])
                         tmp++;
                     else // cell is on bordure, we are in compF case
                         break;
@@ -411,12 +511,12 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
             {
                 Particle *p = new Particle;
                 *p = ip_particlereceive[i];
-                cells[J(itCell,s.ic_number)].particles.push_back(*p);
+                cells[J(itCell,ic_number)].particles.push_back(*p);
                 // if belonging cell is inside world (that means, a particle moved from bordure into world)
                 int tmp=0;
                 for (int d=0; d<DIM; d++)
                 {
-                    if (itCell[d] > s.ic_start[d] && itCell[d] < s.ic_stop[d])
+                    if (itCell[d] > ic_start[d] && itCell[d] < ic_stop[d])
                         tmp++;
                     else // cell is on bordure, we are in compF case
                         break;
@@ -442,7 +542,7 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         // and save number of particles (sum_lengthsend) for each to be sended cell into ic_length
         Iterate (itCell, lower_ic_start, lower_ic_stop)
         {
-            ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size();
+            ic_lengthsend[k] = cells[J(itCell,ic_number)].particles.size();
             sum_lengthsend += ic_lengthsend[k++];
         }
 
@@ -454,85 +554,97 @@ void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_s
         ip_particlesend.resize (sum_lengthsend);
         k = 0;
         Iterate (itCell, lower_ic_start, lower_ic_stop )
-                for (std::list<Particle>::iterator p = cells[J(itCell,s.ic_number)].particles.begin(); p != cells[J(itCell,s.ic_number)].particles.end(); p++)
+                for (std::list<Particle>::iterator p = cells[J(itCell,ic_number)].particles.begin(); p != cells[J(itCell,ic_number)].particles.end(); p++)
                 ip_particlesend[k++] = *p;
         // and send them to the lower process
         MPI::COMM_WORLD.Isend (&(ip_particlesend.front ()), sum_lengthsend, MPI_Particle, lower_proc, 2);
         ip_particlesend.clear ();
     }
 }
-void WorldLC::deleteBorderParticles ()
+void SubDomain::deleteBorderParticles ()
 {
     int n[DIM], lower[DIM], upper[DIM];
     for (int i=0; i<DIM; i++)
     {
         lower[i] = 0;
-        upper[i] = s.ic_start[i];
+        upper[i] = ic_start[i];
         for (int j=0; j<DIM; j++)
             if (i != j)
             {
                 lower[j] = 0;
-                upper[j] = s.ic_number[j];
+                upper[j] = ic_number[j];
             }
         Iterate (n, lower, upper)
-            cells[J(n, s.ic_number)].particles.clear();
+            cells[J(n, ic_number)].particles.clear();
 
-        lower[i] = s.ic_stop[i];
-        upper[i] = s.ic_number[i];
+        lower[i] = ic_stop[i];
+        upper[i] = ic_number[i];
         for (int j=0; j<DIM; j++)
             if (i != j)
             {
                 lower[j] = 0;
-                upper[j] = s.ic_number[j];
+                upper[j] = ic_number[j];
             }
         Iterate (n, lower, upper)
-            cells[J(n, s.ic_number)].particles.clear();
+            cells[J(n, ic_number)].particles.clear();
     }
 }
 
-
-std::ostream& operator << (std::ostream& os, WorldLC& W) 
+void SubDomain::constructParticle(MPI::Datatype& MPI_Particle)
 {
-    // Get out some information about the world and it's SubDomain
-    os << W.name << " Dim: " << DIM << " t: " << W.t << " delta_t: " << W.delta_t << " t_end: " << W.t_end
-       << " cell_r_cut: " << W.cell_r_cut << std::endl;
-    os << "Length: ";
-    for (int d=0; d<DIM; d++)
-        os << W.worldLength[d] << " ";
-    os << std::endl << "Upper borders: ";
-    for (int d=0; d<DIM; d++)
-        os << W.upper_border[d] << " ";
+// Initialize Particle
+  Particle p;
+  p.ID = 0;
+  p.m = 0.0;
+  p.x[0] = p.x[1] = p.x[2] = 0.0;
+  p.v[0] = p.v[1] = p.v[2] = 0.0;
+  p.F[0] = p.F[1] = p.F[2] = 0.0;
+  p.F_old[0] = p.F_old[1] = p.F_old[2] = 0.0;
+  // build new mpi datatype
+  MPI::Datatype type[6] = {MPI::INT, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE, MPI::DOUBLE};
+  int blocklen[6] = {1,1,DIM,DIM,DIM,DIM};
+  MPI::Aint disp[6]; // displacements
+  MPI::Aint base;
 
-    os << std::endl << "Lower borders: ";
-    for (int d=0; d<DIM; d++)
-        os << W.lower_border[d] << " ";
-    os << std::endl << "Border types: 0 - leaving, 1 - periodic, 2 - unknown" << std::endl;
+  /* compute displacements */
+  disp[0] = MPI::Get_address(&p);
+  disp[1] = MPI::Get_address(&p.m);
+  disp[2] = MPI::Get_address(&p.x);
+  disp[3] = MPI::Get_address(&p.v);
+  disp[4] = MPI::Get_address(&p.F);
+  disp[5] = MPI::Get_address(&p.F_old);
 
-    os << std::endl << "Present particles in all " << W.cells.size() << " Cells." << std::endl;
+  base = disp[0];
+  for (unsigned i=0; i<6; i++) disp[i] -= base;
 
-    // roll over each Cell
-    for (std::vector<Cell>::iterator i = W.cells.begin(); i < W.cells.end(); i++)
-    {
-        // if there are some particles in this cell, show it off
-        if (i->particles.size() > 0)
-        {
-            // we are now in cell# x
-            os << "cell[" << i-W.cells.begin() << "] = " ;
-            // get out every particle in this cell
-            for (std::list<Particle>::iterator j = i->particles.begin(); j != i->particles.end(); j++)
-            {
-                // Particle Number
-                os <<  j->ID << ": ";
-                //  get out the particles location
-                for (unsigned int d=0; d<DIM; d++)
-                    os << j->x[d] << "\t";
-                // tabulator after each particle
-                os << "\t";
-            }
-            // newline after each cell
-            os << std::endl;
-        }
-    }
+  MPI_Particle = MPI::Datatype::Create_struct(6, blocklen, disp, type);
+  MPI_Particle.Commit();
+}
+
+
+std::ostream& operator << (std::ostream& os, SubDomain& S)
+{
+    os << std::endl << "My Rank: " << S.myrank << ", position in process Matrix: ";
+    for (int d=0; d<DIM; d++) os << S.ip[d] << " ";
+
+    std::cout << "#Cells with bordure in " ;
+    for (int d=0; d<DIM; d++) os <<  "  dim " << d << ": " << S.ic_number[d];
+
+    std::cout << "Width of bordure in " ;
+    for (int d=0; d<DIM; d++) os <<  "  dim " << d << ": " << S.ic_start[d];
+
+    os << std::endl << "My lower neighbours (ID's in dth dim): ";
+    for (int d=0; d<DIM; d++) os << S.ip_lower[d] << " ";
+
+    os << std::endl << "My upper neighbours (ID's in dth dim): ";
+    for (int d=0; d<DIM; d++) os << S.ip_upper[d] << " ";
+
+    os << std::endl << "My lower global position (of cell): ";
+    for (int d=0; d<DIM; d++) os << S.ic_lower_global[d] << " ";
+
+    os << std::endl << "My upper global position (of cell): ";
+    for (int d=0; d<DIM; d++) os << S.ic_upper_global[d] << " ";
+
     return os;
 }
 

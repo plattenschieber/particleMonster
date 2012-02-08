@@ -33,27 +33,15 @@ public:
     // TODO: Add some comment here
     void readParticles (const std::string &filename);
 
+    // get the global cell number of a given particle
     int getCellNumber (const Particle &p);
-
-    void sendReceive (int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
-                      int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
-
-    void deleteBorderParticles ();
-    void constructParticle (MPI::Datatype& MPI_Particle);
-
-    void setCommunication ( int d,
-                            int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
-                            int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive);
-
-
-    void communicate (bool isForward);
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
     enum Option { NAME, DELTA_T, T_END, LENGTH, UPPERBORDER, LOWERBORDER, EPSILON, SIGMA, CELLRCUT};
     // Map to associate the strings with the enum values
     std::map<std::string, WorldLC::Option> mapOptions;
-    /// cells
+    /// a vector of cells with particle lists
     std::vector<Cell> cells;
     /// Number of cells in every dimension
     int nCells[DIM];
@@ -61,8 +49,6 @@ public:
     real cellLength[DIM];
     /// r_cut used for calculation of the cell length
     real cell_r_cut;
-    /// a particle for MPI
-    MPI::Datatype MPI_Particle;
 };
 
 /**
