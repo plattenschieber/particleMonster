@@ -52,9 +52,9 @@ void WorldLC::readParameter(const std::string &filename)
     for (int d=0; d<DIM; d++)
     {
         // #cells in dimension = floor(length per cell-cutlength)
-        cell_N[d] = (int)(length[d]/cell_r_cut);
+        nCells[d] = (int)(worldLength[d]/cell_r_cut);
         // cell length = world length per #cells
-        cell_length[d] = length[d]/cell_N[d];
+        cellLength[d] = worldLength[d]/nCells[d];
     }
 
     // do some parallel stuff
@@ -110,13 +110,13 @@ void WorldLC::readParameter(const std::string &filename)
         // we need #procs place for displacements
         displ[d] = (int*)malloc (s.N_p[d] * sizeof(int));
         // s.N_c which needs to be divided to procs
-        s.N_c[d] = cell_N[d];
+        s.N_c[d] = nCells[d];
 
         // calc until you reach your process position
         for(int i=0; i<s.ip[d];i++)
         {
             // save the left over cells as displacement for ith process
-            displ[d][i] = cell_N[d] - s.N_c[d];
+            displ[d][i] = nCells[d] - s.N_c[d];
             // and compute the left over for the next step
             s.N_c[d] -= round(s.N_c[d]/(s.N_p[d]-i));
         }
@@ -130,7 +130,7 @@ void WorldLC::readParameter(const std::string &filename)
         // now compute remaining displacements
         for (int i=s.ip[d]; i<s.N_p[d]; i++)
         {
-            displ[d][i] = cell_N[d] - tmp;
+            displ[d][i] = nCells[d] - tmp;
             tmp -= round(tmp/(s.N_p[d]-i));
         }
     }
@@ -169,7 +169,7 @@ void WorldLC::readParameter(const std::string &filename)
         s.ip_upper[d] = J(ipTmp, s.N_p);
 
         // the cells edge length is worlds edge length per #cells
-        s.cellh[d] = length[d] / cell_N[d];
+        s.cellh[d] = worldLength[d] / nCells[d];
         // bordure width - equals the first cell inside subdomain
         s.ic_start[d] = (int) ceil(cell_r_cut / s.cellh[d]);
         // first cell in upper bordure, so you can use it as for i=s.ic_start; i<s.ic_stop
@@ -223,7 +223,7 @@ int WorldLC::getCellNumber(const Particle &p)
     for (int d=0; d<DIM; d++)
     {
         // handle particle outside the world failure
-        if (p.x[d] < 0 || p.x[d] > length[d])
+        if (p.x[d] < 0 || p.x[d] > worldLength[d])
         {
             std::cerr << "<------- FAILURE ------->" << std::endl;
             std::cerr << "Particle left faulty the lower/upper border - in getCellNumber() -> x["
@@ -530,7 +530,7 @@ std::ostream& operator << (std::ostream& os, WorldLC& W)
        << " cell_r_cut: " << W.cell_r_cut << std::endl;
     os << "Length: ";
     for (int d=0; d<DIM; d++)
-        os << W.length[d] << " ";
+        os << W.worldLength[d] << " ";
     os << std::endl << "Upper borders: ";
     for (int d=0; d<DIM; d++)
         os << W.upper_border[d] << " ";

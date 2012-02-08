@@ -79,10 +79,10 @@ void VelocityVerletLC::compF()
                     // PERIODIC CASES:
                     if (nbCell[d]<0 && W.lower_border[d]==W.periodic)
                     {
-                        nbTmpCell[d] = W.cell_N[d]-1;
+                        nbTmpCell[d] = W.nCells[d]-1;
                         periodic[d] = true;
                     }
-                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.periodic)
+                    else if (nbCell[d]>=W.nCells[d] && W.upper_border[d]==W.periodic)
                     {
                         nbTmpCell[d]=0;
                         periodic[d] = true;
@@ -90,14 +90,14 @@ void VelocityVerletLC::compF()
 
                     // LEAVING CASES:
                     else if (nbCell[d]<0 && W.lower_border[d]==W.leaving) leftWorld = true;
-                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.leaving) leftWorld = true;
+                    else if (nbCell[d]>=W.nCells[d] && W.upper_border[d]==W.leaving) leftWorld = true;
                     else if (nbCell[d]<0 && W.lower_border[d]==W.unknown)
                     {
                         std::cerr << "<------- FAILURE ------->" << std::endl;
                         std::cerr << "Please specify lower border in Dimension: " << d+1;
                         exit(EXIT_FAILURE);
                     }
-                    else if (nbCell[d]>=W.cell_N[d] && W.upper_border[d]==W.unknown)
+                    else if (nbCell[d]>=W.nCells[d] && W.upper_border[d]==W.unknown)
                     {
                         std::cerr << "<------- FAILURE ------->" << std::endl;
                         std::cerr << "Please specify upper border in Dimension: " << d+1;

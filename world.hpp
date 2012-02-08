@@ -88,7 +88,7 @@ public:
     /// the avg over the last 100 pot
     real epot_avg;
     /// the axis lengths of our world
-    real length[DIM];
+    real worldLength[DIM];
     /// zero breakthrough
     real sigma;
     /// potential depth

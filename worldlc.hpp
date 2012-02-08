@@ -56,7 +56,7 @@ public:
     /// cells
     std::vector<Cell> cells;
     /// Number of cells in every dimension
-    int cell_N[DIM];
+    int nCells[DIM];
     /// length of cells
     real cell_length[DIM];
     /// r_cut used for calculation of the cell length

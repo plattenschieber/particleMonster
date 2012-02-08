@@ -66,7 +66,7 @@ void World::readParameter(const std::string &filename)
             break;
         case LENGTH:
             for (int i=0; i<DIM; i++) {
-                strstr >> length[i];
+                strstr >> worldLength[i];
             }
             break;
         case UPPERBORDER:
@@ -148,7 +148,7 @@ void World::readParticles(const std::string &filename)
         for(int d=0; d<DIM; d++)
         {
             strstr >> tmpparticle.x[d];
-            if (tmpparticle.x[d] < 0 || tmpparticle.x[d] > length[d])
+            if (tmpparticle.x[d] < 0 || tmpparticle.x[d] > worldLength[d])
             {
                 std::cerr << "<------- FAILURE ------->" << std::endl;
                 std::cerr << "There is a particle outside the world. Please check input file." << std::endl;
