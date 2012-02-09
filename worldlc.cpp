@@ -188,8 +188,10 @@ void WorldLC::readParameter(const std::string &filename)
     for (int d=0; d<DIM; d++)
         numCells *= cellLength[d];
     // insert empty cells
-    for (int i=0; i<numCells; i++)
-        cells.push_back(Cell());
+    //for (int i=0; i<numCells; i++)
+    //    cells.push_back(Cell());
+    // resize vector size
+    cells.resize (numCells);
 
     std::cout << "END OF readParameter()" << std::endl << this;
   //  std::cin >> s.myrank;
@@ -233,7 +235,6 @@ int WorldLC::getCellNumber(const Particle &p)
         tmp[d] = (int) floor(p.x[d] / cellLength[d]) % nCells[d];
     }
     // return corresponding cell Number
-    return J(tmp,s.ic_number);
 }
 
 
@@ -488,6 +489,7 @@ void WorldLC::deleteBorderParticles ()
         Iterate (n, lower, upper)
             cells[J(n, s.ic_number)].particles.clear();
     }
+    return J(tmp,nCells);
 }
 
 
