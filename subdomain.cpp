@@ -28,29 +28,29 @@ void SubDomain::readParameter(const std::string &filename)
     switch(numprocs)
     {
         case 1:
-            N_p[0] = 1;
-            N_p[1] = 1;
-            N_p[2] = 1;
+            nProcs[0] = 1;
+            nProcs[1] = 1;
+            nProcs[2] = 1;
             break;
         case 2:
-            N_p[0] = 2;
-            N_p[1] = 1;
-            N_p[2] = 1;
+            nProcs[0] = 2;
+            nProcs[1] = 1;
+            nProcs[2] = 1;
             break;
         case 4:
-            N_p[0] = 2;
-            N_p[1] = 2;
-            N_p[2] = 1;
+            nProcs[0] = 2;
+            nProcs[1] = 2;
+            nProcs[2] = 1;
             break;
         case 6:
-            N_p[0] = 3;
-            N_p[1] = 2;
-            N_p[2] = 1;
+            nProcs[0] = 3;
+            nProcs[1] = 2;
+            nProcs[2] = 1;
             break;
         case 8:
-            N_p[0] = 2;
-            N_p[1] = 2;
-            N_p[2] = 2;
+            nProcs[0] = 2;
+            nProcs[1] = 2;
+            nProcs[2] = 2;
             break;
         default:
             std::cerr << "FAILURE" << std::endl
@@ -59,7 +59,7 @@ void SubDomain::readParameter(const std::string &filename)
     }
 
     // get position of actual process in the grid
-    Jinv(myrank, N_p, ip);
+    Jinv(myrank, nProcs, ip);
 
     // save the global cell displacement of every process
     int *displ[DIM];
@@ -68,7 +68,7 @@ void SubDomain::readParameter(const std::string &filename)
     for (int d=0; d<DIM; d++)
     {
         // we need #procs place for displacements
-        displ[d] = (int*)malloc (N_p[d] * sizeof(int));
+        displ[d] = (int*)malloc (nProcs[d] * sizeof(int));
         // N_c which needs to be divided to procs
         N_c[d] = nCells[d];
 
@@ -78,20 +78,20 @@ void SubDomain::readParameter(const std::string &filename)
             // save the left over cells as displacement for ith process
             displ[d][i] = nCells[d] - N_c[d];
             // and compute the left over for the next step
-            N_c[d] -= round(N_c[d]/(N_p[d]-i));
+            N_c[d] -= round(N_c[d]/(nProcs[d]-i));
         }
 
         // save last left over and continue further down
         int tmp = N_c[d];
 
         // the last calculation equals the number of cells for our process
-        N_c[d] = round(N_c[d]/(N_p[d]-ip[d]));
+        N_c[d] = round(N_c[d]/(nProcs[d]-ip[d]));
 
         // now compute remaining displacements
-        for (int i=ip[d]; i<N_p[d]; i++)
+        for (int i=ip[d]; i<nProcs[d]; i++)
         {
             displ[d][i] = nCells[d] - tmp;
-            tmp -= round(tmp/(N_p[d]-i));
+            tmp -= round(tmp/(nProcs[d]-i));
         }
     }
 
@@ -110,15 +110,15 @@ void SubDomain::readParameter(const std::string &filename)
         {
             ipTmp[d] = NO_NEIGHBOUR;
             if (lower_border[d] == periodic)
-                ipTmp[d] = N_p[d] - 1;
+                ipTmp[d] = nProcs[d] - 1;
         }
         // get according number of process
-        ip_lower[d] = J(ipTmp, N_p);
+        ip_lower[d] = J(ipTmp, nProcs);
 
         // do the same stuff for upper border
         memcpy(ipTmp, ip, sizeof(ip));
         // same procedure here for lower borders
-        if (ipTmp[d] < N_p[d] - 1)
+        if (ipTmp[d] < nProcs[d] - 1)
             ipTmp[d]++;
         else
         {
@@ -126,7 +126,7 @@ void SubDomain::readParameter(const std::string &filename)
             if (upper_border[d] == periodic)
                 ipTmp[d] = 0;
         }
-        ip_upper[d] = J(ipTmp, N_p);
+        ip_upper[d] = J(ipTmp, nProcs);
 
         // the cells edge length is worlds edge length per #cells
         cellh[d] = worldLength[d] / nCells[d];
