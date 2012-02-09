@@ -9,7 +9,7 @@
 MAIN = particleMonster
 
 # define the C source files hallo
-SRCS = blatt5.cpp world.cpp worldlc.cpp observer.cpp observerxyz.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp ljpotential.cpp
+SRCS = blatt5.cpp world.cpp worldlc.cpp subdomain.cpp observer.cpp observerxyz.cpp parobserverxyz.cpp timediscretization.cpp velocityverlet.cpp velocityverletlc.cpp ljpotential.cpp
 
 # define the C compiler to use
 CC = /opt/openmpi/bin/mpic++
