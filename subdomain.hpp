@@ -67,7 +67,7 @@ public:
     /// process position in grid
     int ip[DIM];
     /// number of subdomains
-    int N_p[DIM];
+    int nProcs[DIM];
 
     /// process number of neighbourprocess
     int ip_lower[DIM];
