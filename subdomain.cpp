@@ -1,5 +1,4 @@
-#include "worldlc.hpp"
-#include "world.hpp"
+#include "subdomain.hpp"
 #include "cell.hpp"
 #include <stdexcept>
 #include <sstream>
@@ -154,7 +153,6 @@ void SubDomain::readParameter(const std::string &filename)
         cells.push_back(Cell());
 
     std::cout << "END OF readParameter()" << std::endl << this;
-  //  std::cin >> myrank;
 }
 void SubDomain::readParticles(const std::string &filename)
 {
@@ -568,6 +566,7 @@ void SubDomain::constructParticle(MPI::Datatype& MPI_Particle)
 
 std::ostream& operator << (std::ostream& os, SubDomain& S)
 {
+    //os << (WorldLC)S << std::endl;
     os << std::endl << "My Rank: " << S.myrank << ", position in process Matrix: ";
     for (int d=0; d<DIM; d++) os << S.ip[d] << " ";
 
