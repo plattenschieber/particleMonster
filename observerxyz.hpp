@@ -30,13 +30,13 @@ public:
     /*
     * @brief notify the observer that the world has changed
     */
-    void notify ();
+    virtual void notify ();
 
 
     /**
      * @brief output coordinates of the particles in XYZ Format
      */
-    void outputCoordinates();
+    virtual void outputCoordinates();
     
 protected:
     /// The world we are observing
