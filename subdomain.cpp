@@ -145,13 +145,13 @@ void SubDomain::readParameter(const std::string &filename)
     }
 
     // calc #of all cells incl. bordures
-    int nCells = 1;
+    int numCells = 1;
     for (int d=0; d<DIM; d++)
-        nCells *= ic_number[d];
+        numCells *= ic_number[d];
     // insert empty cells
-    for (int i=0; i<nCells; i++)
-        cells.push_back(Cell());
-
+    //for (int i=0; i<nCells; i++)
+    //    cells.push_back(Cell());
+    cells.resize (numCells);
     std::cout << "END OF readParameter()" << std::endl << this;
 }
 void SubDomain::readParticles(const std::string &filename)
