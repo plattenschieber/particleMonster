@@ -1,14 +1,11 @@
-#ifndef SUBDOMAIN_HPP
-#define SUBDOMAIN_HPP
+#ifndef _SUBDOMAIN_HPP
+#define _SUBDOMAIN_HPP
 
 #include "defines.hpp"
 #include "worldlc.hpp"
-
-#include "world.hpp"
 #include "cell.hpp"
 #include "defines.hpp"
 #include "particle.hpp"
-#include "subdomain.hpp"
 #include <mpi.h>
 #include <vector>
 #include <list>
@@ -22,8 +19,7 @@
  *
  * this class contains the particle data
  */
-class SubDomain : public WorldLC
-{
+class SubDomain : public WorldLC {
 public:
     /// standard ctor
     SubDomain();
@@ -97,5 +93,5 @@ public:
  */
 std::ostream& operator << (std::ostream& os, SubDomain& S);
 
-#endif // SUBDOMAIN_HPP
+#endif // _SUBDOMAIN_HPP
 // vim:set et sts=4 ts=4 sw=4 ai ci cin:
