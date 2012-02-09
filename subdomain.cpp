@@ -69,23 +69,23 @@ void SubDomain::readParameter(const std::string &filename)
     {
         // we need #procs place for displacements
         displ[d] = (int*)malloc (nProcs[d] * sizeof(int));
-        // N_c which needs to be divided to procs
-        N_c[d] = nCells[d];
+        // nCellsProc which needs to be divided to procs
+        nCellsProc[d] = nCells[d];
 
         // calc until you reach your process position
         for(int i=0; i<ip[d];i++)
         {
             // save the left over cells as displacement for ith process
-            displ[d][i] = nCells[d] - N_c[d];
+            displ[d][i] = nCells[d] - nCellsProc[d];
             // and compute the left over for the next step
-            N_c[d] -= round(N_c[d]/(nProcs[d]-i));
+            nCellsProc[d] -= round(nCellsProc[d]/(nProcs[d]-i));
         }
 
         // save last left over and continue further down
-        int tmp = N_c[d];
+        int tmp = nCellsProc[d];
 
         // the last calculation equals the number of cells for our process
-        N_c[d] = round(N_c[d]/(nProcs[d]-ip[d]));
+        nCellsProc[d] = round(nCellsProc[d]/(nProcs[d]-ip[d]));
 
         // now compute remaining displacements
         for (int i=ip[d]; i<nProcs[d]; i++)
@@ -129,11 +129,11 @@ void SubDomain::readParameter(const std::string &filename)
         ip_upper[d] = J(ipTmp, nProcs);
 
         // the cells edge length is worlds edge length per #cells
-        cellh[d] = worldLength[d] / nCells[d];
+        cellLength[d] = worldLength[d] / nCells[d];
         // bordure width - equals the first cell inside subdomain
-        ic_start[d] = (int) ceil(cell_r_cut / cellh[d]);
+        ic_start[d] = (int) ceil(cell_r_cut / cellLength[d]);
         // first cell in upper bordure, so you can use it as for i=ic_start; i<ic_stop
-        ic_stop[d] = ic_start[d] + N_c[d];
+        ic_stop[d] = ic_start[d] + nCellsProc[d];
 
         // number of cells in dth dim incl. bordure
         // (ic_stop[d] - ic_start[d]) + 2*ic_start[d] is the same as:
@@ -239,7 +239,7 @@ void SubDomain::readParticles(const std::string &filename)
         for (int d=0; d<DIM; d++)
         {
             // calc cell number and offset
-            inCell[d] = (int)floor( tmpparticle.x[d]/cellh[d] );
+            inCell[d] = (int)floor( tmpparticle.x[d]/cellLength[d] );
             if( inCell[d] < ic_lower_global[d] || inCell[d] > ic_upper_global[d] )
                 isInSubdomain = false;
         }
@@ -272,7 +272,7 @@ int SubDomain::getCellNumber(const Particle &p)
             exit(EXIT_FAILURE);
         }
         // compute cell number, AND DON'T FORGET TO ADD IC_START (for the displacement in world)
-        tmp[d] = (int) floor(p.x[d] / cellh[d]) % N_c[d] + ic_start[d];
+        tmp[d] = (int) floor(p.x[d] / cellLength[d]) % nCellsProc[d] + ic_start[d];
     }
     // return corresponding cell Number
     return J(tmp,ic_number);

@@ -53,7 +53,7 @@ public:
     /// edge length of domain
     real domainLength[DIM];
     /// number of cells in the whole domain
-    int N_c[DIM];
+    int nCellsProc[DIM];
 
     // further parameter for parallelization
     /// process rank of local process
@@ -73,8 +73,6 @@ public:
     int ic_stop[DIM];
     /// number of cells in subdomain with bordure
     int ic_number[DIM];
-    /// cell length
-    real cellh[DIM];
     /// global index of first cell in sub field
     int ic_lower_global[DIM];
     /// global index of last cell in sub field
