@@ -24,7 +24,7 @@ public:
      *
      * closes the files written during the obervation
      */
-    ~Observer();
+    virtual ~Observer();
     
     /**
      * @brief notify the observer that the world has changed
