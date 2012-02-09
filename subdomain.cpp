@@ -16,43 +16,7 @@ SubDomain::SubDomain() : myrank(-1), numprocs(-1) {
 void SubDomain::readParameter(const std::string &filename)
 {
     // call the base function
-    World::readParameter(filename);
-    // create input filestream
-    std::ifstream parfile(filename.c_str());
-    // check if file is open
-    if (!parfile.is_open())
-        throw std::runtime_error("readParameter(): Can't open file '" + filename + "' for reading.");
-
-    // helper strings
-    std::string line, option;
-
-    // read file till eof
-    while (parfile.good())
-    {
-        // read line from file
-        getline(parfile,line);
-        // create a string stream
-        std::stringstream strstr;
-        // put line into string stream
-        strstr << line;
-        // read option from stringstream
-        strstr >> option;
-        // TODO: Add eps and sigma!
-        // push next read value, with internal converter of string stream, into the propper place
-        if (mapOptions[option] == CELLRCUT)
-            strstr >> cell_r_cut;
-    }
-    // close file
-    parfile.close();
-
-    // Calc #cells
-    for (int d=0; d<DIM; d++)
-    {
-        // #cells in dimension = floor(length per cell-cutlength)
-        nCells[d] = (int)(worldLength[d]/cell_r_cut);
-        // cell length = world length per #cells
-        cellLength[d] = worldLength[d]/nCells[d];
-    }
+    WorldLC::readParameter(filename);
 
     // do some parallel stuff
 
