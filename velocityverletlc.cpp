@@ -4,11 +4,11 @@
 #include <sstream>
 
 
-VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential& _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,_Pot,_O), W(_W), Pot(_Pot)
+VelocityVerletLC::VelocityVerletLC(SubDomain& _W, LJPotential& _Pot, ParObserverXYZ &_O) : VelocityVerlet(_W,_Pot,_O), W(_W), Pot(_Pot)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
 }
-VelocityVerletLC::VelocityVerletLC(WorldLC& _W, LJPotential* _Pot, ObserverXYZ& _O) : VelocityVerlet(_W,(*_Pot),_O), W(_W), Pot(*_Pot)
+VelocityVerletLC::VelocityVerletLC(SubDomain& _W, LJPotential* _Pot, ParObserverXYZ& _O) : VelocityVerlet(_W,(*_Pot),_O), W(_W), Pot(*_Pot)
 {
     // initialize your own World, otherwise implicit cast to World will force us to explicit cast the World every time we use it, to WorldLC
 }
@@ -51,11 +51,11 @@ void VelocityVerletLC::compF()
     W.e_pot = 0.0;
 
     // roll over each cell
-    Iterate (jCell, W.s.ic_start, W.s.ic_stop)
+    Iterate (jCell, W.ic_start, W.ic_stop)
     {
         // we compute the e_pot for each pair of particles in it's cell including the neighbour cells and add it to the worlds' e_pot...
         // roll over every particle i in actual cell
-        for (std::list<Particle>::iterator i = W.cells[J(jCell,W.s.ic_number)].particles.begin(); i != W.cells[J(jCell,W.s.ic_number)].particles.end(); i++)
+        for (std::list<Particle>::iterator i = W.cells[J(jCell,W.ic_number)].particles.begin(); i != W.cells[J(jCell,W.ic_number)].particles.end(); i++)
         {
             // roll over every neighbour cell
             Iterate (nbCell, jCell -1, jCell +1)
@@ -109,7 +109,7 @@ void VelocityVerletLC::compF()
                 if(!leftWorld)
                 {
                     // foreach particle j in temporary! neighbourcell compute force
-                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.s.ic_number)].particles.begin(); j != W.cells[J(nbTmpCell,W.s.ic_number)].particles.end(); j++)
+                    for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.ic_number)].particles.begin(); j != W.cells[J(nbTmpCell,W.ic_number)].particles.end(); j++)
                     {
                         // ...except of the computation with itself (i!=j)
                         if (i!=j)
@@ -140,7 +140,7 @@ void VelocityVerletLC::compF()
                                 // PERIODIC 1 cell:
                                 else if (periodic[d] && W.cells.size () == 1)
                                 {
-                                    if( (j->x[d] - i->x[d]) > 0.5*W.s.cellh[d])
+                                    if( (j->x[d] - i->x[d]) > 0.5*W.cellh[d])
                                         // and update direction vector
                                         dirV[d] = i->x[d] - j->x[d];
                                     else
@@ -217,10 +217,10 @@ void VelocityVerletLC::updateX()
     int jCell[DIM], tmpCell[DIM];
     std::vector<int> kInsert;
     // roll over every cell
-    Iterate(jCell, W.s.ic_start, W.s.ic_stop)
+    Iterate(jCell, W.ic_start, W.ic_stop)
     {
         // foreach cell go through it's particles...
-        for (std::list<Particle>::iterator i = W.cells[J(jCell, W.s.ic_number)].particles.begin(); i != W.cells[J(jCell, W.s.ic_number)].particles.end(); i++)
+        for (std::list<Particle>::iterator i = W.cells[J(jCell, W.ic_number)].particles.begin(); i != W.cells[J(jCell, W.ic_number)].particles.end(); i++)
         {
             // if the flag is checked, push the particle in the last round into it's new position
             doIt = false;
@@ -249,7 +249,7 @@ void VelocityVerletLC::updateX()
                     if (i->x[d] > W.worldLength[d] && W.upper_border[d] == W.leaving)
                     {
                         // regardless in which dimension, just erase
-                        i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
+                        i = W.cells[J(jCell, W.ic_number)].particles.erase(i);
                         i--;
                         W.nParticles--;
                         // don't forget to break, or you will handle another particle in the wrong dimension
@@ -259,7 +259,7 @@ void VelocityVerletLC::updateX()
                     else if (i->x[d] < 0  && W.lower_border[d] == W.leaving)
                     {
                         // regardless in which dimension, just erase
-                        i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
+                        i = W.cells[J(jCell, W.ic_number)].particles.erase(i);
                         i--;
                         W.nParticles--;
                         break;
@@ -281,9 +281,9 @@ void VelocityVerletLC::updateX()
                 }
                 // push particles into waiting pot
                 int debug = W.getCellNumber (*i);
-                debug = J(jCell, W.s.ic_number);
+                debug = J(jCell, W.ic_number);
                 W.particles.push_back(*i);
-                i = W.cells[J(jCell, W.s.ic_number)].particles.erase(i);
+                i = W.cells[J(jCell, W.ic_number)].particles.erase(i);
                 i--;
                 break;
             }
@@ -303,14 +303,14 @@ void VelocityVerletLC::updateX()
         for (int d=0; d<DIM; d++)
         {
             // calc local cell number and compare to local indices of subdomain
-            inCell[d] = (int)floor( i->x[d]/W.s.cellh[d] ) - W.s.ic_lower_global[d] + W.s.ic_start[d];
-            if( inCell[d] < W.s.ic_start[d] || inCell[d] > W.s.ic_stop[d] )
+            inCell[d] = (int)floor( i->x[d]/W.cellh[d] ) - W.ic_lower_global[d] + W.ic_start[d];
+            if( inCell[d] < W.ic_start[d] || inCell[d] > W.ic_stop[d] )
                 isInSubdomain = false;
         }
         // when not in inner SubDomain, there was a particle gone
         if (!isInSubdomain)
            W.nParticles--;
-        W.cells[J(inCell, W.s.ic_number)].particles.push_back(*i);
+        W.cells[J(inCell, W.ic_number)].particles.push_back(*i);
         i = W.particles.erase(i);
         i--;
     }
