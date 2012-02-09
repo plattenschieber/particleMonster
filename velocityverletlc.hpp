@@ -19,7 +19,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    VelocityVerletLC(SubDomain _W, LJPotential& _Pot, ParObserverXYZ &_O);
+    VelocityVerletLC(SubDomain& _W, LJPotential& _Pot, ParObserverXYZ &_O);
     
     /**
      * @brief constructor
