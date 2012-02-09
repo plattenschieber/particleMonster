@@ -5,7 +5,6 @@
 #include "cell.hpp"
 #include "defines.hpp"
 #include "particle.hpp"
-#include "subdomain.hpp"
 #include <mpi.h>
 #include <vector>
 #include <list>

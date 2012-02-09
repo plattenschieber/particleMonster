@@ -10,8 +10,6 @@
 WorldLC::WorldLC() : cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
-    // construct it, so we can use it!
-    constructParticle(MPI_Particle);
 }
 
 
@@ -39,7 +37,6 @@ void WorldLC::readParameter(const std::string &filename)
         strstr << line;
         // read option from stringstream
         strstr >> option;
-        // TODO: Add eps and sigma!
         // push next read value, with internal converter of string stream, into the propper place
         if (mapOptions[option] == CELLRCUT)
             strstr >> cell_r_cut;
@@ -56,133 +53,6 @@ void WorldLC::readParameter(const std::string &filename)
         cellLength[d] = worldLength[d]/nCells[d];
     }
 
-    // do some parallel stuff
-
-    // Get the number of processes.
-    s.numprocs = MPI::COMM_WORLD.Get_size();
-    // Get the individual process ID.
-    s.myrank = MPI::COMM_WORLD.Get_rank();
-
-    // #procs in dim
-    switch(s.numprocs)
-    {
-        case 1:
-            s.N_p[0] = 1;
-            s.N_p[1] = 1;
-            s.N_p[2] = 1;
-            break;
-        case 2:
-            s.N_p[0] = 2;
-            s.N_p[1] = 1;
-            s.N_p[2] = 1;
-            break;
-        case 4:
-            s.N_p[0] = 2;
-            s.N_p[1] = 2;
-            s.N_p[2] = 1;
-            break;
-        case 6:
-            s.N_p[0] = 3;
-            s.N_p[1] = 2;
-            s.N_p[2] = 1;
-            break;
-        case 8:
-            s.N_p[0] = 2;
-            s.N_p[1] = 2;
-            s.N_p[2] = 2;
-            break;
-        default:
-            std::cerr << "FAILURE" << std::endl
-                      << "You choosed more than 8 processes to work with. Please contact programmer";
-            exit(EXIT_FAILURE);
-    }
-
-    // get position of actual process in the grid
-    Jinv(s.myrank, s.N_p, s.ip);
-
-    // save the global cell displacement of every process
-    int *displ[DIM];
-
-    // compute cell number of inner domain in dth dimension
-    for (int d=0; d<DIM; d++)
-    {
-        // we need #procs place for displacements
-        displ[d] = (int*)malloc (s.N_p[d] * sizeof(int));
-        // s.N_c which needs to be divided to procs
-        s.N_c[d] = nCells[d];
-
-        // calc until you reach your process position
-        for(int i=0; i<s.ip[d];i++)
-        {
-            // save the left over cells as displacement for ith process
-            displ[d][i] = nCells[d] - s.N_c[d];
-            // and compute the left over for the next step
-            s.N_c[d] -= round(s.N_c[d]/(s.N_p[d]-i));
-        }
-
-        // save last left over and continue further down
-        int tmp = s.N_c[d];
-
-        // the last calculation equals the number of cells for our process
-        s.N_c[d] = round(s.N_c[d]/(s.N_p[d]-s.ip[d]));
-
-        // now compute remaining displacements
-        for (int i=s.ip[d]; i<s.N_p[d]; i++)
-        {
-            displ[d][i] = nCells[d] - tmp;
-            tmp -= round(tmp/(s.N_p[d]-i));
-        }
-    }
-
-    // temporary placeholder for resolving coordinates of neighbours
-    int ipTmp[DIM];
-
-    for (int d=0; d<DIM; d++)
-    {
-        // reset ipTmp
-        memcpy(ipTmp, s.ip, sizeof(s.ip));
-        // proc isn't at the border
-        if (ipTmp[d] > 0)
-            ipTmp[d]--;
-        // proc is at the border
-        else
-        {
-            ipTmp[d] = NO_NEIGHBOUR;
-            if (lower_border[d] == periodic)
-                ipTmp[d] = s.N_p[d] - 1;
-        }
-        // get according number of process
-        s.ip_lower[d] = J(ipTmp, s.N_p);
-
-        // do the same stuff for upper border
-        memcpy(ipTmp, s.ip, sizeof(s.ip));
-        // same procedure here for lower borders
-        if (ipTmp[d] < s.N_p[d] - 1)
-            ipTmp[d]++;
-        else
-        {
-            ipTmp[d] = NO_NEIGHBOUR;
-            if (upper_border[d] == periodic)
-                ipTmp[d] = 0;
-        }
-        s.ip_upper[d] = J(ipTmp, s.N_p);
-
-        // the cells edge length is worlds edge length per #cells
-        s.cellh[d] = worldLength[d] / nCells[d];
-        // bordure width - equals the first cell inside subdomain
-        s.ic_start[d] = (int) ceil(cell_r_cut / s.cellh[d]);
-        // first cell in upper bordure, so you can use it as for i=s.ic_start; i<s.ic_stop
-        s.ic_stop[d] = s.ic_start[d] + s.N_c[d];
-
-        // number of cells in dth dim incl. bordure
-        // (s.ic_stop[d] - s.ic_start[d]) + 2*s.ic_start[d] is the same as:
-        s.ic_number[d] = s.ic_stop[d] + s.ic_start[d];
-        // the lower global Index of the first cell, is the dth displacement of the corresponding process
-        s.ic_lower_global[d] = displ[d][s.ip[d]];
-        s.ic_upper_global[d] = s.ic_lower_global[d] - 1  + s.ic_number[d] - 2*s.ic_start[d] ;
-
-    }
-
     // calc #of all cells incl. bordures
     int numCells = 1;
     for (int d=0; d<DIM; d++)
@@ -194,8 +64,8 @@ void WorldLC::readParameter(const std::string &filename)
     cells.resize (numCells);
 
     std::cout << "END OF readParameter()" << std::endl << this;
-  //  std::cin >> s.myrank;
 }
+
 
 void WorldLC::readParticles(const std::string &filename)
 {
@@ -217,6 +87,7 @@ void WorldLC::readParticles(const std::string &filename)
     particles.clear();
 }
 
+
 int WorldLC::getCellNumber(const Particle &p)
 {
     // temporary array
@@ -235,260 +106,6 @@ int WorldLC::getCellNumber(const Particle &p)
         tmp[d] = (int) floor(p.x[d] / cellLength[d]) % nCells[d];
     }
     // return corresponding cell Number
-}
-
-
-void WorldLC::setCommunication(int dim,
-                            int *lower_ic_start, int *lower_ic_stop, int *lower_ic_startreceive, int *lower_ic_stopreceive,
-                            int *upper_ic_start, int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
-{
-    for (int d=0; d<DIM; d++)
-    {
-        // only bordure
-        if (d==dim)
-        {
-            lower_ic_start[d] = s.ic_start[d];
-            lower_ic_stop[d] = 2*lower_ic_start[d];
-            lower_ic_startreceive[d] = 0;
-            lower_ic_stopreceive[d] = lower_ic_start[d];
-
-            upper_ic_stop[d] = s.ic_stop[d];
-            upper_ic_start[d] = s.ic_stop[d] - s.ic_start[d];
-            upper_ic_stopreceive[d] = s.ic_start[d] + s.ic_stop[d];
-            upper_ic_startreceive[d] = s.ic_stop[d];
-        }
-        // bordure inclusive
-        else if (d>dim)
-        {
-            lower_ic_startreceive[d] = lower_ic_start[d] = upper_ic_startreceive[d] = upper_ic_start[d] = 0;
-            lower_ic_stopreceive[d] = lower_ic_stop[d] = upper_ic_stopreceive[d] = upper_ic_stop[d] = s.ic_start[d] + s.ic_stop[d];
-        }
-        // w/o bordure
-        else
-        {
-            lower_ic_start[d] = lower_ic_startreceive[d] = upper_ic_start[d] = upper_ic_startreceive[d] = s.ic_start[d];
-            lower_ic_stop[d] = lower_ic_stopreceive[d] = upper_ic_stop[d] = upper_ic_stopreceive[d] = s.ic_stop[d];
-        }
-
-    }
-
-}
-
-
-
-void WorldLC::communicate (bool isForward)
-{
-    int lower_ic_start[DIM], lower_ic_stop[DIM],
-        upper_ic_start[DIM], upper_ic_stop[DIM],
-        lower_ic_startreceive[DIM], lower_ic_stopreceive[DIM],
-        upper_ic_startreceive[DIM], upper_ic_stopreceive[DIM];
-
-    for (int d=(isForward)?DIM-1:0; (isForward)?d>=0:d<DIM; (isForward)?d--:d++)
-    {
-        if (isForward)
-            setCommunication(d,
-                             lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
-                             upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
-        else if (!isForward)
-            setCommunication(d,
-                             lower_ic_startreceive, lower_ic_stopreceive, lower_ic_start, lower_ic_stop,
-                             upper_ic_startreceive, upper_ic_stopreceive, upper_ic_start, upper_ic_stop);
-
-        sendReceive (   s.ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive,
-                        s.ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive);
-
-        sendReceive (   s.ip_upper[d], upper_ic_start, upper_ic_stop, upper_ic_startreceive, upper_ic_stopreceive,
-                        s.ip_lower[d], lower_ic_start, lower_ic_stop, lower_ic_startreceive, lower_ic_stopreceive);
-    }
-}
-
-void WorldLC::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
-                           int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
-{
-    // send and receive infos
-    MPI::Status status;
-    MPI::Request request;
-    // number of particles to be send/received
-    int sum_lengthsend = 0, sum_lengthreceive = 0;
-    // iterator
-    int nCellsSend = 1, k = 0;
-    int itCell[DIM];
-    std::vector<int> ic_lengthsend, ic_lengthreceive;
-    std::vector<Particle> ip_particlesend, ip_particlereceive;
-
-    // both neighbours are there
-    if( lower_proc != NO_NEIGHBOUR && upper_proc != NO_NEIGHBOUR )
-    {
-        // send and receive to/from lowerproc
-        for (int d=0; d<DIM; d++)
-            nCellsSend *= lower_ic_stop[d] - lower_ic_start[d];
-        ic_lengthsend.resize (nCellsSend);
-        ic_lengthreceive.resize (nCellsSend);
-
-        k=0;
-        int debug;
-        Iterate(itCell, lower_ic_start, lower_ic_stop)
-        {
-            debug = J(itCell,s.ic_number);
-            ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size ();
-            sum_lengthsend += ic_lengthsend[k++];
-        }
-        request = MPI::COMM_WORLD.Isend (&(ic_lengthsend.front ()), nCellsSend, MPI::INT, lower_proc, 1);
-        MPI::COMM_WORLD.Recv (&(ic_lengthreceive.front ()), nCellsSend, MPI::INT, upper_proc, 1, status);
-        request.Wait(status);
-
-        // free the lengthsend for new round
-        ic_lengthsend.clear ();
-        for (int i=0; i<nCellsSend; i++)
-            sum_lengthreceive += ic_lengthreceive[i];
-
-        ip_particlesend.resize (sum_lengthsend);
-        ip_particlereceive.resize (sum_lengthreceive);
-
-        k = 0;
-        Iterate(itCell, lower_ic_start, lower_ic_stop)
-        {
-            for (std::list<Particle>::iterator p = cells[J(itCell,s.ic_number)].particles.begin(); p != cells[J(itCell, s.ic_number)].particles.end(); p++)
-                ip_particlesend[k++] = *p;
-        }
-
-        request = MPI::COMM_WORLD.Isend (&(ip_particlesend.front ()), sum_lengthsend, MPI_Particle, lower_proc, 2);
-        MPI::COMM_WORLD.Recv (&(ip_particlereceive.front ()), sum_lengthreceive, MPI_Particle, upper_proc, 2, status);
-        request.Wait(status);
-
-        // free the sended particle for new round
-        ip_particlesend.clear ();
-
-        // push ic_lengthreceive[kreceive] particle into belonging cell
-        k = 0;
-        // push all received particles into their according cell
-        Iterate( itCell, upper_ic_startreceive, upper_ic_stopreceive )
-        {
-            for (int i=0; i<ic_lengthreceive[k]; i++)
-            {
-                Particle *p = new Particle;
-                *p = ip_particlereceive[i];
-                cells[J(itCell,s.ic_number)].particles.push_back(*p);
-
-                // if belonging cell is inside world (that means, a particle moved from bordure into world)
-                int tmp=0;
-                for (int d=0; d<DIM; d++)
-                {
-                    if (itCell[d] > s.ic_start[d] && itCell[d] < s.ic_stop[d])
-                        tmp++;
-                    else // cell is on bordure, we are in compF case
-                        break;
-                }
-                // don't forget to update particle size
-                if (tmp==DIM)
-                    nParticles++;
-            }
-            k++;
-        }
-        // we received all particles, now clear them
-        ic_lengthreceive.clear ();
-        ip_particlereceive.clear ();
-    }
-    // lower neighbour is missing
-    else if (upper_proc != NO_NEIGHBOUR )
-    {
-        // calc number of cells to receive
-        for (int d=0; d<DIM; d++)
-            nCellsSend *= lower_ic_stop[d] - lower_ic_start[d];
-        ic_lengthreceive.resize (nCellsSend);
-
-        // receive displacement
-        MPI::COMM_WORLD.Recv (&(ic_lengthreceive.front ()), nCellsSend, MPI::INT, upper_proc, 1);
-        for (int i=0; i<nCellsSend; i++)
-            sum_lengthreceive += ic_lengthreceive[i];
-        ip_particlereceive.resize (sum_lengthreceive);
-
-        // receive particles
-        MPI::COMM_WORLD.Recv (&(ip_particlereceive.front ()), sum_lengthreceive, MPI_Particle, upper_proc, 2);
-        k = 0;
-        Iterate (itCell, upper_ic_startreceive, upper_ic_stopreceive)
-        {
-            for (int i=0; i<ic_lengthreceive[k]; i++)
-            {
-                Particle *p = new Particle;
-                *p = ip_particlereceive[i];
-                cells[J(itCell,s.ic_number)].particles.push_back(*p);
-                // if belonging cell is inside world (that means, a particle moved from bordure into world)
-                int tmp=0;
-                for (int d=0; d<DIM; d++)
-                {
-                    if (itCell[d] > s.ic_start[d] && itCell[d] < s.ic_stop[d])
-                        tmp++;
-                    else // cell is on bordure, we are in compF case
-                        break;
-                }
-                // don't forget to update particle size
-                if (tmp==DIM)
-                    nParticles++; // don't forget to update particle size
-            }
-            k++;
-        }
-       ic_lengthreceive.clear ();
-       ip_particlereceive.clear ();
-    }
-    // upper neighbour is missing
-    else if (lower_proc != NO_NEIGHBOUR)
-    {
-        // compute the number of cells in each dim
-        for (int d=0; d<DIM; d++)
-            nCellsSend *= lower_ic_stop[d] - lower_ic_start[d];
-        ic_lengthsend.resize (nCellsSend);
-
-        k = 0;
-        // and save number of particles (sum_lengthsend) for each to be sended cell into ic_length
-        Iterate (itCell, lower_ic_start, lower_ic_stop)
-        {
-            ic_lengthsend[k] = cells[J(itCell,s.ic_number)].particles.size();
-            sum_lengthsend += ic_lengthsend[k++];
-        }
-
-        // send displacement of arriving particles
-        MPI::COMM_WORLD.Isend (&(ic_lengthsend.front ()), nCellsSend, MPI::INT, lower_proc, 1);
-        ic_lengthsend.clear ();
-
-        // save to be send particles into ip_particlesend
-        ip_particlesend.resize (sum_lengthsend);
-        k = 0;
-        Iterate (itCell, lower_ic_start, lower_ic_stop )
-                for (std::list<Particle>::iterator p = cells[J(itCell,s.ic_number)].particles.begin(); p != cells[J(itCell,s.ic_number)].particles.end(); p++)
-                ip_particlesend[k++] = *p;
-        // and send them to the lower process
-        MPI::COMM_WORLD.Isend (&(ip_particlesend.front ()), sum_lengthsend, MPI_Particle, lower_proc, 2);
-        ip_particlesend.clear ();
-    }
-}
-void WorldLC::deleteBorderParticles ()
-{
-    int n[DIM], lower[DIM], upper[DIM];
-    for (int i=0; i<DIM; i++)
-    {
-        lower[i] = 0;
-        upper[i] = s.ic_start[i];
-        for (int j=0; j<DIM; j++)
-            if (i != j)
-            {
-                lower[j] = 0;
-                upper[j] = s.ic_number[j];
-            }
-        Iterate (n, lower, upper)
-            cells[J(n, s.ic_number)].particles.clear();
-
-        lower[i] = s.ic_stop[i];
-        upper[i] = s.ic_number[i];
-        for (int j=0; j<DIM; j++)
-            if (i != j)
-            {
-                lower[j] = 0;
-                upper[j] = s.ic_number[j];
-            }
-        Iterate (n, lower, upper)
-            cells[J(n, s.ic_number)].particles.clear();
-    }
     return J(tmp,nCells);
 }
 
