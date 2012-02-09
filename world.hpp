@@ -3,7 +3,6 @@
 
 #include "defines.hpp"
 #include "particle.hpp"
-#include "subdomain.hpp"
 #include <vector>
 #include <list>
 #include <string>
