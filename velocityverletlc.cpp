@@ -140,7 +140,7 @@ void VelocityVerletLC::compF()
                                 // PERIODIC 1 cell:
                                 else if (periodic[d] && W.cells.size () == 1)
                                 {
-                                    if( (j->x[d] - i->x[d]) > 0.5*W.cellh[d])
+                                    if( (j->x[d] - i->x[d]) > 0.5*W.cellLength[d])
                                         // and update direction vector
                                         dirV[d] = i->x[d] - j->x[d];
                                     else
@@ -214,8 +214,8 @@ void VelocityVerletLC::updateX()
     // if the flag is checked, push the particle in the last round into it's new position
     bool doIt = false;
     bool innerWorld = true;
-    int jCell[DIM], tmpCell[DIM];
-    std::vector<int> kInsert;
+    int jCell[DIM];
+    //std::vector<int> kInsertI;
     // roll over every cell
     Iterate(jCell, W.ic_start, W.ic_stop)
     {
@@ -303,7 +303,7 @@ void VelocityVerletLC::updateX()
         for (int d=0; d<DIM; d++)
         {
             // calc local cell number and compare to local indices of subdomain
-            inCell[d] = (int)floor( i->x[d]/W.cellh[d] ) - W.ic_lower_global[d] + W.ic_start[d];
+            inCell[d] = (int)floor( i->x[d]/W.cellLength[d] ) - W.ic_lower_global[d] + W.ic_start[d];
             if( inCell[d] < W.ic_start[d] || inCell[d] > W.ic_stop[d] )
                 isInSubdomain = false;
         }
