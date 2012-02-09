@@ -9,7 +9,7 @@
 /**
  * @brief This Observer will look for our XYZ Data
  */
-class ObserverXYZ : Observer  {
+class ObserverXYZ : public Observer  {
 public:
     /**
      * @brief constructor
