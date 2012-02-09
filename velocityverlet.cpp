@@ -24,7 +24,7 @@ void VelocityVerlet::timestep(real delta_t)
 {
     // increase time
     W.t += delta_t;
-    if (W.s.myrank == 0)
+    //if (W.s.myrank == 0)
         std::cout << "STEP " << W.t << std::endl;
     // count steps
     W.step++;
