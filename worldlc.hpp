@@ -28,12 +28,12 @@ public:
      *
      * @param filename filename of the parameter file
      */
-    void readParameter (const std::string &filename);
+    virtual void readParameter (const std::string &filename);
     // TODO: Add some comment here
-    void readParticles (const std::string &filename);
+    virtual void readParticles (const std::string &filename);
 
     // get the global cell number of a given particle
-    int getCellNumber (const Particle &p);
+    virtual int getCellNumber (const Particle &p);
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
