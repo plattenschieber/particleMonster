@@ -2,10 +2,8 @@
 
 ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
 {
-    std::ostringstream procID;
-    procID << W.s.myrank;
     // open xyz file
-    std::string coordFilename = "log/" + W.name + "_pid" + procID.str () + ".xyz";
+    std::string coordFilename = "log/" + W.name + ".xyz";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordFilename.c_str());
     if ( coordinates.is_open() )

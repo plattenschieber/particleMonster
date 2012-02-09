@@ -2,21 +2,16 @@
 
 Observer::Observer(World &_W) : W(_W)
 {
-    if (W.s.myrank == 0)
-    {
-        // open statistics file
-        std::string statistics_filename = "log/" + W.name + ".statistics";
-        // open file, overwrite existing files, take no prisioners
-        statistics.open(statistics_filename.c_str());
-        if ( statistics.is_open() )
-            // and tell the world
-            std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
-    }
-    
-    std::ostringstream procID;
-    procID << W.s.myrank;
+    // open statistics file
+    std::string statistics_filename = "log/" + W.name + ".statistics";
+    // open file, overwrite existing files, take no prisioners
+    statistics.open(statistics_filename.c_str());
+    if ( statistics.is_open() )
+        // and tell the world
+        std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
+
     // open coordinates file
-    std::string coordinates_filename = "log/" + W.name + "_pid" + procID.str () + ".coordinates";
+    std::string coordinates_filename = "log/" + W.name + ".coordinates";
     // open file, overwrite existing files, take no prisioners
     coordinates.open(coordinates_filename.c_str());
     if ( coordinates.is_open() )
@@ -75,8 +70,7 @@ void Observer::outputCoordinates()
 void Observer::notify()
 {
     // write statistics
-    if (W.s.myrank == 0)
-        outputStatistics();
+    outputStatistics();
     // write the coordinates of our particles
     outputCoordinates();
 }
