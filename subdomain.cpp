@@ -344,6 +344,20 @@ void SubDomain::communicate (bool isForward)
 void SubDomain::sendReceive( int lower_proc, int *lower_ic_start,  int *lower_ic_stop, int *lower_ic_startreceive, int* lower_ic_stopreceive,
                            int upper_proc, int *upper_ic_start,  int *upper_ic_stop, int *upper_ic_startreceive, int *upper_ic_stopreceive)
 {
+    int ls[DIM], lt[DIM], lsr[DIM], ltr[DIM];
+    int us[DIM], ut[DIM], usr[DIM], utr[DIM];
+    for (int d=0; d<DIM; d++)
+    {
+        ls[d] = lower_ic_start[d];
+        lt[d] = lower_ic_stop[d];
+        lsr[d] = lower_ic_startreceive[d];
+        ltr[d] = lower_ic_stopreceive[d];
+        us[d] = upper_ic_start[d];
+        ut[d] = upper_ic_stop[d];
+        usr[d] = upper_ic_startreceive[d];
+        utr[d] = upper_ic_stopreceive[d];
+    }
+
     // send and receive infos
     MPI::Status status;
     MPI::Request request;
