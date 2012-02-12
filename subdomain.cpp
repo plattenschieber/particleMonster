@@ -152,7 +152,7 @@ void SubDomain::readParameter(const std::string &filename)
     //for (int i=0; i<nCells; i++)
     //    cells.push_back(Cell());
     cells.resize (numCells);
-    std::cout << "END OF readParameter()" << std::endl << this;
+    std::cout << "END OF readParameter()" << std::endl;
 }
 void SubDomain::readParticles(const std::string &filename)
 {
