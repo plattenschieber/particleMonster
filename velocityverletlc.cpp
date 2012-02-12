@@ -117,6 +117,8 @@ void VelocityVerletLC::compF()
                     // foreach particle j in temporary! neighbourcell compute force
                     for (std::list<Particle>::iterator j = W.cells[J(nbTmpCell,W.ic_number)].particles.begin(); j != W.cells[J(nbTmpCell,W.ic_number)].particles.end(); j++)
                     {
+                        // DEBUG
+                        Particle &p = *i, &q = *j;
                         // ...except of the computation with itself (i!=j)
                         if (i!=j)
                         {
@@ -228,6 +230,8 @@ void VelocityVerletLC::updateX()
         // foreach cell go through it's particles...
         for (std::list<Particle>::iterator i = W.cells[J(jCell, W.ic_number)].particles.begin(); i != W.cells[J(jCell, W.ic_number)].particles.end(); i++)
         {
+            // DEBUG
+            Particle &p = *i;
             // if the flag is checked, push the particle in the last round into it's new position
             doIt = false;
             // if flag is not checked, particle is we are at the border
@@ -286,14 +290,11 @@ void VelocityVerletLC::updateX()
                     }
                 }
                 // push particles into waiting pot
-                int debug = W.getCellNumber (*i);
-                debug = J(jCell, W.ic_number);
                 W.particles.push_back(*i);
                 i = W.cells[J(jCell, W.ic_number)].particles.erase(i);
                 i--;
                 break;
             }
-
         }
     }
 
@@ -304,7 +305,8 @@ void VelocityVerletLC::updateX()
     // add particles to new cells. If went onto bordure, decrease nParticles
     for (std::list<Particle>::iterator i = W.particles.begin(); i != W.particles.end(); i++)
     {
-
+        // DEBUG
+        Particle &p = *i;
         // check if particle doesn't belong to our subdomain
         for (int d=0; d<DIM; d++)
         {
