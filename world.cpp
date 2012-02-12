@@ -6,7 +6,8 @@
 World::World() : name("unknown"), t(0), step(0), delta_t(0.0), t_end(0.0),
                  e_kin(0.0), e_pot(0.0), e_tot(0.0), ekin_sum(0.0), epot_sum(0.0), ekin_avg(0.0), epot_avg(0.0),
                  sigma(1.0), epsilon(1.0), nParticles(0),
-                 T(0.0), T_D(0.0), T_Step(0),isThermoStartTemp(false)
+                 T(0.0), T_D(0.0), T_actD(0.0), T_Step(0),isThermoStartTemp(false),
+                 volume(1.0), MB_scale(1.0), pressure(0.0), pressure_proc(0.0)
 {
     //setting map mapOptions for switchcase
     mapOptions["name"] = NAME;
@@ -114,6 +115,12 @@ void World::readParameter(const std::string &filename)
     }
     // close file
     parfile.close();
+
+    // volume already set to 1, now get the real volume
+    for (int d=0; d<DIM; d++)
+        volume *= worldLength[d];
+    // gap orientation
+    T_gap = (T>T_D)?-fabs(T_gap):fabs(T_gap);
 }
 
 void World::readParticles(const std::string &filename)
@@ -127,6 +134,7 @@ void World::readParticles(const std::string &filename)
     // helper strings
     std::string line;
     Particle tmpparticle;
+    real vSum = 0.0;
 
     // read file till eof
     while (parfile.good())
@@ -159,12 +167,32 @@ void World::readParticles(const std::string &filename)
 
         // push dim read values into tmpparticles velocity
         for(int d=0; d<DIM; d++)
-            strstr >> tmpparticle.v[d];
-        // set start velocity of particle by means of Maxwell Boltzmann
-        if (isThermoStartTemp)
         {
-            // number crunchers for Maxwell-Boltzmann
-            real s, r, u[DIM], tmp;
+            strstr >> tmpparticle.v[d];
+            vSum += sqr(tmpparticle.v[d]);
+        }
+
+        // assure integrity of the force of our tmpparticle
+        for(int d=0; d<DIM; d++)
+            tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
+
+        // add the new particle to our worlds' particles
+        particles.push_back(tmpparticle);
+        // update particle size
+        nParticles++;
+    }
+    // close file
+    parfile.close();
+
+    // set start velocity of particle by means of Maxwell Boltzmann
+    if (isThermoStartTemp)
+    {
+        // reset if thermo is on
+        vSum = 0.0;
+        // number crunchers for Maxwell-Boltzmann
+        real s, r, u[DIM], tmp;
+        for (std::list<Particle>::iterator p = particles.begin(); p != particles.end(); p++)
+        {
             do
             {
                 // reset
@@ -182,24 +210,22 @@ void World::readParticles(const std::string &filename)
                 // are we inside the R^DIM ball? sin^2 + cos^2 = 1
             } while (s>1.0);
             // i don't know how it's working exactly
-            r = -2.0*log(s)/s;
+            r = -2.0*log(s)/s * MB_scale;
             // set new velocity according to Maxwell-Boltzmann
             for (int d=0; d<DIM; d++)
-                tmpparticle.v[d] = u[d]*sqrt(r);
-            tmpparticle.v[2] = 0;
+                tmpparticle.v[d] += u[d]*sqrt(r);
+            vSum += -2.*log(s)*MB_scale;
         }
-
-        // assure integrity of the force of our tmpparticle
-        for(int d=0; d<DIM; d++)
-            tmpparticle.F[d] = tmpparticle.F_old[d] = 0.0;
-
-        // add the new particle to our worlds' particles
-        particles.push_back(tmpparticle);
-        // update particle size
-        nParticles++;
     }
-    // close file
-    parfile.close();
+
+    if (T != 0)
+    {
+        Particle &i = particles.front ();
+        real scale = sqrt(T / vSum  *  i.m / (3*nParticles*BOLTZ));
+        for(std::list<Particle>::iterator p = particles.begin(); p != particles.end(); p++)
+            for(int d=0; d<DIM; d++)
+                p->v[d] *= scale;
+    }
 }
 
 

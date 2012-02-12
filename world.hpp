@@ -103,10 +103,22 @@ public:
     real T;
     /// Targettemperature
     real T_D;
+    /// actual targettemperature
+    real T_actD;
+    /// gap between start and target temperature
+    real T_gap;
     /// every
     int T_Step;
     /// Flag to enable or disable velocity scaling
     bool isThermoStartTemp;
+    /// World's volume
+    real volume;
+    /// Maxwell-Boltzmann_scale
+    real MB_scale;
+    /// pressure
+    real pressure;
+    /// process related pressure term
+    real pressure_proc;
 };
 
 /**

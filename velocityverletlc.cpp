@@ -176,6 +176,13 @@ void VelocityVerletLC::compF()
         } //end iterator over all particles i
     } //end Iterate(jCell)
 
+    //compute pressure terms
+    W.pressure_proc = 0;
+    for (std::vector<Cell>::iterator i = W.cells.begin (); i != W.cells.end (); i++)
+        for (std::list<Particle>::iterator p = i->particles.begin(); p != i->particles.end(); p++)
+            for (int d=0; d<DIM; d++)
+                W.pressure_proc += p->x[d]*p->F[d];
+
     // and delete the bordure again
     W.deleteBorderParticles ();
     
@@ -201,14 +208,26 @@ void VelocityVerletLC::updateV()
                 W.e_kin += .5*i->m*sqr(i->v[d]);
 
                 // VELOCITY SCALING
-                if (W.isThermoStartTemp && (W.step % W.T_Step == 0) && (fabs(W.T_D - W.T) > 10e-6) )
+                real beta = 1.0;
+                if (W.isThermoStartTemp && (W.step % W.T_Step == 0) && (fabs(W.T_D - W.T) > 10e-6))
                 {
-                    beta = sqrt(W.T_D * (W.nParticles-1) / (48*W.e_kin));
-                    std::cout << "VELOTCITY SCALING" << std::endl;
-                    // multiply velocity by beta
-                    i->v[d] *= beta;
-                    // and scale kinetc energy
-                    W.e_kin *= beta;
+                        // if changing temperature value exists
+                        if(W.T_gap != 0 && (round(fabs(W.T_actD-W.T_D)/W.T_gap)!= 0))
+                                W.T_actD += W.T_gap;
+                        else
+                            W.T_actD = W.T_D;
+
+                        // reset beta
+                        beta = sqrt(W.T_actD/W.T);
+
+                        // scale velocities
+                        for(std::vector<Cell>::iterator i = W.cells.begin (); i != W.cells.end (); i++)
+                            for (std::list<Particle>::iterator p = i->particles.begin(); p != i->particles.end(); p++)
+                                for (d=0; d<DIM; d++)
+                                    p->v[d] *= beta;
+
+                        // kinetic energy scale
+                        W.e_kin *= sqr(beta);
                 }
             } // END d<DIM loop
     // compute total energy
