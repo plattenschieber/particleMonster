@@ -51,8 +51,10 @@ int main(int argc, char *argv[]) {
     // read Particles
     S.readParticles(argv[2]);
 
+    WorldLC &W = S;
     // print World configuration after Building it up
     std::cout << S << std::endl;
+    std::cout << W << std::endl;
 
     // create the Observer
     ParObserverXYZ O(S);
