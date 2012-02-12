@@ -5,10 +5,13 @@ ObserverXYZ::ObserverXYZ(WorldLC &_W) : Observer(_W), W(_W)
     // open xyz file
     std::string coordFilename = "log/" + W.name + ".xyz";
     // open file, overwrite existing files, take no prisioners
-    coordinates.open(coordFilename.c_str());
-    if ( coordinates.is_open() )
-        // and tell the world
-        std::cout << "Opened " << coordFilename << " for writing." << std::endl;
+    if ( coordinates.is_open() != false)
+    {
+        coordinates.open(coordFilename.c_str());
+        if ( coordinates.is_open() )
+            // and tell the world
+            std::cout << "Opened " << coordFilename << " for writing." << std::endl;
+    }
 }
 
 

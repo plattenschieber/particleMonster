@@ -10,13 +10,16 @@ Observer::Observer(World &_W) : W(_W)
         // and tell the world
         std::cout << "Opened " << statistics_filename << " for writing." << std::endl;
 
-    // open coordinates file
-    std::string coordinates_filename = "log/" + W.name + ".coordinates";
-    // open file, overwrite existing files, take no prisioners
-    coordinates.open(coordinates_filename.c_str());
-    if ( coordinates.is_open() )
-        // and tell the world
-        std::cout << "Opened " << coordinates_filename << " for writing." << std::endl;
+    if ( coordinates.is_open() != false )
+    {
+        // open coordinates file
+        std::string coordinates_filename = "log/" + W.name + ".coordinates";
+        // open file, overwrite existing files, take no prisioners
+        coordinates.open(coordinates_filename.c_str());
+        if ( coordinates.is_open() )
+            // and tell the world
+            std::cout << "Opened " << coordinates_filename << " for writing." << std::endl;
+    }
 }
 
 
