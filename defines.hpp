@@ -29,6 +29,8 @@
 #define DIM 3
 // No neighbour for parallel
 #define NO_NEIGHBOUR -1
+// Boltzmann constant
+#define BOLTZ 1.380662E-23
 // reals in double precision
 typedef double real;
 // squre define
