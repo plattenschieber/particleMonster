@@ -310,6 +310,14 @@ void VelocityVerletLC::updateX()
         {
             // calc local cell number and compare to local indices of subdomain
             inCell[d] = (int)floor( i->x[d]/W.cellLength[d] ) - W.ic_lower_global[d] + W.ic_start[d];
+            // we only get an particle under an arbitrary border, when it was a periodic border and particle left into bordure
+            if (i->x[d] <0)
+                // so we do the change the particles position accordingly
+                i->x[d] += W.worldLength[d];
+            // same here
+            else if(i->x[d] > W.worldLength[d])
+                i->x[d] -= W.worldLength[d];
+            // now check the cell
             if( inCell[d] < W.ic_start[d] || inCell[d] > W.ic_stop[d] )
                 isInSubdomain = false;
         }
