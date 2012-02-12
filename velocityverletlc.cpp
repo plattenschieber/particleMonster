@@ -57,8 +57,14 @@ void VelocityVerletLC::compF()
         // roll over every particle i in actual cell
         for (std::list<Particle>::iterator i = W.cells[J(jCell,W.ic_number)].particles.begin(); i != W.cells[J(jCell,W.ic_number)].particles.end(); i++)
         {
+            int lowerBound[DIM], upperBound[DIM];
+            for (int d=0; d<DIM; d++)
+            {
+                lowerBound[d] = jCell[d] - 1;
+                upperBound[d] = jCell[d] + 2;
+            }
             // roll over every neighbour cell
-            Iterate (nbCell, jCell -1, jCell +1)
+            Iterate (nbCell, lowerBound, upperBound)
             {
                 // mark that a neighbour is outside the world
                 bool leftWorld = false;
