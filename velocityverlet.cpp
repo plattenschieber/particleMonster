@@ -38,6 +38,8 @@ void VelocityVerlet::timestep(real delta_t)
     MPI_Allreduce(&W.e_kin, &W.e_kin, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(&W.e_pot, &W.e_pot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(&W.e_tot, &W.e_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    //compute pressure
+    W.pressure = (W.e_kin*2 + W.pressure_proc) / (3*W.volume);
     // compute new energy average
     updateAverage();
     // notify observer
