@@ -41,8 +41,6 @@ public:
 protected:
     /// The world we are observing
     WorldLC &W;
-    /// coordiantes filestream
-    std::ofstream coordinates;
 
 private:
     /// Disabled Standard Constructor

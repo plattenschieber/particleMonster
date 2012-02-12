@@ -37,8 +37,6 @@ public:
 protected:
     /// The world we are observing
     SubDomain &S;
-    /// coordiantes filestream
-    std::ofstream coordinates;
 
 private:
     /// Disabled Standard Constructor
