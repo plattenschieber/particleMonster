@@ -565,14 +565,15 @@ void SubDomain::constructParticle(MPI::Datatype& MPI_Particle)
 std::ostream& operator << (std::ostream& os, SubDomain& S)
 {
     //os << (WorldLC)S << std::endl;
-    os << std::endl << "My Rank: " << S.myrank << ", position in process Matrix: ";
+    os << std::endl << "My Rank: " << S.myrank << std::endl;
+    os << "position in process Matrix: ";
     for (int d=0; d<DIM; d++) os << S.ip[d] << " ";
 
-    std::cout << "#Cells with bordure in " ;
-    for (int d=0; d<DIM; d++) os <<  "  dim " << d << ": " << S.ic_number[d];
+    std::cout << std::endl << "#Cells with bordure: " ;
+    for (int d=0; d<DIM; d++) os << S.ic_number[d] << " ";
 
-    std::cout << "Width of bordure in " ;
-    for (int d=0; d<DIM; d++) os <<  "  dim " << d << ": " << S.ic_start[d];
+    std::cout << std::endl <<  "Width of bordure: " ;
+    for (int d=0; d<DIM; d++) os << S.ic_start[d] << " ";
 
     os << std::endl << "My lower neighbours (ID's in dth dim): ";
     for (int d=0; d<DIM; d++) os << S.ip_lower[d] << " ";
