@@ -20,13 +20,19 @@ int main(int argc, char *argv[]) {
      MPI::Init (argc, argv);
 
     // check arguments
-    if (argc != 2) {
-        if(argc < 2) std::cerr << "error: missing arguments" << std::endl;
+    if (argc != 3) {
+        if(argc < 3)
+        {
+            std::cerr << "error: missing arguments" << std::endl;
+            MPI::Finalize();
+            return EXIT_FAILURE;
+        }
         else if (argc > 3)
         {
             std::cerr << "error: too many arguments" << std::endl
                       <<  "usage: " << std::endl
                       << "\t" << argv[0] << " parameterfile particledatafile" << std::endl;
+            MPI::Finalize();
             return EXIT_FAILURE;
         }
     }
