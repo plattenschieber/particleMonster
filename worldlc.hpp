@@ -37,7 +37,8 @@ public:
 
     // Value-Defintions of the different String values
     // needed to be implemented again, because enum is not extandable
-    enum Option { NAME, DELTA_T, T_END, LENGTH, UPPERBORDER, LOWERBORDER, EPSILON, SIGMA, CELLRCUT};
+    enum Option { DEFAULT=0, NAME=1, DELTA_T=2, T_END=3, LENGTH=4, UPPERBORDER=5, LOWERBORDER=6, EPSILON=7, SIGMA=8,
+                  STARTTEMP=9, STEPINTERVAL=10, TARGETTEMP=11, RANDOMSEED=12, CELLRCUT=13, NUMPROCS=14 };
     // Map to associate the strings with the enum values
     std::map<std::string, WorldLC::Option> mapOptions;
     /// a vector of cells with particle lists
@@ -48,6 +49,8 @@ public:
     real cellLength[DIM];
     /// r_cut used for calculation of the cell length
     real cell_r_cut;
+    /// number of subdomains
+    int nProcs[DIM];
 };
 
 /**

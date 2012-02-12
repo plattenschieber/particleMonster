@@ -18,7 +18,7 @@ World::World() : name("unknown"), t(0), step(0), delta_t(0.0), t_end(0.0),
     mapOptions["sigma"] = SIGMA;
     mapOptions["epsilon"] = EPSILON;
     mapOptions["set_start_temperature"] = STARTTEMP;
-    mapOptions["thermostat_step_interval"] = STEPINTERVAL;
+    mapOptions["thermostat_interval"] = STEPINTERVAL;
     mapOptions["thermostat_target_temperature"] = TARGETTEMP;
     mapOptions["random_seed"] = RANDOMSEED;
 }

@@ -10,6 +10,7 @@
 WorldLC::WorldLC() : cell_r_cut(2.5) {
     // we do need another mapOption
     mapOptions["cell_r_cut"] = CELLRCUT;
+    mapOptions["num_procs"] = NUMPROCS;
 }
 
 
@@ -40,6 +41,9 @@ void WorldLC::readParameter(const std::string &filename)
         // push next read value, with internal converter of string stream, into the propper place
         if (mapOptions[option] == CELLRCUT)
             strstr >> cell_r_cut;
+        if (mapOptions[option] == NUMPROCS)
+            for (int d=0; d<DIM; d++)
+                strstr >> nProcs[d];
     }
     // close file
     parfile.close();
