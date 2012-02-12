@@ -266,10 +266,8 @@ int SubDomain::getCellNumber(const Particle &p)
         // handle particle outside the world failure
         if (p.x[d] < 0 || p.x[d] > worldLength[d])
         {
-            std::cerr << "<------- FAILURE ------->" << std::endl;
-            std::cerr << "Particle left faulty the lower/upper border - in getCellNumber() -> x["
-                      << d << "] = " << p.x[d] << std::endl;
-            exit(EXIT_FAILURE);
+            std::cout << "MINUS 1" << std::endl;
+            return -1;
         }
         // compute cell number, AND DON'T FORGET TO ADD IC_START (for the displacement in world)
         tmp[d] = (int) floor(p.x[d] / cellLength[d]) % nCellsProc[d] + ic_start[d];
