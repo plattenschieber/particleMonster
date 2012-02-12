@@ -1,11 +1,11 @@
 #include "velocityverlet.hpp"
 #include <math.h> 
-VelocityVerlet::VelocityVerlet(World& _W, Potential& _Pot, ObserverXYZ& _O) : TimeDiscretization(_W,_Pot,_O)
+VelocityVerlet::VelocityVerlet(World& _W, Potential& _Pot, ParObserverXYZ& _O) : TimeDiscretization(_W,_Pot,_O)
 {
     // empty constructor(CBR) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
 }
 
-VelocityVerlet::VelocityVerlet(World& _W, Potential* _Pot, ObserverXYZ& _O) : TimeDiscretization(_W,(*_Pot),_O)
+VelocityVerlet::VelocityVerlet(World& _W, Potential* _Pot, ParObserverXYZ& _O) : TimeDiscretization(_W,(*_Pot),_O)
 {
     // empty constructor(CBV) - not really, inheritance of TimeDiscretization sets all variables by his initializer list
 }

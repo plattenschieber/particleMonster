@@ -22,7 +22,7 @@ void VelocityVerletLC::simulate ()
     // call base class method
     VelocityVerlet::simulate ();
     // call the destructor explicitly
-    O.~ObserverXYZ ();
+    O.~ParObserverXYZ ();
 }
 
 void VelocityVerletLC::initF()

@@ -3,7 +3,7 @@
 
 #include "world.hpp"
 #include "potential.hpp"
-#include "observerxyz.hpp"
+#include "parobserverxyz.hpp"
 #include <iostream>
 
 /**
@@ -18,7 +18,7 @@ public:
      * @param _Pot potential used for force calculation
      * @param _O Observer of the simulation
      */
-    TimeDiscretization(World& _W, Potential& _Pot, ObserverXYZ& _O);
+    TimeDiscretization(World& _W, Potential& _Pot, ParObserverXYZ& _O);
 
     /**
      * @brief run a single timestep
@@ -54,7 +54,7 @@ protected:
     /// the potential used for force calculation
     Potential& Pot;
     /// the observer of the simulation
-    ObserverXYZ &O;
+    ParObserverXYZ &O;
 
 private:
     TimeDiscretization();
