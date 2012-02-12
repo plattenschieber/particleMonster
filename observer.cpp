@@ -50,9 +50,10 @@ void Observer::outputStatistics()
             << W.e_kin << "\t"
             << W.e_kin + W.e_pot << "\t" // observe conservation of energy
             << W.T << "\t" // get out the temperature
-            << W.ekin_avg  // observe kin energy average conservation of last 100 steps
-            << W.epot_avg  // observe pot energy average conservation of last 100 steps
-            << W.ekin_avg + W.epot_avg // observe energy average conservation of last 100 steps
+            << W.pressure << "\t"
+            << W.ekin_avg << "\t" // observe kin energy average conservation of last 100 steps
+            << W.epot_avg << "\t" // observe pot energy average conservation of last 100 steps
+            << W.ekin_avg + W.epot_avg << "\t" // observe energy average conservation of last 100 steps
             << std::endl;
 }
 
