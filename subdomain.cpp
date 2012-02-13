@@ -6,7 +6,7 @@
 #include <cmath>
 
 // ctor, which calls WorldLC::WorldLC()
-SubDomain::SubDomain() : myrank(-1), numprocs(-1) {
+SubDomain::SubDomain() : numprocs(-1) {
     // construct it, so we can use it!
     constructParticle(MPI_Particle);
 }

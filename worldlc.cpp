@@ -67,7 +67,7 @@ void WorldLC::readParameter(const std::string &filename)
     // resize vector size
     cells.resize (numCells);
 
-    std::cout << "END OF readParameter()" << std::endl << this;
+    std::cout << "END OF readParameter()" << std::endl;
 }
 
 

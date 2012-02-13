@@ -119,6 +119,7 @@ public:
     real pressure;
     /// process related pressure term
     real pressure_proc;
+    int myrank;
 };
 
 /**

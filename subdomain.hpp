@@ -57,7 +57,7 @@ public:
 
     // further parameter for parallelization
     /// process rank of local process
-    int myrank;
+    //int myrank;
     //// number of started processes
     int numprocs;
     /// process position in grid
