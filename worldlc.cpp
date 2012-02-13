@@ -99,7 +99,7 @@ int WorldLC::getCellNumber(const Particle &p)
     for (int d=0; d<DIM; d++)
     {
         // handle particle outside the world failure
-        if (p.x[d] < 0 || p.x[d] > worldLength[d])
+        if (p.x[d] < 0 || p.x[d] >= worldLength[d])
         {
             std::cerr << "<------- FAILURE ------->" << std::endl;
             std::cerr << "Particle left faulty the lower/upper border - in getCellNumber() -> x["

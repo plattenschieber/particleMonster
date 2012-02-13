@@ -275,7 +275,7 @@ void VelocityVerletLC::updateX()
                 for (unsigned int d = 0; d<DIM; d++)
                 {
                     // leaving - it just bumps out
-                    if (i->x[d] > W.worldLength[d] && W.upper_border[d] == W.leaving)
+                    if (i->x[d] >= W.worldLength[d] && W.upper_border[d] == W.leaving)
                     {
                         // regardless in which dimension, just erase
                         i = W.cells[J(jCell, W.ic_number)].particles.erase(i);
@@ -294,7 +294,7 @@ void VelocityVerletLC::updateX()
                         break;
                     }
                     // unknown - it just bumps out
-                    else if (i->x[d] > W.worldLength[d] && W.upper_border[d] == W.unknown)
+                    else if (i->x[d] >= W.worldLength[d] && W.upper_border[d] == W.unknown)
                     {
                         std::cerr << "<------- FAILURE ------->" << std::endl;
                         std::cerr << "Please specify upper border in Dimension: " << d;
@@ -336,7 +336,7 @@ void VelocityVerletLC::updateX()
                 // so we do the change the particles position accordingly
                 i->x[d] += W.worldLength[d];
             // same here
-            else if(i->x[d] > W.worldLength[d])
+            else if(i->x[d] >= W.worldLength[d])
                 i->x[d] -= W.worldLength[d];
             // now check the cell
             if( inCell[d] < W.ic_start[d] || inCell[d] > W.ic_stop[d] )
