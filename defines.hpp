@@ -38,9 +38,9 @@ typedef double real;
 
 // small macro, to expand index calculation for different dimensions
 #if DIM == 2
-#define J(jCell,nCells) ((jCell)[1] + (nCells)[1]*(jCell)[0]) 
+#define J(jCell,nCells) ((jCell)[0] + (nCells)[0]*(jCell)[1])
 #elif DIM == 3
-#define J(jCell,nCells) ((jCell)[2] + (nCells)[2]*((jCell[1] + (nCells)[1]*(jCell)[0])))
+#define J(jCell,nCells) ((jCell)[0] + (nCells)[0]*((jCell[1] + (nCells)[1]*(jCell)[2])))
 #endif
 
 // another macro, to get index of ip in our process grid (by means of rank(r) and the #processes(np)
